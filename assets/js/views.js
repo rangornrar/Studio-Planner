@@ -1,4 +1,30 @@
 window.SP_APP = window.SP_APP || {};
+window.VIEW_STATE = window.VIEW_STATE || {
+  studioMode: 'tech',
+  debugLight: 'all',
+  dominantOnly: false,
+  isoAngle: 35,
+  isoHeight: 0.55
+};
+
+function getLightDebugSet(lights){
+  const mode=(window.VIEW_STATE&&window.VIEW_STATE.debugLight)||'all';
+  if(mode==='all') return lights||[];
+  return (lights||[]).filter(l=>String(l.__uid||'')===String(mode));
+}
+
+function getLightEmissionProfile(light){
+  const lb=(getLbl(light)||'').toLowerCase();
+  if(lb.includes('stripbox')) return {beamBonus:0.72, featherPow:1.8, softness:0.95, bgBoost:0.7};
+  if(lb.includes('softbox')) return {beamBonus:0.95, featherPow:2.2, softness:1.08, bgBoost:0.9};
+  if(lb.includes('octo')) return {beamBonus:1.05, featherPow:2.5, softness:1.12, bgBoost:0.95};
+  if(lb.includes('parapluie')) return {beamBonus:1.15, featherPow:2.0, softness:1.0, bgBoost:1.0};
+  if(lb.includes('beauty dish')) return {beamBonus:0.65, featherPow:1.35, softness:0.88, bgBoost:0.65};
+  if(lb.includes('ring')) return {beamBonus:0.75, featherPow:1.6, softness:0.94, bgBoost:0.8};
+  if(lb.includes('fresnel')||lb.includes('aputure')||lb.includes('snoot')) return {beamBonus:0.45, featherPow:1.15, softness:0.76, bgBoost:0.55};
+  return {beamBonus:0.85, featherPow:1.7, softness:0.9, bgBoost:0.75};
+}
+
 // ═══════════════════════════════════════════════════════════════
 // CAMERA PANEL — 2D positions view + lighting simulation
 // ═══════════════════════════════════════════════════════════════
@@ -430,8 +456,10 @@ function drawIsoObject(ctx,it,scene){
 function drawIsoScene(ctx,W,H,projected,cam){
   const marginX=46, marginY=34;
   const sx=Math.min((W-marginX*2)/(RW+RH),1.35);
-  const sy=Math.min((H-marginY*2)/(RH*0.55 + RW*0.26 + 180), sx*0.34);
-  const sz=Math.min(sy*0.55, 0.34);
+  const isoAngle=((window.VIEW_STATE&&window.VIEW_STATE.isoAngle)||35) * Math.PI/180;
+  const isoHeight=clamp((window.VIEW_STATE&&window.VIEW_STATE.isoHeight)||0.55,0.25,1.2);
+  const sy=Math.min((H-marginY*2)/(RH*0.55 + RW*0.26 + 180), sx*(0.16 + Math.sin(isoAngle)*0.30));
+  const sz=Math.min(sy*isoHeight, 0.48);
   const centerX=W*0.5, baseY=H*0.72;
   const scene={centerX,baseY,sx,sy,sz};
   const bg=ctx.createLinearGradient(0,0,0,H);
@@ -452,6 +480,28 @@ function drawIsoScene(ctx,W,H,projected,cam){
   ctx.strokeStyle='rgba(74,142,255,.85)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cp.x,cp.y-6); ctx.lineTo(fp.x,fp.y-6); ctx.stroke();
   ctx.fillStyle='rgba(74,142,255,.95)'; ctx.beginPath(); ctx.arc(cp.x,cp.y-6,4,0,Math.PI*2); ctx.fill();
   ctx.fillStyle='rgba(255,255,255,.16)'; ctx.font='9px monospace'; ctx.textAlign='right'; ctx.fillText('Vue isométrique',W-10,H-10);
+}
+
+function drawReactiveBackgroundGlow(ctx,W,H,floorY,projected,lightObjs){
+  const activeLights=getLightDebugSet(lightObjs||[]);
+  if(!activeLights.length) return;
+  const backgrounds=projected.filter(it=>it.obj.ctype==='background');
+  const targetX=backgrounds.length? backgrounds[0].x : W/2;
+  const targetY=backgrounds.length? (backgrounds[0].y-backgrounds[0].h*0.65) : floorY*0.42;
+  activeLights.forEach(light=>{
+    const it=projected.find(p=>p.obj===light);
+    if(!it) return;
+    const tc=getTempRGB(light.lightTemp||'5500K');
+    const prof=getLightEmissionProfile(light);
+    const r=Math.max(80, (it.w+it.h)*0.9*prof.bgBoost + 120);
+    const g=ctx.createRadialGradient(targetX,targetY,10,targetX,targetY,r);
+    const alpha=Math.min(0.20,0.06 + ((+light.powerWs||300)/1200)*0.12);
+    g.addColorStop(0,`rgba(${tc.r},${tc.g},${tc.b},${alpha})`);
+    g.addColorStop(0.45,`rgba(${tc.r},${tc.g},${tc.b},${alpha*0.45})`);
+    g.addColorStop(1,`rgba(${tc.r},${tc.g},${tc.b},0)`);
+    ctx.fillStyle=g;
+    ctx.beginPath(); ctx.arc(targetX,targetY,r,0,Math.PI*2); ctx.fill();
+  });
 }
 
 function drawCam(){
@@ -509,13 +559,15 @@ function drawCam(){
 
   const lightingMap=new Map();
   lightingMap.proj=new Map();
-  const lightObjs=cv.getObjects().filter(o=>o.ctype==='light'&&o.visible!==false);
+  const lightObjs=getLightDebugSet(cv.getObjects().filter(o=>o.ctype==='light'&&o.visible!==false));
   projected.forEach(it=>{if(it.obj.ctype==='subject')lightingMap.proj.set(it.obj,it);});
   projected.forEach(it=>{if(it.obj.ctype==='subject')lightingMap.set(it.obj,computeSubjectLighting(it.obj,lightObjs));});
 
   if(!projected.length){
     x.fillStyle='rgba(255,255,255,.35)';x.font='13px Inter,Segoe UI,Arial';x.textAlign='center';x.fillText('Aucun objet visible dans le champ caméra',W/2,H/2);return;
   }
+
+  if(camTab==='light') drawReactiveBackgroundGlow(x,W,H,floorY,projected,lightObjs);
 
   if(camTab==='iso'){
     drawIsoScene(x,W,H,projected,cam);
@@ -529,6 +581,17 @@ function drawCam(){
     x.fillText(getLbl(it.obj),it.x,it.y+18);
     x.fillStyle='rgba(255,255,255,.42)';x.font='9px monospace';x.fillText(`${Math.round(it.z)} cm`,it.x,it.y+30);
   });
+
+  if(window.currentFrameRatio){
+    const ratios={'3:2':3/2,'4:5':4/5,'1:1':1,'16:9':16/9};
+    const r=ratios[window.currentFrameRatio]||3/2;
+    let fw=W*0.86, fh=fw/r; if(fh>H*0.76){ fh=H*0.76; fw=fh*r; }
+    const fx=(W-fw)/2, fy=(H-fh)/2-8;
+    x.strokeStyle='rgba(255,255,255,.22)'; x.lineWidth=1; x.strokeRect(fx,fy,fw,fh);
+    x.strokeStyle='rgba(255,255,255,.10)';
+    x.beginPath(); x.moveTo(fx+fw/3,fy); x.lineTo(fx+fw/3,fy+fh); x.moveTo(fx+2*fw/3,fy); x.lineTo(fx+2*fw/3,fy+fh); x.moveTo(fx,fy+fh/3); x.lineTo(fx+fw,fy+fh/3); x.moveTo(fx,fy+2*fh/3); x.lineTo(fx+fw,fy+2*fh/3); x.stroke();
+    x.strokeStyle='rgba(255,255,255,.12)'; x.strokeRect(fx+fw*0.06,fy+fh*0.06,fw*0.88,fh*0.88);
+  }
 
   const vign=x.createRadialGradient(W/2,H*0.48,Math.min(W,H)*0.18,W/2,H*0.48,Math.max(W,H)*0.68);
   vign.addColorStop(0,'rgba(0,0,0,0)');vign.addColorStop(1,'rgba(0,0,0,.24)');

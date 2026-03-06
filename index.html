@@ -322,30 +322,36 @@
 <!-- ══ MAIN ══ -->
 <main id="main">
 <div id="toolbar">
+<div class="toolbar-section">
+<span class="toolbar-label">Vue</span>
 <button class="tb b-blue" onclick="applyRoom()">✓ Studio</button>
 <button class="tb" onclick="recenter()">⊕ Centrer</button>
+</div>
 <div class="tsep"></div>
+<div class="toolbar-section">
+<span class="toolbar-label">Zoom</span>
 <button class="tb-ico b-ghost" onclick="zoomOut()">−</button>
 <span class="zdsp" id="zLbl">100%</span>
 <button class="tb-ico b-ghost" onclick="zoomIn()">+</button>
 <button class="tb b-ghost" onclick="zoomReset()">1:1</button>
+</div>
 <div class="tsep"></div>
+<div class="toolbar-section">
+<span class="toolbar-label">Édition</span>
 <button class="tb b-amber" onclick="undo()" title="Ctrl+Z">↩</button>
 <button class="tb b-amber" onclick="redo()" title="Ctrl+Y">↪</button>
-<div class="tsep"></div>
 <button class="tb" id="snapBtn" onclick="toggleSnap()">⊞ Snap</button>
 <button class="tb" id="distBtn" onclick="toggleDistances()">📏 Dist.</button>
-<button class="tb" id="camBtn" onclick="toggleCam()">📷 Vue caméra</button>
-<button class="tb" onclick="openDashboard()">🏠 Accueil</button>
-<button class="tb" onclick="openProjectHub()">🗂️ Projets</button>
-<button class="tb" onclick="openCatalogModal()">🧰 Catalogue</button>
-<button class="tb" onclick="openAuditModal()">🩺 Audit</button>
-<button class="tb b-green" onclick="exportSetupReport()">🧾 PDF</button>
+<button class="tb" id="camBtn" onclick="toggleCam()">📷 Vues</button>
+</div>
 <div class="tsep"></div>
+<div class="toolbar-section">
+<span class="toolbar-label">Fichiers</span>
 <button class="tb b-green" onclick="exportPNG()">⬇ PNG</button>
 <button class="tb b-green" onclick="exportLegend()">+ Légende</button>
 <button class="tb b-green" onclick="saveJSON()">💾</button>
 <button class="tb b-ghost" onclick="window.print()">🖨</button>
+</div>
 </div>
 <div id="topProjectBar">
 <div id="topProjectMeta">
@@ -355,12 +361,23 @@
 <span class="metric-pill">Objets <span id="tpObjects">0</span></span>
 <span class="metric-pill">Audit <span class="metric-score" id="tpScore">—</span></span>
 </div>
-<div id="topProjectActions">
+<div id="topProjectControls">
+<div class="project-control-group">
+<span class="project-control-label">Navigation</span>
+<div id="topProjectGlobalActions">
 <button class="tb" onclick="openDashboard()">🏠 Accueil</button>
+<button class="tb" onclick="openProjectHub()">🗂️ Projets</button>
 <button class="tb" onclick="openCatalogModal()">🧰 Catalogue</button>
 <button class="tb" onclick="openAuditModal()">🩺 Audit</button>
+</div>
+</div>
+<div class="project-control-group">
+<span class="project-control-label">Projet</span>
+<div id="topProjectActions">
 <button class="tb" onclick="saveCurrentVariant()">🧪 Variante</button>
 <button class="tb b-green" onclick="exportSetupReport()">🧾 Export setup</button>
+</div>
+</div>
 </div>
 </div>
 <div id="workspace">
@@ -414,6 +431,7 @@
 <div class="quick-card"><strong>Portrait corporate</strong><span>Projet propre avec fond, caméra et setup équilibré.</span><button class="small-btn b-blue" onclick="closeDashboard();presetCorporate()">Lancer</button></div>
 <div class="quick-card"><strong>Packshot</strong><span>Base produit rapide avec fond et lumière contrôlée.</span><button class="small-btn b-blue" onclick="closeDashboard();presetPackshot()">Lancer</button></div>
 <div class="quick-card"><strong>Audit du projet courant</strong><span>Vérifie le score, les alertes et la checklist pro.</span><button class="small-btn" onclick="closeDashboard();openAuditModal()">Ouvrir</button></div>
+<div class="quick-card"><strong>Templates métier</strong><span>Charge une base propre selon le type de séance.</span><button class="small-btn b-blue" onclick="closeDashboard();openTemplatesModal()">Explorer</button></div>
 <div class="quick-card"><strong>Export setup client</strong><span>Génère la fiche imprimable avec vues, matériel et recommandations.</span><button class="small-btn b-green" onclick="closeDashboard();exportSetupReport()">Exporter</button></div>
 </div>
 </div>
@@ -462,16 +480,36 @@
 </div>
 </div>
 <div class="modal" id="catalogModal">
-<div class="modal-dialog">
+<div class="modal-dialog modal-dialog-wide">
 <div class="modal-head">
-<div><h3 style="font-size:16px">🧰 Catalogue matériel</h3><div class="muted">Ajout rapide d’équipements et de sujets crédibles pour un workflow plus pro.</div></div>
+<div><h3 style="font-size:16px">🧰 Catalogue matériel premium</h3><div class="muted">Recherche rapide, fiches détaillées et ajout contextuel d’équipements crédibles.</div></div>
 <button class="small-btn b-ghost" onclick="closeCatalogModal()">✕</button>
 </div>
 <div class="catalog-tools">
 <input id="catalogSearch" oninput="renderCatalog()" placeholder="Rechercher : softbox, Godox, couple, fond…" type="text"/>
 <select id="catalogFilter" onchange="renderCatalog()"><option value="all">Toutes catégories</option><option value="subject">Sujets</option><option value="light">Lumières</option><option value="modifier">Modificateurs</option><option value="background">Fonds</option><option value="accessory">Accessoires</option><option value="preset">Presets</option></select>
+<select id="catalogUseCase" onchange="renderCatalog()"><option value="all">Tous usages</option><option value="portrait">Portrait</option><option value="beauty">Beauté</option><option value="corporate">Corporate</option><option value="fashion">Mode</option><option value="packshot">Packshot</option><option value="couple">Couple</option></select>
 </div>
+<div class="catalog-layout">
 <div class="catalog-list" id="catalogList"></div>
+<div class="catalog-detail" id="catalogDetail"><div class="muted">Sélectionne un élément pour afficher sa fiche détaillée.</div></div>
+</div>
+</div>
+</div>
+<div class="modal" id="templatesModal">
+<div class="modal-dialog modal-dialog-wide">
+<div class="modal-head">
+<div><h3 style="font-size:16px">🗂️ Templates métier</h3><div class="muted">Des setups prêts à l’emploi, expliqués proprement et classés par usage réel.</div></div>
+<button class="small-btn b-ghost" onclick="closeTemplatesModal()">✕</button>
+</div>
+<div class="catalog-tools">
+<input id="templateSearch" oninput="renderTemplateLibrary()" placeholder="Rechercher : corporate, beauté, famille, packshot…" type="text"/>
+<select id="templateFilter" onchange="renderTemplateLibrary()"><option value="all">Toutes séances</option><option value="Portrait">Portrait</option><option value="Beauté">Beauté</option><option value="Corporate">Corporate</option><option value="Mode">Mode</option><option value="Packshot">Packshot</option><option value="Couple">Couple</option><option value="Famille">Famille</option></select>
+</div>
+<div class="catalog-layout">
+<div class="template-grid" id="templateLibraryList"></div>
+<div class="catalog-detail" id="templateDetail"><div class="muted">Choisis un template pour afficher sa fiche complète.</div></div>
+</div>
 </div>
 </div>
 <div class="modal" id="auditModal">
@@ -682,9 +720,8 @@
   function countPayload(p){ const objs=(p.canvas?.objects||[]).filter(o=>o.isSO||o.ctype==='note'||o.ctype==='measure'); return {total:objs.length, lights:objs.filter(o=>o.ctype==='light').length, mods:objs.filter(o=>o.ctype==='modifier').length, subjects:objs.filter(o=>o.ctype==='subject').length, cameras:objs.filter(o=>o.ctype==='camera').length}; }
   function summaryBox(p,c){ return `<div class="muted">${escapeHtml2(p.meta?.shootType||'—')} ${p.meta?.client?('· '+escapeHtml2(p.meta.client)):''}</div><ul><li>${c.subjects} sujet(s)</li><li>${c.lights} lumière(s)</li><li>${c.mods} modificateur(s)</li><li>${c.cameras} caméra(s)</li></ul>`; }
 
-  // PDF premium
-  window.exportSetupReport=function(){ const meta=getProjectMeta(); cv.discardActiveObject(); cv.requestRenderAll(); if(camOpen) drawCam(); const topUrl=cv.toDataURL({format:'png',multiplier:4}); let camUrl=''; const camCanvas=document.getElementById('camCanvas'); try{ if(camCanvas&&camCanvas.width>0&&camCanvas.height>0) camUrl=camCanvas.toDataURL('image/png'); }catch(e){}
-    const eq=collectEquipmentSummary(); const audit=computeSetupAudit(); const warnings=(audit.warnings||[]).slice(0,6); const recos=(audit.recos||[]).slice(0,6);
-    const html=`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>${escapeHtml2(meta.name)}</title><style>body{font-family:Inter,Arial,sans-serif;margin:0;background:#eef2f8;color:#111827}.page{max-width:1180px;margin:0 auto;padding:30px}.hero,.card{background:#fff;border:1px solid #d7deea;border-radius:18px;box-shadow:0 12px 40px rgba(15,23,42,.06)}.hero{padding:24px 28px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;margin-bottom:18px}.title{font-size:30px;font-weight:900;margin:6px 0 10px}.brand{font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em}.meta{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 16px;font-size:13px}.cards{display:grid;grid-template-columns:1.35fr .65fr;gap:18px}.views{display:grid;grid-template-columns:1fr .72fr;gap:16px}.card{padding:18px}.card img{width:100%;border-radius:14px;border:1px solid #d8deea;background:#fff}.studio-shot img{min-height:520px;object-fit:contain;background:#f7f9fc}.muted{color:#6b7280}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:#eef6ff;color:#2563eb;border:1px solid #bfdbfe;font-size:11px;font-weight:800}.audit{display:flex;align-items:center;gap:10px;margin:12px 0 0}.score{font-size:34px;font-weight:900}.sectionTitle{font-size:16px;font-weight:800;margin:0 0 12px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.note{padding:12px 14px;border-radius:12px;background:#f7f9fc;border:1px solid #e5eaf2;font-size:13px}.list{margin:0;padding-left:18px}.footer{margin-top:18px;color:#6b7280;font-size:11px}@media print{body{background:#fff}.page{max-width:none;padding:0}.hero,.card{box-shadow:none;break-inside:avoid;border-color:#d7deea}.cards,.views,.grid2{break-inside:avoid}}</style></head><body><div class="page"><div class="hero"><div><div class="brand">${escapeHtml2(meta.brand||'Studio Planner Pro')}</div><div class="title">${escapeHtml2(meta.name||'Projet sans titre')}</div><div class="muted">Fiche setup premium · prête pour assistant, client ou production</div><div class="audit"><span class="pill">Score audit</span><div class="score">${audit.score}</div><div class="muted">${escapeHtml2(audit.badge||'Diagnostic')}</div></div></div><div class="meta"><div><strong>Client</strong><br>${escapeHtml2(meta.client||'—')}</div><div><strong>Type de séance</strong><br>${escapeHtml2(meta.shootType||'—')}</div><div><strong>Studio</strong><br>${RW} × ${RH} cm</div><div><strong>Date</strong><br>${new Date().toLocaleDateString('fr-FR',{year:'numeric',month:'long',day:'numeric'})}</div><div><strong>Cadre photo</strong><br>${escapeHtml2(currentFrameRatio)}</div><div><strong>Objets</strong><br>${getSceneCounts().total}</div></div></div><div class="cards"><div class="card"><div class="sectionTitle">Vues du setup</div><div class="views"><div class="studio-shot"><div class="muted" style="margin-bottom:6px">Plan studio</div><img src="${topUrl}"></div>${camUrl?`<div><div class="muted" style="margin-bottom:6px">Vue caméra / iso</div><img src="${camUrl}"></div>`:''}</div>${meta.notes?`<div class="note" style="margin-top:14px"><strong>Notes projet</strong><br>${escapeHtml2(meta.notes)}</div>`:''}</div><div class="card"><div class="sectionTitle">Matériel & recommandations</div><div class="grid2"><div><div class="muted" style="margin-bottom:6px">Matériel utilisé</div><ul class="list">${eq.map(([name,count])=>`<li><strong>×${count}</strong> ${escapeHtml2(name)}</li>`).join('')||'<li>Aucun matériel.</li>'}</ul></div><div><div class="muted" style="margin-bottom:6px">Résumé exécutif</div><div class="note">${escapeHtml2(collectExecutiveSummary())}</div></div></div><div class="grid2" style="margin-top:14px"><div><div class="muted" style="margin-bottom:6px">Points de vigilance</div><ul class="list">${warnings.length?warnings.map(w=>`<li>${escapeHtml2(w)}</li>`).join(''):'<li>Aucun signal rouge majeur.</li>'}</ul></div><div><div class="muted" style="margin-bottom:6px">Recommandations</div><ul class="list">${recos.length?recos.map(r=>`<li>${escapeHtml2(r)}</li>`).join(''):'<li>Le setup est déjà bien cadré.</li>'}</ul></div></div></div></div><div class="footer">Document généré depuis Studio Planner Pro. Pour obtenir le PDF final, utilise l’impression du navigateur puis “Enregistrer au format PDF”.</div></div>
+
+</script>
+<script src="assets/js/enhancements_v14.js"></script>
 </body>
 </html>

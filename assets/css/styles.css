@@ -290,6 +290,10 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--a
 .metric-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border:1px solid var(--border);background:var(--surface);border-radius:999px}
 .metric-score{font-weight:700;color:var(--accent)}
 #topProjectActions{display:flex;gap:6px;flex-wrap:wrap}
+#topProjectControls{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.project-control-group{display:flex;flex-direction:column;gap:4px}
+.project-control-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);padding-left:2px}
+#topProjectGlobalActions,#topProjectActions{display:flex;gap:6px;flex-wrap:wrap}
 .modal{position:fixed;inset:0;background:rgba(10,12,18,.45);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:9998;padding:18px}
 .modal.open{display:flex}
 .modal-dialog{width:min(1120px,96vw);max-height:88vh;overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);padding:18px}
@@ -329,3 +333,31 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--a
 .profile-card span{font-size:11px;color:var(--text2)}
 .report-note{font-size:11px;color:var(--text2);line-height:1.55}
 @media (max-width:980px){.modal-grid,.dashboard-grid,.profile-grid,.quick-grid{grid-template-columns:1fr}.catalog-list{grid-template-columns:1fr}}
+
+.modal-dialog-wide{width:min(1280px,97vw)}
+.catalog-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:14px;align-items:start}
+.catalog-list{grid-template-columns:1fr !important;max-height:62vh;overflow:auto;padding-right:4px}
+.catalog-item{padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:transform var(--trans),border-color var(--trans),box-shadow var(--trans)}
+.catalog-item:hover{transform:translateY(-1px);border-color:var(--accent);box-shadow:var(--shadow-sm)}
+.catalog-item.active{border-color:var(--accent);background:var(--accent-soft)}
+.catalog-item .cat{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.catalog-item .desc{font-size:12px;color:var(--text2);line-height:1.4}
+.catalog-item .specs{font-size:11px;color:var(--text2)}
+.catalog-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.catalog-detail{border:1px solid var(--border);border-radius:14px;background:var(--surface2);padding:16px;min-height:320px;position:sticky;top:0}
+.catalog-detail h4{font-size:18px;margin-bottom:4px}
+.catalog-detail .sub{font-size:12px;color:var(--text2);margin-bottom:10px}
+.catalog-detail .detail-section{margin-top:12px}
+.catalog-detail .detail-section h5{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.catalog-detail ul{padding-left:18px;color:var(--text2);line-height:1.5}
+.catalog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.catalog-badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:var(--surface3);font-size:11px;color:var(--text2);border:1px solid var(--border)}
+.template-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-height:62vh;overflow:auto;padding-right:4px}
+.template-card{padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--surface2);display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:transform var(--trans),border-color var(--trans),box-shadow var(--trans)}
+.template-card:hover{transform:translateY(-1px);border-color:var(--accent);box-shadow:var(--shadow-sm)}
+.template-card.active{border-color:var(--accent);background:var(--accent-soft)}
+.template-card .meta{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
+.template-card .summary{font-size:12px;color:var(--text2);line-height:1.45}
+.template-card .chips{display:flex;flex-wrap:wrap;gap:6px}
+.template-card .chip{padding:3px 7px;border-radius:999px;background:var(--surface3);font-size:11px;color:var(--text2);border:1px solid var(--border)}
+@media (max-width:1100px){.catalog-layout{grid-template-columns:1fr}.catalog-detail{position:static}.template-grid{grid-template-columns:1fr}}
