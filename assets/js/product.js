@@ -321,3 +321,41 @@ function addViewQualitySection(){
   window.startBlankProject=function(){ if(oldInit) oldInit(); setTimeout(()=>{ applyStudioMode('tech'); refreshLightDebugOptions(); },60); };
   setTimeout(()=>{ addViewQualitySection(); applyStudioMode((window.VIEW_STATE&&VIEW_STATE.studioMode)||'tech'); refreshLightDebugOptions(); }, 200);
 })();
+
+
+// Startup bootstrap — initialize studio scene reliably on first load
+(function startupBootstrap(){
+  function sceneObjectCount(){
+    try { return cv.getObjects().filter(o=>o && (o.isSO || o.ctype==='note' || o.ctype==='measure')).length; }
+    catch(e){ return 0; }
+  }
+  function safeBoot(){
+    try{
+      if(!window.__studioBootDone){
+        window.__studioBootDone = true;
+        if(typeof init === 'function') init();
+      }
+      const draftKey = (typeof STORAGE_KEYS!=='undefined' && STORAGE_KEYS.draft) ? STORAGE_KEYS.draft : null;
+      const draft = draftKey ? localStorage.getItem(draftKey) : null;
+      if(typeof loadFromShareHash === 'function' && location.hash && location.hash.startsWith('#sp=')){
+        loadFromShareHash();
+      } else if(draft && sceneObjectCount()===0){
+        try{ restoreSerializedProject(JSON.parse(draft)); }catch(e){ console.warn('draft restore failed', e); }
+      }
+      if(sceneObjectCount()===0){
+        if(typeof presetRembrandt==='function') presetRembrandt();
+      }
+      if(typeof recenter==='function') recenter();
+      if(typeof saveState==='function') saveState();
+      if(typeof buildLayers==='function') buildLayers();
+      if(typeof updateProjectHub==='function') updateProjectHub();
+      if(typeof updateTopProjectBar==='function') updateTopProjectBar();
+      if(typeof refreshLightDebugOptions==='function') refreshLightDebugOptions();
+      if(typeof applyStudioMode==='function') applyStudioMode((window.VIEW_STATE&&VIEW_STATE.studioMode)||'tech');
+      if(typeof syncSel==='function') syncSel();
+      if(window.camOpen && typeof drawCam==='function') drawCam();
+    }catch(e){ console.error('startup bootstrap failed', e); }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', ()=>setTimeout(safeBoot,120));
+  else setTimeout(safeBoot,120);
+})();
