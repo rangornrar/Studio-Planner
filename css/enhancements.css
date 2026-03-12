@@ -1,0 +1,42 @@
+.display-btn {
+  min-width: 64px;
+}
+
+.field-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 88px;
+  gap: 10px;
+  align-items: center;
+}
+
+.numeric-input {
+  width: 100%;
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(12, 16, 22, 0.96);
+  color: var(--text);
+  font: 500 12px/1 var(--mono);
+}
+
+.numeric-input:focus {
+  outline: none;
+  border-color: rgba(240, 165, 0, 0.7);
+  box-shadow: 0 0 0 3px rgba(240, 165, 0, 0.12);
+}
+
+.view-tools {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1220px) {
+  .display-btn {
+    min-width: 54px;
+    padding-inline: 10px;
+  }
+
+  .field-controls {
+    grid-template-columns: 1fr;
+  }
+}

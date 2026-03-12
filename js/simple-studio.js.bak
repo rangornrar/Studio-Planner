@@ -1,0 +1,2755 @@
+(function () {
+  const STUDIO = {
+    width: 8,
+    depth: 6,
+    backdropDepth: 0.75,
+    backdropHeight: 2.8
+  };
+
+  const FLOOR_COLORS = [
+    { id: "white", label: "Blanc", color: "#f1f3f5" },
+    { id: "light-gray", label: "Gris clair", color: "#d7dbe0" },
+    { id: "neutral-gray", label: "Gris neutre", color: "#a4aab2" },
+    { id: "charcoal", label: "Anthracite", color: "#525963" },
+    { id: "black", label: "Noir", color: "#181b20" },
+    { id: "cream", label: "Creme", color: "#ece2d2" },
+    { id: "sand", label: "Sable", color: "#c9af8f" },
+    { id: "slate", label: "Bleu ardoise", color: "#60728a" }
+  ];
+
+  const BACKDROP_COLORS = [
+    { id: "white", label: "Blanc", color: "#f7f7f3" },
+    { id: "black", label: "Noir", color: "#17181b" },
+    { id: "light-gray", label: "Gris clair", color: "#d8dde0" },
+    { id: "neutral-gray", label: "Gris neutre", color: "#9ea4ac" },
+    { id: "dark-gray", label: "Gris fonce", color: "#454b54" },
+    { id: "cream", label: "Creme", color: "#efe4d4" },
+    { id: "beige", label: "Beige", color: "#d2b697" },
+    { id: "sand", label: "Sable", color: "#bb986f" },
+    { id: "mocha", label: "Moka", color: "#7a5f50" },
+    { id: "terracotta", label: "Terracotta", color: "#b66649" },
+    { id: "brick", label: "Brique", color: "#8b3632" },
+    { id: "blush", label: "Rose poudre", color: "#d5b5bc" },
+    { id: "lavender", label: "Lavande", color: "#a39bbc" },
+    { id: "sky", label: "Bleu ciel", color: "#89afcc" },
+    { id: "steel", label: "Bleu acier", color: "#5f7890" },
+    { id: "olive", label: "Olive", color: "#737a58" },
+    { id: "chroma", label: "Vert chroma", color: "#41a54c" }
+  ];
+
+  const ITEM_VARIANTS = {
+    "subject-adult": {
+      family: "subject",
+      typeLabel: "Sujet",
+      shortLabel: "Adulte",
+      sizeLabel: "58 x 58 cm",
+      heightLabel: "H 1.75 m",
+      description: "1 personne debout",
+      width: 0.58,
+      depth: 0.58,
+      height: 1.75,
+      shape: "ellipse"
+    },
+    "subject-child": {
+      family: "subject",
+      typeLabel: "Sujet",
+      shortLabel: "Enfant",
+      sizeLabel: "44 x 44 cm",
+      heightLabel: "H 1.30 m",
+      description: "1 enfant debout",
+      width: 0.44,
+      depth: 0.44,
+      height: 1.3,
+      shape: "ellipse"
+    },
+    "subject-couple": {
+      family: "subject",
+      typeLabel: "Sujet",
+      shortLabel: "Couple serre",
+      sizeLabel: "95 x 65 cm",
+      heightLabel: "H 1.75 m",
+      description: "2 personnes rapprochees",
+      width: 0.95,
+      depth: 0.65,
+      height: 1.75,
+      shape: "ellipse"
+    },
+    "camera-standard": {
+      family: "camera",
+      typeLabel: "Appareil",
+      shortLabel: "Trepied standard",
+      sizeLabel: "70 x 86 cm",
+      heightLabel: "H 1.62 m",
+      description: "Boitier sur trepied",
+      width: 0.7,
+      depth: 0.86,
+      height: 1.62,
+      shape: "rect"
+    },
+    "camera-high": {
+      family: "camera",
+      typeLabel: "Appareil",
+      shortLabel: "Trepied haut",
+      sizeLabel: "70 x 86 cm",
+      heightLabel: "H 1.90 m",
+      description: "Appareil pour prise haute",
+      width: 0.7,
+      depth: 0.86,
+      height: 1.9,
+      shape: "rect"
+    },
+    "camera-video": {
+      family: "camera",
+      typeLabel: "Camera video",
+      shortLabel: "Trepied video",
+      sizeLabel: "78 x 92 cm",
+      heightLabel: "H 1.72 m",
+      description: "Camera cinema ou interview",
+      width: 0.78,
+      depth: 0.92,
+      height: 1.72,
+      shape: "rect"
+    },
+    "softbox-octa90": {
+      family: "softbox",
+      typeLabel: "Softbox",
+      shortLabel: "Octa 90",
+      sizeLabel: "90 cm",
+      heightLabel: "H 2.10 m",
+      description: "Octabox compacte",
+      width: 0.78,
+      depth: 0.62,
+      height: 2.1,
+      shape: "rect"
+    },
+    "softbox-octa120": {
+      family: "softbox",
+      typeLabel: "Softbox",
+      shortLabel: "Octa 120",
+      sizeLabel: "120 cm",
+      heightLabel: "H 2.18 m",
+      description: "Octabox portrait",
+      width: 0.92,
+      depth: 0.68,
+      height: 2.18,
+      shape: "rect"
+    },
+    "softbox-rect60x90": {
+      family: "softbox",
+      typeLabel: "Softbox",
+      shortLabel: "Recta 60 x 90",
+      sizeLabel: "60 x 90 cm",
+      heightLabel: "H 2.08 m",
+      description: "Rectangulaire compacte",
+      width: 0.72,
+      depth: 0.52,
+      height: 2.08,
+      shape: "rect"
+    },
+    "softbox-rect90x120": {
+      family: "softbox",
+      typeLabel: "Softbox",
+      shortLabel: "Recta 90 x 120",
+      sizeLabel: "90 x 120 cm",
+      heightLabel: "H 2.22 m",
+      description: "Grande source diffuse",
+      width: 1.02,
+      depth: 0.68,
+      height: 2.22,
+      shape: "rect"
+    },
+    "softbox-parabolic150": {
+      family: "softbox",
+      typeLabel: "Softbox",
+      shortLabel: "Parabolique 150",
+      sizeLabel: "150 cm",
+      heightLabel: "H 2.25 m",
+      description: "Grande parabolique",
+      width: 1.08,
+      depth: 0.78,
+      height: 2.25,
+      shape: "rect"
+    },
+    "strip-30x120": {
+      family: "striplight",
+      typeLabel: "Striplight",
+      shortLabel: "30 x 120",
+      sizeLabel: "30 x 120 cm",
+      heightLabel: "H 2.12 m",
+      description: "Bande lumineuse fine",
+      width: 0.32,
+      depth: 0.52,
+      height: 2.12,
+      shape: "rect"
+    },
+    "strip-40x140": {
+      family: "striplight",
+      typeLabel: "Striplight",
+      shortLabel: "40 x 140",
+      sizeLabel: "40 x 140 cm",
+      heightLabel: "H 2.22 m",
+      description: "Bande lumineuse haute",
+      width: 0.4,
+      depth: 0.58,
+      height: 2.22,
+      shape: "rect"
+    },
+    "tube-60": {
+      family: "striplight",
+      typeLabel: "Tube LED",
+      shortLabel: "60 cm",
+      sizeLabel: "60 cm",
+      heightLabel: "H 1.60 m",
+      description: "Tube LED court",
+      width: 0.22,
+      depth: 0.32,
+      height: 1.6,
+      shape: "rect"
+    },
+    "tube-120": {
+      family: "striplight",
+      typeLabel: "Tube LED",
+      shortLabel: "120 cm",
+      sizeLabel: "120 cm",
+      heightLabel: "H 2.05 m",
+      description: "Tube LED standard",
+      width: 0.24,
+      depth: 0.42,
+      height: 2.05,
+      shape: "rect"
+    },
+    "tube-240": {
+      family: "striplight",
+      typeLabel: "Tube LED",
+      shortLabel: "240 cm",
+      sizeLabel: "240 cm",
+      heightLabel: "H 2.30 m",
+      description: "Tube LED long",
+      width: 0.26,
+      depth: 0.52,
+      height: 2.3,
+      shape: "rect"
+    },
+    "led-panel-1x1": {
+      family: "softbox",
+      typeLabel: "Panneau LED",
+      shortLabel: "1 x 1",
+      sizeLabel: "30 x 30 cm",
+      heightLabel: "H 1.95 m",
+      description: "Panneau LED carre",
+      width: 0.42,
+      depth: 0.38,
+      height: 1.95,
+      shape: "rect"
+    },
+    "led-panel-1x2": {
+      family: "striplight",
+      typeLabel: "Panneau LED",
+      shortLabel: "1 x 2",
+      sizeLabel: "30 x 60 cm",
+      heightLabel: "H 2.05 m",
+      description: "Panneau LED allonge",
+      width: 0.36,
+      depth: 0.56,
+      height: 2.05,
+      shape: "rect"
+    },
+    "beauty-dish-55": {
+      family: "reflector",
+      typeLabel: "Beauty Dish",
+      shortLabel: "55 cm",
+      sizeLabel: "55 cm",
+      heightLabel: "H 2.00 m",
+      description: "Dish beaute compact",
+      width: 0.6,
+      depth: 0.6,
+      height: 2.0,
+      shape: "circle"
+    },
+    "beauty-dish-70": {
+      family: "reflector",
+      typeLabel: "Beauty Dish",
+      shortLabel: "70 cm",
+      sizeLabel: "70 cm",
+      heightLabel: "H 2.05 m",
+      description: "Dish beaute standard",
+      width: 0.74,
+      depth: 0.74,
+      height: 2.05,
+      shape: "circle"
+    },
+    "umbrella-shoot-105": {
+      family: "reflector",
+      typeLabel: "Parapluie diffusant",
+      shortLabel: "105 cm",
+      sizeLabel: "105 cm",
+      heightLabel: "H 2.10 m",
+      description: "Shoot-through blanc",
+      width: 0.98,
+      depth: 0.98,
+      height: 2.1,
+      shape: "circle"
+    },
+    "umbrella-deep-135": {
+      family: "reflector",
+      typeLabel: "Parapluie profond",
+      shortLabel: "135 cm",
+      sizeLabel: "135 cm",
+      heightLabel: "H 2.20 m",
+      description: "Parapluie profond blanc",
+      width: 1.16,
+      depth: 1.16,
+      height: 2.2,
+      shape: "circle"
+    },
+    "umbrella-silver-150": {
+      family: "reflector",
+      typeLabel: "Parapluie argent",
+      shortLabel: "150 cm",
+      sizeLabel: "150 cm",
+      heightLabel: "H 2.25 m",
+      description: "Parapluie reflex argent",
+      width: 1.26,
+      depth: 1.26,
+      height: 2.25,
+      shape: "circle"
+    },
+    "lantern-65": {
+      family: "reflector",
+      typeLabel: "Lantern",
+      shortLabel: "65 cm",
+      sizeLabel: "65 cm",
+      heightLabel: "H 2.10 m",
+      description: "Boule diffuse compacte",
+      width: 0.7,
+      depth: 0.7,
+      height: 2.1,
+      shape: "circle"
+    },
+    "lantern-90": {
+      family: "reflector",
+      typeLabel: "Lantern",
+      shortLabel: "90 cm",
+      sizeLabel: "90 cm",
+      heightLabel: "H 2.20 m",
+      description: "Boule diffuse grande",
+      width: 0.9,
+      depth: 0.9,
+      height: 2.2,
+      shape: "circle"
+    },
+    "ringlight-45": {
+      family: "reflector",
+      typeLabel: "Ring Light",
+      shortLabel: "45 cm",
+      sizeLabel: "45 cm",
+      heightLabel: "H 1.85 m",
+      description: "Lumiere frontale circulaire",
+      width: 0.5,
+      depth: 0.5,
+      height: 1.85,
+      shape: "circle"
+    },
+    "fresnel-200": {
+      family: "reflector",
+      typeLabel: "Fresnel",
+      shortLabel: "200 W",
+      sizeLabel: "40 cm",
+      heightLabel: "H 1.95 m",
+      description: "Fresnel petite tete",
+      width: 0.42,
+      depth: 0.42,
+      height: 1.95,
+      shape: "circle"
+    },
+    "fresnel-650": {
+      family: "reflector",
+      typeLabel: "Fresnel",
+      shortLabel: "650 W",
+      sizeLabel: "55 cm",
+      heightLabel: "H 2.05 m",
+      description: "Fresnel standard",
+      width: 0.56,
+      depth: 0.56,
+      height: 2.05,
+      shape: "circle"
+    },
+    "projector-19": {
+      family: "camera",
+      typeLabel: "Projecteur optique",
+      shortLabel: "19 deg",
+      sizeLabel: "45 x 50 cm",
+      heightLabel: "H 2.00 m",
+      description: "Optical spot faisceau serre",
+      width: 0.46,
+      depth: 0.52,
+      height: 2.0,
+      shape: "rect"
+    },
+    "projector-36": {
+      family: "camera",
+      typeLabel: "Projecteur optique",
+      shortLabel: "36 deg",
+      sizeLabel: "45 x 50 cm",
+      heightLabel: "H 2.00 m",
+      description: "Optical spot faisceau moyen",
+      width: 0.46,
+      depth: 0.52,
+      height: 2.0,
+      shape: "rect"
+    },
+    "reflector-80": {
+      family: "reflector",
+      typeLabel: "Reflecteur",
+      shortLabel: "80 cm",
+      sizeLabel: "80 cm",
+      heightLabel: "H 1.70 m",
+      description: "Reflecteur compact",
+      width: 0.8,
+      depth: 0.8,
+      height: 1.7,
+      shape: "circle"
+    },
+    "reflector-110": {
+      family: "reflector",
+      typeLabel: "Reflecteur",
+      shortLabel: "110 cm",
+      sizeLabel: "110 cm",
+      heightLabel: "H 1.84 m",
+      description: "Reflecteur grand format",
+      width: 1.1,
+      depth: 1.1,
+      height: 1.84,
+      shape: "circle"
+    },
+    "reflector-panel": {
+      family: "vflat",
+      typeLabel: "Reflecteur panneau",
+      shortLabel: "120 x 180",
+      sizeLabel: "120 x 180 cm",
+      heightLabel: "H 1.80 m",
+      description: "Grand rebond blanc",
+      width: 1.2,
+      depth: 0.12,
+      height: 1.8,
+      shape: "rect"
+    },
+    "flag-60x90": {
+      family: "flag",
+      typeLabel: "Drapeau",
+      shortLabel: "60 x 90",
+      sizeLabel: "60 x 90 cm",
+      heightLabel: "H 2.00 m",
+      description: "Coupe-flux standard",
+      width: 0.62,
+      depth: 0.16,
+      height: 2.0,
+      shape: "rect"
+    },
+    "flag-90x120": {
+      family: "flag",
+      typeLabel: "Drapeau",
+      shortLabel: "90 x 120",
+      sizeLabel: "90 x 120 cm",
+      heightLabel: "H 2.08 m",
+      description: "Coupe-flux large",
+      width: 0.9,
+      depth: 0.18,
+      height: 2.08,
+      shape: "rect"
+    },
+    "cutter-45x120": {
+      family: "flag",
+      typeLabel: "Cutter",
+      shortLabel: "45 x 120",
+      sizeLabel: "45 x 120 cm",
+      heightLabel: "H 2.05 m",
+      description: "Coupe-flux etroit",
+      width: 0.45,
+      depth: 0.14,
+      height: 2.05,
+      shape: "rect"
+    },
+    "floppy-120x120": {
+      family: "flag",
+      typeLabel: "Floppy",
+      shortLabel: "120 x 120",
+      sizeLabel: "120 x 120 cm",
+      heightLabel: "H 2.10 m",
+      description: "Drapeau double volet",
+      width: 1.08,
+      depth: 0.2,
+      height: 2.1,
+      shape: "rect"
+    },
+    "scrim-100": {
+      family: "flag",
+      typeLabel: "Scrim",
+      shortLabel: "100 x 100",
+      sizeLabel: "100 x 100 cm",
+      heightLabel: "H 2.00 m",
+      description: "Cadre diffusion legere",
+      width: 1.0,
+      depth: 0.12,
+      height: 2.0,
+      shape: "rect"
+    },
+    "scrim-150": {
+      family: "flag",
+      typeLabel: "Scrim",
+      shortLabel: "150 x 150",
+      sizeLabel: "150 x 150 cm",
+      heightLabel: "H 2.18 m",
+      description: "Cadre diffusion grand",
+      width: 1.35,
+      depth: 0.14,
+      height: 2.18,
+      shape: "rect"
+    },
+    "diffusion-100x150": {
+      family: "vflat",
+      typeLabel: "Cadre diffusion",
+      shortLabel: "100 x 150",
+      sizeLabel: "100 x 150 cm",
+      heightLabel: "H 2.05 m",
+      description: "Cadre diffusion portrait",
+      width: 1.0,
+      depth: 0.1,
+      height: 2.05,
+      shape: "rect"
+    },
+    "diffusion-200x200": {
+      family: "vflat",
+      typeLabel: "Cadre diffusion",
+      shortLabel: "200 x 200",
+      sizeLabel: "200 x 200 cm",
+      heightLabel: "H 2.30 m",
+      description: "Cadre diffusion grande taille",
+      width: 1.8,
+      depth: 0.12,
+      height: 2.3,
+      shape: "rect"
+    },
+    "vflat-100x200": {
+      family: "vflat",
+      typeLabel: "V-Flat",
+      shortLabel: "100 x 200",
+      sizeLabel: "100 x 200 cm",
+      heightLabel: "H 2.00 m",
+      description: "Panneau de controle compact",
+      width: 1.0,
+      depth: 0.2,
+      height: 2.0,
+      shape: "rect"
+    },
+    "vflat-120x240": {
+      family: "vflat",
+      typeLabel: "V-Flat",
+      shortLabel: "120 x 240",
+      sizeLabel: "120 x 240 cm",
+      heightLabel: "H 2.40 m",
+      description: "Panneau grand format",
+      width: 1.2,
+      depth: 0.22,
+      height: 2.4,
+      shape: "rect"
+    },
+    "foamcore-100x150": {
+      family: "vflat",
+      typeLabel: "Foamcore",
+      shortLabel: "100 x 150",
+      sizeLabel: "100 x 150 cm",
+      heightLabel: "H 1.85 m",
+      description: "Panneau mousse leger",
+      width: 1.0,
+      depth: 0.08,
+      height: 1.85,
+      shape: "rect"
+    },
+    "negfill-120x200": {
+      family: "vflat",
+      typeLabel: "Negative Fill",
+      shortLabel: "120 x 200",
+      sizeLabel: "120 x 200 cm",
+      heightLabel: "H 2.00 m",
+      description: "Absorption de lumiere",
+      width: 1.2,
+      depth: 0.1,
+      height: 2.0,
+      shape: "rect"
+    },
+    "stool-low": {
+      family: "stool",
+      typeLabel: "Tabouret",
+      shortLabel: "Bas",
+      sizeLabel: "45 x 45 cm",
+      heightLabel: "H 45 cm",
+      description: "Assise basse",
+      width: 0.45,
+      depth: 0.45,
+      height: 0.45,
+      shape: "circle"
+    },
+    "stool-high": {
+      family: "stool",
+      typeLabel: "Tabouret",
+      shortLabel: "Haut",
+      sizeLabel: "52 x 52 cm",
+      heightLabel: "H 65 cm",
+      description: "Assise haute",
+      width: 0.52,
+      depth: 0.52,
+      height: 0.65,
+      shape: "circle"
+    },
+    "chair-standard": {
+      family: "stool",
+      typeLabel: "Chaise",
+      shortLabel: "Standard",
+      sizeLabel: "50 x 50 cm",
+      heightLabel: "H 85 cm",
+      description: "Chaise de posing",
+      width: 0.5,
+      depth: 0.5,
+      height: 0.85,
+      shape: "circle"
+    },
+    "chair-director": {
+      family: "stool",
+      typeLabel: "Chaise realisateur",
+      shortLabel: "Plateau",
+      sizeLabel: "58 x 58 cm",
+      heightLabel: "H 1.10 m",
+      description: "Chaise de plateau",
+      width: 0.58,
+      depth: 0.58,
+      height: 1.1,
+      shape: "circle"
+    },
+    "bench-120": {
+      family: "table",
+      typeLabel: "Banc",
+      shortLabel: "120 cm",
+      sizeLabel: "120 x 40 cm",
+      heightLabel: "H 48 cm",
+      description: "Banc portrait famille",
+      width: 1.2,
+      depth: 0.4,
+      height: 0.48,
+      shape: "rect"
+    },
+    "sofa-180": {
+      family: "table",
+      typeLabel: "Canape",
+      shortLabel: "180 cm",
+      sizeLabel: "180 x 80 cm",
+      heightLabel: "H 88 cm",
+      description: "Canape lifestyle",
+      width: 1.8,
+      depth: 0.8,
+      height: 0.88,
+      shape: "rect"
+    },
+    "cube-50": {
+      family: "table",
+      typeLabel: "Cube posing",
+      shortLabel: "50 cm",
+      sizeLabel: "50 x 50 cm",
+      heightLabel: "H 50 cm",
+      description: "Cube d'assise ou pose",
+      width: 0.5,
+      depth: 0.5,
+      height: 0.5,
+      shape: "rect"
+    },
+    "applebox-full": {
+      family: "table",
+      typeLabel: "Apple Box",
+      shortLabel: "Full",
+      sizeLabel: "50 x 30 cm",
+      heightLabel: "H 20 cm",
+      description: "Caisse full",
+      width: 0.5,
+      depth: 0.3,
+      height: 0.2,
+      shape: "rect"
+    },
+    "applebox-half": {
+      family: "table",
+      typeLabel: "Apple Box",
+      shortLabel: "Half",
+      sizeLabel: "50 x 30 cm",
+      heightLabel: "H 10 cm",
+      description: "Caisse half",
+      width: 0.5,
+      depth: 0.3,
+      height: 0.1,
+      shape: "rect"
+    },
+    "applebox-quarter": {
+      family: "table",
+      typeLabel: "Apple Box",
+      shortLabel: "Quarter",
+      sizeLabel: "50 x 30 cm",
+      heightLabel: "H 5 cm",
+      description: "Caisse quarter",
+      width: 0.5,
+      depth: 0.3,
+      height: 0.05,
+      shape: "rect"
+    },
+    "table-120": {
+      family: "table",
+      typeLabel: "Table",
+      shortLabel: "120 x 70",
+      sizeLabel: "120 x 70 cm",
+      heightLabel: "H 78 cm",
+      description: "Table de produit",
+      width: 1.2,
+      depth: 0.7,
+      height: 0.78,
+      shape: "rect"
+    },
+    "table-160": {
+      family: "table",
+      typeLabel: "Table",
+      shortLabel: "160 x 80",
+      sizeLabel: "160 x 80 cm",
+      heightLabel: "H 78 cm",
+      description: "Table de stylisme",
+      width: 1.6,
+      depth: 0.8,
+      height: 0.78,
+      shape: "rect"
+    },
+    "table-round": {
+      family: "table",
+      typeLabel: "Table ronde",
+      shortLabel: "90 cm",
+      sizeLabel: "90 cm",
+      heightLabel: "H 76 cm",
+      description: "Petite table ronde",
+      width: 0.9,
+      depth: 0.9,
+      height: 0.76,
+      shape: "rect"
+    },
+    "cart-rolling": {
+      family: "table",
+      typeLabel: "Chariot",
+      shortLabel: "Rolling cart",
+      sizeLabel: "80 x 50 cm",
+      heightLabel: "H 92 cm",
+      description: "Chariot accessoires ou tether",
+      width: 0.8,
+      depth: 0.5,
+      height: 0.92,
+      shape: "rect"
+    },
+    "ladder-small": {
+      family: "table",
+      typeLabel: "Escabeau",
+      shortLabel: "Petit",
+      sizeLabel: "60 x 45 cm",
+      heightLabel: "H 1.10 m",
+      description: "Escabeau photographe",
+      width: 0.6,
+      depth: 0.45,
+      height: 1.1,
+      shape: "rect"
+    },
+    "flash-head-compact": {
+      family: "reflector",
+      typeLabel: "Tete flash",
+      shortLabel: "Compacte",
+      sizeLabel: "24 x 24 cm",
+      heightLabel: "H 2.10 m",
+      description: "Flash monobloc compact sur pied",
+      width: 0.24,
+      depth: 0.24,
+      height: 2.1,
+      shape: "circle"
+    },
+    "flash-head-pro": {
+      family: "reflector",
+      typeLabel: "Tete flash",
+      shortLabel: "Pro",
+      sizeLabel: "28 x 28 cm",
+      heightLabel: "H 2.20 m",
+      description: "Flash studio puissant sur pied",
+      width: 0.28,
+      depth: 0.28,
+      height: 2.2,
+      shape: "circle"
+    },
+    "cob-led-300": {
+      family: "reflector",
+      typeLabel: "COB LED",
+      shortLabel: "300 W",
+      sizeLabel: "32 x 32 cm",
+      heightLabel: "H 2.15 m",
+      description: "Projecteur LED continu polyvalent",
+      width: 0.32,
+      depth: 0.32,
+      height: 2.15,
+      shape: "circle"
+    },
+    "cob-led-600": {
+      family: "reflector",
+      typeLabel: "COB LED",
+      shortLabel: "600 W",
+      sizeLabel: "38 x 38 cm",
+      heightLabel: "H 2.25 m",
+      description: "Projecteur LED puissant pour modeleurs",
+      width: 0.38,
+      depth: 0.38,
+      height: 2.25,
+      shape: "circle"
+    },
+    "hmi-1200": {
+      family: "reflector",
+      typeLabel: "HMI",
+      shortLabel: "1200 W",
+      sizeLabel: "42 x 42 cm",
+      heightLabel: "H 2.35 m",
+      description: "Source daylight puissante sur pied",
+      width: 0.42,
+      depth: 0.42,
+      height: 2.35,
+      shape: "circle"
+    },
+    "cstand-grip": {
+      family: "stand",
+      typeLabel: "Pied C",
+      shortLabel: "Grip",
+      sizeLabel: "85 x 85 cm",
+      heightLabel: "H 2.40 m",
+      description: "Pied C avec grip head",
+      width: 0.85,
+      depth: 0.85,
+      height: 2.4,
+      shape: "rect"
+    },
+    "cstand-arm": {
+      family: "stand",
+      typeLabel: "Pied C",
+      shortLabel: "Bras 40 in",
+      sizeLabel: "110 x 85 cm",
+      heightLabel: "H 2.40 m",
+      description: "Pied C avec bras et grip head",
+      width: 1.1,
+      depth: 0.85,
+      height: 2.4,
+      shape: "rect"
+    },
+    "combo-stand": {
+      family: "stand",
+      typeLabel: "Pied combo",
+      shortLabel: "Junior",
+      sizeLabel: "90 x 90 cm",
+      heightLabel: "H 3.20 m",
+      description: "Pied combo pour grosses sources",
+      width: 0.9,
+      depth: 0.9,
+      height: 3.2,
+      shape: "rect"
+    },
+    "roller-stand": {
+      family: "stand",
+      typeLabel: "Pied roller",
+      shortLabel: "Low base",
+      sizeLabel: "88 x 88 cm",
+      heightLabel: "H 2.90 m",
+      description: "Pied a roulettes pour sources lourdes",
+      width: 0.88,
+      depth: 0.88,
+      height: 2.9,
+      shape: "rect"
+    },
+    "boom-stand": {
+      family: "stand",
+      typeLabel: "Girafe",
+      shortLabel: "Boom",
+      sizeLabel: "150 x 90 cm",
+      heightLabel: "H 2.80 m",
+      description: "Girafe pour overhead et perche",
+      width: 1.5,
+      depth: 0.9,
+      height: 2.8,
+      shape: "rect"
+    },
+    "sandbag-single": {
+      family: "table",
+      typeLabel: "Sac de lest",
+      shortLabel: "Simple",
+      sizeLabel: "30 x 18 cm",
+      heightLabel: "H 10 cm",
+      description: "Lest pour securiser un pied",
+      width: 0.3,
+      depth: 0.18,
+      height: 0.1,
+      shape: "rect"
+    },
+    "sandbag-double": {
+      family: "table",
+      typeLabel: "Sac de lest",
+      shortLabel: "Double",
+      sizeLabel: "42 x 20 cm",
+      heightLabel: "H 12 cm",
+      description: "Lest double pour gros pied",
+      width: 0.42,
+      depth: 0.2,
+      height: 0.12,
+      shape: "rect"
+    },
+    "tether-station": {
+      family: "table",
+      typeLabel: "Station tether",
+      shortLabel: "Laptop",
+      sizeLabel: "60 x 40 cm",
+      heightLabel: "H 1.05 m",
+      description: "Station de controle capture",
+      width: 0.6,
+      depth: 0.4,
+      height: 1.05,
+      shape: "rect"
+    },
+    "monitor-station": {
+      family: "table",
+      typeLabel: "Moniteur controle",
+      shortLabel: "24 pouces",
+      sizeLabel: "70 x 45 cm",
+      heightLabel: "H 1.40 m",
+      description: "Moniteur client ou direction artistique",
+      width: 0.7,
+      depth: 0.45,
+      height: 1.4,
+      shape: "rect"
+    },
+    "dimmer-desk": {
+      family: "table",
+      typeLabel: "Console dimmer",
+      shortLabel: "Desk",
+      sizeLabel: "100 x 50 cm",
+      heightLabel: "H 1.05 m",
+      description: "Commande intensite et DMX",
+      width: 1,
+      depth: 0.5,
+      height: 1.05,
+      shape: "rect"
+    },
+    "armchair-90": {
+      family: "table",
+      typeLabel: "Fauteuil",
+      shortLabel: "90 cm",
+      sizeLabel: "90 x 80 cm",
+      heightLabel: "H 82 cm",
+      description: "Fauteuil lounge photo",
+      width: 0.9,
+      depth: 0.8,
+      height: 0.82,
+      shape: "rect"
+    },
+    "ottoman-80": {
+      family: "stool",
+      typeLabel: "Pouf",
+      shortLabel: "80 cm",
+      sizeLabel: "80 x 80 cm",
+      heightLabel: "H 45 cm",
+      description: "Assise basse ronde",
+      width: 0.8,
+      depth: 0.8,
+      height: 0.45,
+      shape: "ellipse"
+    },
+    "desk-140": {
+      family: "table",
+      typeLabel: "Bureau",
+      shortLabel: "140 x 70",
+      sizeLabel: "140 x 70 cm",
+      heightLabel: "H 75 cm",
+      description: "Poste stylisme ou retouche",
+      width: 1.4,
+      depth: 0.7,
+      height: 0.75,
+      shape: "rect"
+    },
+    "makeup-station": {
+      family: "table",
+      typeLabel: "Poste maquillage",
+      shortLabel: "120 cm",
+      sizeLabel: "120 x 55 cm",
+      heightLabel: "H 1.75 m",
+      description: "Table avec miroir pour HMUA",
+      width: 1.2,
+      depth: 0.55,
+      height: 1.75,
+      shape: "rect"
+    },
+    "mirror-standing": {
+      family: "vflat",
+      typeLabel: "Miroir",
+      shortLabel: "Pied",
+      sizeLabel: "60 x 170 cm",
+      heightLabel: "H 1.75 m",
+      description: "Miroir pied pour styling et pose",
+      width: 0.6,
+      depth: 0.06,
+      height: 1.75,
+      shape: "rect"
+    }
+  };
+
+  const PALETTE_CATEGORIES = [
+    {
+      id: "subjects",
+      label: "Sujets",
+      groups: [
+        {
+          title: "Sujet",
+          description: "Personnes et occupation du plateau.",
+          variants: ["subject-adult", "subject-child", "subject-couple"]
+        }
+      ]
+    },
+    {
+      id: "capture",
+      label: "Capture",
+      groups: [
+        {
+          title: "Camera",
+          description: "Prise de vue photo ou video.",
+          variants: ["camera-standard", "camera-high", "camera-video"]
+        }
+      ]
+    },
+    {
+      id: "lights",
+      label: "Lumieres",
+      groups: [
+        {
+          title: "Sources diffuses",
+          description: "Softbox, parapluies et lanternes.",
+          variants: ["softbox-octa90", "softbox-octa120", "softbox-rect60x90", "softbox-rect90x120", "softbox-parabolic150", "umbrella-shoot-105", "umbrella-deep-135", "umbrella-silver-150", "lantern-65", "lantern-90"]
+        },
+        {
+          title: "Sources dirigees",
+          description: "Modeleurs plus precis, flashs et projecteurs.",
+          variants: ["strip-30x120", "strip-40x140", "beauty-dish-55", "beauty-dish-70", "flash-head-compact", "flash-head-pro", "cob-led-300", "cob-led-600", "hmi-1200", "fresnel-200", "fresnel-650", "projector-19", "projector-36"]
+        },
+        {
+          title: "LED et accessoires",
+          description: "Panneaux, tubes et ring light.",
+          variants: ["led-panel-1x1", "led-panel-1x2", "tube-60", "tube-120", "tube-240", "ringlight-45"]
+        }
+      ]
+    },
+    {
+      id: "control",
+      label: "Controle",
+      groups: [
+        {
+          title: "Reflecteurs et rebond",
+          description: "Controle doux et relance de lumiere.",
+          variants: ["reflector-80", "reflector-110", "reflector-panel"]
+        },
+        {
+          title: "Coupe-flux",
+          description: "Flags, cutters et floppy.",
+          variants: ["flag-60x90", "flag-90x120", "cutter-45x120", "floppy-120x120"]
+        },
+        {
+          title: "Diffusion et flats",
+          description: "Scrims, diffusion, V-flat et panneaux.",
+          variants: ["scrim-100", "scrim-150", "diffusion-100x150", "diffusion-200x200", "vflat-100x200", "vflat-120x240", "foamcore-100x150", "negfill-120x200"]
+        },
+        {
+          title: "Pieds et grip",
+          description: "Supports, girafes, lest et grip de plateau.",
+          variants: ["cstand-grip", "cstand-arm", "combo-stand", "roller-stand", "boom-stand", "sandbag-single", "sandbag-double"]
+        },
+        {
+          title: "Controle plateau",
+          description: "Stations tether, moniteurs et dimmer.",
+          variants: ["tether-station", "monitor-station", "dimmer-desk"]
+        }
+      ]
+    },
+    {
+      id: "furniture",
+      label: "Mobilier",
+      groups: [
+        {
+          title: "Assises",
+          description: "Sieges et pose des sujets.",
+          variants: ["stool-low", "stool-high", "chair-standard", "chair-director", "armchair-90", "ottoman-80", "bench-120", "sofa-180"]
+        },
+        {
+          title: "Supports",
+          description: "Tables, cubes, postes maquillage et boites.",
+          variants: ["cube-50", "applebox-full", "applebox-half", "applebox-quarter", "table-120", "table-160", "table-round", "desk-140", "makeup-station"]
+        },
+        {
+          title: "Plateau",
+          description: "Aides de travail et accessoires volumineux.",
+          variants: ["cart-rolling", "ladder-small", "mirror-standing"]
+        }
+      ]
+    }
+  ];
+  const refs = {
+    categoryTabs: document.getElementById("categoryTabs"),
+    palettePanel: document.getElementById("palettePanel"),
+    floorMenuSwatches: document.getElementById("floorMenuSwatches"),
+    backdropMenuSwatches: document.getElementById("backdropMenuSwatches"),
+    selectionPanel: document.getElementById("selectionPanel"),
+    studioBadge: document.getElementById("studioBadge"),
+    countBadge: document.getElementById("countBadge"),
+    planCanvas: document.getElementById("planCanvas"),
+    isoCanvas: document.getElementById("isoCanvas"),
+    menus: Array.from(document.querySelectorAll(".menu")),
+    menuTriggers: Array.from(document.querySelectorAll("[data-menu-trigger]")),
+    menuPanels: Array.from(document.querySelectorAll(".menu-panel")),
+    menuActions: Array.from(document.querySelectorAll("[data-menu-action]"))
+  };
+
+  const planCtx = refs.planCanvas.getContext("2d");
+  const isoCtx = refs.isoCanvas.getContext("2d");
+
+  const state = {
+    floorId: FLOOR_COLORS[0].id,
+    backdropId: BACKDROP_COLORS[3].id,
+    activeCategoryId: PALETTE_CATEGORIES[0].id,
+    items: [],
+    selectedId: null,
+    interaction: null,
+    hoverItemId: null,
+    hoverHandle: false,
+    openMenu: null,
+    nextId: 1
+  };
+
+  const spawnPoints = [
+    { x: 4, y: 3, rotation: 270 },
+    { x: 2.2, y: 2.15, rotation: 35 },
+    { x: 5.8, y: 2.2, rotation: 145 },
+    { x: 2.4, y: 4.2, rotation: 325 },
+    { x: 5.6, y: 4.1, rotation: 215 },
+    { x: 4, y: 4.8, rotation: 270 }
+  ];
+
+  function init() {
+    renderCategoryTabs();
+    renderPalette();
+    renderColorSwatches(refs.floorMenuSwatches, FLOOR_COLORS, "floor");
+    renderColorSwatches(refs.backdropMenuSwatches, BACKDROP_COLORS, "backdrop");
+    bindEvents();
+    renderAll();
+  }
+
+  function bindEvents() {
+    refs.menuTriggers.forEach(function (trigger) {
+      trigger.addEventListener("click", function (event) {
+        event.stopPropagation();
+        const id = trigger.getAttribute("data-menu-trigger");
+        toggleMenu(id);
+      });
+    });
+
+    refs.menuPanels.forEach(function (panel) {
+      panel.addEventListener("click", function (event) {
+        event.stopPropagation();
+      });
+    });
+
+    refs.menuActions.forEach(function (button) {
+      button.addEventListener("click", function () {
+        const action = button.getAttribute("data-menu-action");
+        closeMenus();
+        if (action === "reset") handleReset();
+        if (action === "export-pdf") exportPdf();
+      });
+    });
+
+    refs.categoryTabs.addEventListener("click", function (event) {
+      const button = event.target.closest("[data-category-id]");
+      if (!button) return;
+      state.activeCategoryId = button.getAttribute("data-category-id");
+      renderCategoryTabs();
+      renderPalette();
+    });
+
+    refs.palettePanel.addEventListener("click", function (event) {
+      const button = event.target.closest("[data-variant-id]");
+      if (!button) return;
+      addItem(button.getAttribute("data-variant-id"));
+    });
+
+    refs.selectionPanel.addEventListener("input", handleSelectionInput);
+    refs.selectionPanel.addEventListener("click", handleSelectionClick);
+
+    refs.planCanvas.addEventListener("pointerdown", handlePointerDown);
+    refs.planCanvas.addEventListener("pointermove", handlePointerMove);
+    refs.planCanvas.addEventListener("pointerup", handlePointerUp);
+    refs.planCanvas.addEventListener("pointercancel", handlePointerUp);
+    refs.planCanvas.addEventListener("pointerleave", handlePointerLeave);
+
+    document.addEventListener("click", function () {
+      closeMenus();
+    });
+
+    window.addEventListener("resize", renderAll);
+    window.addEventListener("keydown", handleKeydown);
+  }
+
+  function toggleMenu(id) {
+    state.openMenu = state.openMenu === id ? null : id;
+    syncMenus();
+  }
+
+  function closeMenus() {
+    if (!state.openMenu) return;
+    state.openMenu = null;
+    syncMenus();
+  }
+
+  function syncMenus() {
+    refs.menus.forEach(function (menu) {
+      menu.classList.toggle("open", menu.getAttribute("data-menu") === state.openMenu);
+    });
+  }
+
+  function renderCategoryTabs() {
+    refs.categoryTabs.innerHTML = PALETTE_CATEGORIES.map(function (category) {
+      return `
+        <button class="category-tab${category.id === state.activeCategoryId ? " active" : ""}" type="button" data-category-id="${category.id}">
+          ${escapeHtml(category.label)}
+        </button>
+      `;
+    }).join("");
+  }
+
+  function renderPalette() {
+    const category = PALETTE_CATEGORIES.find(function (entry) {
+      return entry.id === state.activeCategoryId;
+    }) || PALETTE_CATEGORIES[0];
+
+    refs.palettePanel.innerHTML = category.groups.map(function (group) {
+      return `
+        <section class="palette-group">
+          <div class="palette-head">
+            <h3>${escapeHtml(group.title)}</h3>
+            <p>${escapeHtml(group.description)}</p>
+          </div>
+          <div class="variant-grid">
+            ${group.variants.map(function (variantId) {
+              const variant = ITEM_VARIANTS[variantId];
+              return `
+                <button class="variant-btn" type="button" data-variant-id="${variantId}">
+                  <strong>${escapeHtml(variant.shortLabel)}</strong>
+                  <span>${escapeHtml(variant.sizeLabel)}</span>
+                  <span>${escapeHtml(variant.heightLabel)}</span>
+                </button>
+              `;
+            }).join("")}
+          </div>
+        </section>
+      `;
+    }).join("");
+  }
+
+  function renderColorSwatches(container, palette, kind) {
+    container.innerHTML = palette.map(function (entry) {
+      return `
+        <button class="menu-swatch" type="button" data-color-kind="${kind}" data-color-id="${entry.id}">
+          <span class="menu-swatch-chip" style="background:${entry.color}"></span>
+          <strong>${escapeHtml(entry.label)}</strong>
+        </button>
+      `;
+    }).join("");
+
+    container.addEventListener("click", function (event) {
+      const button = event.target.closest("[data-color-id]");
+      if (!button) return;
+      const id = button.getAttribute("data-color-id");
+      if (kind === "floor") state.floorId = id;
+      if (kind === "backdrop") state.backdropId = id;
+      renderAll();
+    });
+  }
+
+  function updateColorSwatchState() {
+    document.querySelectorAll('[data-color-kind="floor"]').forEach(function (button) {
+      button.classList.toggle("active", button.getAttribute("data-color-id") === state.floorId);
+    });
+    document.querySelectorAll('[data-color-kind="backdrop"]').forEach(function (button) {
+      button.classList.toggle("active", button.getAttribute("data-color-id") === state.backdropId);
+    });
+  }
+
+  function addItem(variantId) {
+    const variant = ITEM_VARIANTS[variantId];
+    if (!variant) return;
+
+    const spawn = spawnPoints[state.items.length % spawnPoints.length];
+    const item = {
+      id: `item-${state.nextId++}`,
+      variantId: variantId,
+      family: variant.family,
+      typeLabel: variant.typeLabel,
+      variantLabel: variant.shortLabel,
+      sizeLabel: variant.sizeLabel,
+      heightLabel: variant.heightLabel,
+      description: variant.description,
+      width: variant.width,
+      depth: variant.depth,
+      height: variant.height,
+      shape: variant.shape,
+      label: nextLabel(variant.typeLabel),
+      x: clamp(spawn.x + randomOffset(), 0.75, STUDIO.width - 0.75),
+      y: clamp(spawn.y + randomOffset(), 1.0, STUDIO.depth - 0.5),
+      rotation: defaultRotation(variant.family)
+    };
+
+    state.items.push(item);
+    state.selectedId = item.id;
+    renderAll();
+  }
+
+  function defaultRotation(family) {
+    if (family === "softbox") return 45;
+    if (family === "striplight") return 90;
+    if (family === "reflector") return 90;
+    if (family === "flag") return 90;
+    if (family === "vflat") return 90;
+    if (family === "stand") return 90;
+    if (family === "table" || family === "stool") return 0;
+    return 270;
+  }
+
+  function nextLabel(base) {
+    const count = state.items.filter(function (item) {
+      return item.typeLabel === base;
+    }).length;
+    return `${base} ${count + 1}`;
+  }
+
+  function randomOffset() {
+    return (Math.random() - 0.5) * 0.28;
+  }
+
+  function handleReset() {
+    if (!window.confirm("Remettre le plateau a zero ?")) {
+      return;
+    }
+
+    state.floorId = FLOOR_COLORS[0].id;
+    state.backdropId = BACKDROP_COLORS[3].id;
+    state.items = [];
+    state.selectedId = null;
+    state.interaction = null;
+    renderAll();
+  }
+
+  function handleSelectionInput(event) {
+    const item = getSelectedItem();
+    if (!item) return;
+    const field = event.target.getAttribute("data-field");
+    if (!field) return;
+    const value = parseFloat(event.target.value);
+    if (Number.isNaN(value)) return;
+
+    if (field === "x" || field === "y") {
+      item[field] = clampItemPosition(item, field, value);
+    } else if (field === "rotation") {
+      item.rotation = normalizeDegrees(value);
+    }
+
+    renderAll();
+  }
+
+  function handleSelectionClick(event) {
+    const action = event.target.getAttribute("data-action");
+    if (action !== "delete") return;
+    deleteSelectedItem();
+  }
+
+  function updateSelectionPanel() {
+    const item = getSelectedItem();
+    if (!item) {
+      refs.selectionPanel.className = "selection-panel empty";
+      refs.selectionPanel.textContent = "Selectionnez un element dans le plan pour ajuster sa position, sa rotation ou le supprimer.";
+      return;
+    }
+
+    refs.selectionPanel.className = "selection-panel";
+    refs.selectionPanel.innerHTML = `
+      <div class="selection-head">
+        <div class="selection-copy">
+          <strong>${escapeHtml(item.label)}</strong>
+          <span>${escapeHtml(item.typeLabel)} · ${escapeHtml(item.variantLabel)} · ${escapeHtml(item.sizeLabel)}</span>
+        </div>
+        <button class="delete-btn" type="button" data-action="delete">Supprimer</button>
+      </div>
+      <p class="selection-note">Glissez l'element dans la vue de dessus. Utilisez la poignee orange pour la rotation.</p>
+      <div class="selection-grid">
+        <label>X (m)<input type="number" step="0.1" data-field="x" value="${item.x.toFixed(2)}"></label>
+        <label>Y (m)<input type="number" step="0.1" data-field="y" value="${item.y.toFixed(2)}"></label>
+        <label>Rotation<input type="number" step="1" data-field="rotation" value="${item.rotation.toFixed(0)}"></label>
+      </div>
+      <div class="selection-actions">
+        <span class="inline-note">${escapeHtml(item.heightLabel)}</span>
+        <span class="inline-note">${escapeHtml(item.description)}</span>
+      </div>
+    `;
+  }
+
+  function updateStatus() {
+    const floor = getFloorColor();
+    const backdrop = getBackdropColor();
+    refs.studioBadge.textContent = `Studio ${STUDIO.width} x ${STUDIO.depth} m`;
+    refs.countBadge.textContent = `${state.items.length} element(s) · ${floor.label} / ${backdrop.label}`;
+  }
+
+  function renderAll() {
+    resizeCanvas(refs.planCanvas);
+    resizeCanvas(refs.isoCanvas);
+    updateColorSwatchState();
+    updateSelectionPanel();
+    updateStatus();
+    syncMenus();
+    drawPlanView();
+    drawIsoView();
+  }
+
+  function getSelectedItem() {
+    return findItem(state.selectedId);
+  }
+
+  function findItem(id) {
+    return state.items.find(function (item) {
+      return item.id === id;
+    }) || null;
+  }
+
+  function deleteSelectedItem() {
+    if (!state.selectedId) return;
+    state.items = state.items.filter(function (item) {
+      return item.id !== state.selectedId;
+    });
+    state.selectedId = null;
+    state.interaction = null;
+    renderAll();
+  }
+
+  function handleKeydown(event) {
+    const item = getSelectedItem();
+    if (!item) return;
+
+    if (event.key === "Delete" || event.key === "Backspace") {
+      event.preventDefault();
+      deleteSelectedItem();
+      return;
+    }
+
+    const step = event.shiftKey ? 0.05 : 0.1;
+    let changed = false;
+
+    if (event.key === "ArrowLeft") {
+      item.x = clampItemPosition(item, "x", item.x - step);
+      changed = true;
+    } else if (event.key === "ArrowRight") {
+      item.x = clampItemPosition(item, "x", item.x + step);
+      changed = true;
+    } else if (event.key === "ArrowUp") {
+      item.y = clampItemPosition(item, "y", item.y - step);
+      changed = true;
+    } else if (event.key === "ArrowDown") {
+      item.y = clampItemPosition(item, "y", item.y + step);
+      changed = true;
+    } else if (event.key.toLowerCase() === "r") {
+      item.rotation = normalizeDegrees(item.rotation + (event.shiftKey ? -10 : 10));
+      changed = true;
+    }
+
+    if (changed) {
+      event.preventDefault();
+      renderAll();
+    }
+  }
+
+  function handlePointerDown(event) {
+    closeMenus();
+    const point = getPointerStudioPoint(event);
+    if (!point) return;
+
+    const selected = getSelectedItem();
+    if (selected && isOnRotateHandle(point.x, point.y, selected)) {
+      state.interaction = {
+        mode: "rotate",
+        pointerId: event.pointerId,
+        itemId: selected.id
+      };
+      refs.planCanvas.setPointerCapture(event.pointerId);
+      refs.planCanvas.style.cursor = "grabbing";
+      return;
+    }
+
+    const hit = hitTest(point.x, point.y);
+    if (!hit) {
+      state.selectedId = null;
+      state.interaction = null;
+      renderAll();
+      return;
+    }
+
+    state.selectedId = hit.id;
+    state.interaction = {
+      mode: "drag",
+      pointerId: event.pointerId,
+      itemId: hit.id,
+      offsetX: point.x - hit.x,
+      offsetY: point.y - hit.y
+    };
+    refs.planCanvas.setPointerCapture(event.pointerId);
+    refs.planCanvas.style.cursor = "grabbing";
+    renderAll();
+  }
+
+  function handlePointerMove(event) {
+    const point = getPointerStudioPoint(event);
+    if (!point) return;
+
+    if (state.interaction && state.interaction.pointerId === event.pointerId) {
+      const item = findItem(state.interaction.itemId);
+      if (!item) return;
+
+      if (state.interaction.mode === "drag") {
+        item.x = clampItemPosition(item, "x", point.x - state.interaction.offsetX);
+        item.y = clampItemPosition(item, "y", point.y - state.interaction.offsetY);
+      } else if (state.interaction.mode === "rotate") {
+        item.rotation = normalizeDegrees(radiansToDegrees(Math.atan2(point.y - item.y, point.x - item.x)));
+      }
+
+      renderAll();
+      return;
+    }
+
+    const selected = getSelectedItem();
+    const hoverHandle = selected ? isOnRotateHandle(point.x, point.y, selected) : false;
+    const hoverItem = hoverHandle ? selected : hitTest(point.x, point.y);
+    state.hoverHandle = hoverHandle;
+    state.hoverItemId = hoverItem ? hoverItem.id : null;
+
+    if (hoverHandle) refs.planCanvas.style.cursor = "crosshair";
+    else if (hoverItem) refs.planCanvas.style.cursor = "grab";
+    else refs.planCanvas.style.cursor = "default";
+
+    drawPlanView();
+  }
+
+  function handlePointerUp(event) {
+    if (state.interaction && state.interaction.pointerId === event.pointerId) {
+      state.interaction = null;
+      refs.planCanvas.releasePointerCapture(event.pointerId);
+      refs.planCanvas.style.cursor = "default";
+      renderAll();
+    }
+  }
+
+  function handlePointerLeave() {
+    if (!state.interaction) {
+      state.hoverHandle = false;
+      state.hoverItemId = null;
+      refs.planCanvas.style.cursor = "default";
+      drawPlanView();
+    }
+  }
+
+  function getPointerStudioPoint(event) {
+    const rect = refs.planCanvas.getBoundingClientRect();
+    const ratioX = refs.planCanvas.width / rect.width;
+    const ratioY = refs.planCanvas.height / rect.height;
+    const canvasX = (event.clientX - rect.left) * ratioX;
+    const canvasY = (event.clientY - rect.top) * ratioY;
+    const metrics = getPlanMetrics(refs.planCanvas.width, refs.planCanvas.height);
+    return planToStudio(canvasX, canvasY, metrics);
+  }
+
+  function hitTest(studioX, studioY) {
+    const items = state.items.slice().reverse();
+    for (let index = 0; index < items.length; index += 1) {
+      if (isPointInsideItem(studioX, studioY, items[index])) {
+        return items[index];
+      }
+    }
+    return null;
+  }
+
+  function isPointInsideItem(studioX, studioY, item) {
+    const radians = degreesToRadians(item.rotation);
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+    const dx = studioX - item.x;
+    const dy = studioY - item.y;
+    const localX = dx * cos + dy * sin;
+    const localY = -dx * sin + dy * cos;
+
+    if (item.shape === "circle" || item.shape === "ellipse") {
+      const rx = item.width / 2;
+      const ry = item.depth / 2;
+      return ((localX * localX) / (rx * rx)) + ((localY * localY) / (ry * ry)) <= 1;
+    }
+
+    return Math.abs(localX) <= item.width / 2 && Math.abs(localY) <= item.depth / 2;
+  }
+
+  function isOnRotateHandle(studioX, studioY, item) {
+    const handle = getRotateHandle(item);
+    const dx = studioX - handle.x;
+    const dy = studioY - handle.y;
+    return Math.sqrt(dx * dx + dy * dy) <= 0.18;
+  }
+
+  function getRotateHandle(item) {
+    const distance = Math.max(item.width, item.depth) * 0.7 + 0.45;
+    const radians = degreesToRadians(item.rotation);
+    return {
+      x: item.x + Math.cos(radians) * distance,
+      y: item.y + Math.sin(radians) * distance
+    };
+  }
+
+  function clampItemPosition(item, axis, value) {
+    const radius = Math.max(item.width, item.depth) * 0.5;
+    if (axis === "x") {
+      return clamp(value, radius + 0.18, STUDIO.width - radius - 0.18);
+    }
+    return clamp(value, radius + 0.2, STUDIO.depth - radius - 0.18);
+  }
+
+  function drawPlanView(targetCtx, width, height) {
+    const ctx = targetCtx || planCtx;
+    const canvasWidth = width || refs.planCanvas.width;
+    const canvasHeight = height || refs.planCanvas.height;
+    const metrics = getPlanMetrics(canvasWidth, canvasHeight);
+    const floor = getFloorColor();
+    const backdrop = getBackdropColor();
+
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    const bg = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+    bg.addColorStop(0, "rgba(255,255,255,0.07)");
+    bg.addColorStop(1, "rgba(255,255,255,0.02)");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    const stageLeft = metrics.left;
+    const stageTop = metrics.top;
+    const stageWidth = STUDIO.width * metrics.scale;
+    const stageHeight = STUDIO.depth * metrics.scale;
+
+    const shell = ctx.createLinearGradient(stageLeft, stageTop, stageLeft, stageTop + stageHeight);
+    shell.addColorStop(0, lightenHex(floor.color, 0.14));
+    shell.addColorStop(1, darkenHex(floor.color, 0.18));
+    roundRect(ctx, stageLeft, stageTop, stageWidth, stageHeight, 30 * metrics.unit);
+    ctx.fillStyle = shell;
+    ctx.fill();
+
+    drawPlanBackdrop(ctx, metrics, backdrop.color);
+    drawPlanGrid(ctx, metrics);
+    drawPlanMeasures(ctx, metrics);
+
+    state.items.forEach(function (item) {
+      drawPlanItem(ctx, item, metrics);
+    });
+
+    const selected = getSelectedItem();
+    if (selected) {
+      drawSelectionOutline(ctx, selected, metrics);
+    }
+  }
+
+  function drawPlanBackdrop(ctx, metrics, color) {
+    const width = STUDIO.width * metrics.scale;
+    const depth = STUDIO.backdropDepth * metrics.scale;
+    const left = metrics.left;
+    const top = metrics.top;
+
+    const backdropGradient = ctx.createLinearGradient(0, top, 0, top + depth);
+    backdropGradient.addColorStop(0, lightenHex(color, 0.15));
+    backdropGradient.addColorStop(1, darkenHex(color, 0.08));
+    roundTopRect(ctx, left, top, width, depth + 14 * metrics.unit, 30 * metrics.unit);
+    ctx.fillStyle = backdropGradient;
+    ctx.fill();
+
+    ctx.strokeStyle = rgbaFromHex(darkenHex(color, 0.3), 0.6);
+    ctx.lineWidth = 2 * metrics.unit;
+    ctx.beginPath();
+    ctx.moveTo(left + 16 * metrics.unit, top + depth - 2 * metrics.unit);
+    ctx.quadraticCurveTo(left + width / 2, top + depth + 20 * metrics.unit, left + width - 16 * metrics.unit, top + depth - 2 * metrics.unit);
+    ctx.stroke();
+  }
+
+  function drawPlanGrid(ctx, metrics) {
+    const left = metrics.left;
+    const top = metrics.top;
+    const width = STUDIO.width * metrics.scale;
+    const height = STUDIO.depth * metrics.scale;
+
+    ctx.save();
+    roundRect(ctx, left, top, width, height, 30 * metrics.unit);
+    ctx.clip();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.22)";
+    ctx.lineWidth = 1;
+    for (let x = 0.5; x < STUDIO.width; x += 0.5) {
+      const px = left + x * metrics.scale;
+      ctx.beginPath();
+      ctx.moveTo(px, top);
+      ctx.lineTo(px, top + height);
+      ctx.stroke();
+    }
+    for (let y = 0.5; y < STUDIO.depth; y += 0.5) {
+      const py = top + y * metrics.scale;
+      ctx.beginPath();
+      ctx.moveTo(left, py);
+      ctx.lineTo(left + width, py);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+
+    ctx.strokeStyle = "rgba(7, 10, 16, 0.22)";
+    ctx.lineWidth = 2 * metrics.unit;
+    roundRect(ctx, left, top, width, height, 30 * metrics.unit);
+    ctx.stroke();
+  }
+
+  function drawPlanMeasures(ctx, metrics) {
+    ctx.save();
+    ctx.fillStyle = "rgba(238,245,255,0.72)";
+    ctx.font = `${Math.round(13 * metrics.unit)}px "Segoe UI", sans-serif`;
+    ctx.textAlign = "center";
+    ctx.fillText(`${STUDIO.width} m`, metrics.left + (STUDIO.width * metrics.scale) / 2, metrics.top + STUDIO.depth * metrics.scale + 26 * metrics.unit);
+    ctx.save();
+    ctx.translate(metrics.left - 26 * metrics.unit, metrics.top + (STUDIO.depth * metrics.scale) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(`${STUDIO.depth} m`, 0, 0);
+    ctx.restore();
+    ctx.restore();
+  }
+
+  function drawPlanItem(ctx, item, metrics) {
+    const center = studioToPlan(item.x, item.y, metrics);
+    const width = item.width * metrics.scale;
+    const depth = item.depth * metrics.scale;
+
+    if (item.family === "softbox" || item.family === "striplight") {
+      drawPlanBeam(ctx, item, metrics, item.family === "softbox" ? 2.4 : 2.6, item.family === "softbox" ? 0.8 : 0.5, "rgba(255, 232, 184, 0.18)");
+    }
+    if (item.family === "camera") {
+      drawPlanBeam(ctx, item, metrics, 2.7, 0.55, "rgba(116, 180, 255, 0.14)");
+    }
+
+    ctx.save();
+    ctx.translate(center.x, center.y);
+    ctx.rotate(degreesToRadians(item.rotation));
+
+    if (item.family === "subject") drawPlanSubject(ctx, width, depth, metrics);
+    else if (item.family === "camera") drawPlanCamera(ctx, width, depth, metrics);
+    else if (item.family === "softbox") drawPlanSoftbox(ctx, width, depth, metrics);
+    else if (item.family === "striplight") drawPlanStriplight(ctx, width, depth, metrics);
+    else if (item.family === "reflector") drawPlanReflector(ctx, width, depth, metrics);
+    else if (item.family === "flag") drawPlanFlag(ctx, width, depth, metrics);
+    else if (item.family === "vflat") drawPlanVFlat(ctx, width, depth, metrics);
+    else if (item.family === "stand") drawPlanStand(ctx, width, depth, metrics);
+    else if (item.family === "stool") drawPlanStool(ctx, width, depth, metrics);
+    else if (item.family === "table") drawPlanTable(ctx, width, depth, metrics);
+
+    ctx.restore();
+
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.fillStyle = item.id === state.selectedId ? "rgba(255,255,255,0.94)" : "rgba(230,239,255,0.76)";
+    ctx.font = `${Math.round(12 * metrics.unit)}px "Segoe UI", sans-serif`;
+    ctx.fillText(item.label, center.x, center.y - depth * 0.8);
+    ctx.restore();
+  }
+
+  function drawSelectionOutline(ctx, item, metrics) {
+    const center = studioToPlan(item.x, item.y, metrics);
+    const width = item.width * metrics.scale;
+    const depth = item.depth * metrics.scale;
+    const handle = studioToPlan(getRotateHandle(item).x, getRotateHandle(item).y, metrics);
+
+    ctx.save();
+    ctx.translate(center.x, center.y);
+    ctx.rotate(degreesToRadians(item.rotation));
+    ctx.strokeStyle = "rgba(116, 180, 255, 0.95)";
+    ctx.lineWidth = 3 * metrics.unit;
+    if (item.shape === "circle" || item.shape === "ellipse") {
+      ctx.beginPath();
+      ctx.ellipse(0, 0, width * 0.7, depth * 0.7, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    } else {
+      roundRect(ctx, -width / 2 - 8 * metrics.unit, -depth / 2 - 8 * metrics.unit, width + 16 * metrics.unit, depth + 16 * metrics.unit, 18 * metrics.unit);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    ctx.save();
+    ctx.strokeStyle = "rgba(255, 181, 97, 0.95)";
+    ctx.lineWidth = 2.6 * metrics.unit;
+    ctx.beginPath();
+    ctx.moveTo(center.x, center.y);
+    ctx.lineTo(handle.x, handle.y);
+    ctx.stroke();
+    ctx.fillStyle = state.hoverHandle ? "#ffd49a" : "#ffb561";
+    ctx.beginPath();
+    ctx.arc(handle.x, handle.y, 8 * metrics.unit, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 2 * metrics.unit;
+    ctx.strokeStyle = "rgba(17, 20, 27, 0.8)";
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawPlanSubject(ctx, width, depth, metrics) {
+    const shadow = ctx.createRadialGradient(0, 7 * metrics.unit, width * 0.08, 0, 7 * metrics.unit, width * 0.72);
+    shadow.addColorStop(0, "rgba(0,0,0,0.22)");
+    shadow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = shadow;
+    ctx.beginPath();
+    ctx.ellipse(0, 8 * metrics.unit, width * 0.7, depth * 0.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    const body = ctx.createLinearGradient(0, -depth / 2, 0, depth / 2);
+    body.addColorStop(0, "#596675");
+    body.addColorStop(1, "#24303c");
+    ctx.fillStyle = body;
+    ctx.beginPath();
+    ctx.ellipse(0, 4 * metrics.unit, width * 0.42, depth * 0.4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#e0bc9b";
+    ctx.beginPath();
+    ctx.arc(0, -depth * 0.24, width * 0.18, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#1c222a";
+    ctx.beginPath();
+    ctx.moveTo(0, -depth * 0.38);
+    ctx.lineTo(width * 0.12, -depth * 0.18);
+    ctx.lineTo(-width * 0.12, -depth * 0.18);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawPlanCamera(ctx, width, depth, metrics) {
+    drawTripodShadow(ctx, width * 0.9, depth * 0.9);
+    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
+    ctx.lineWidth = 3 * metrics.unit;
+    ctx.lineCap = "round";
+    drawTripodLegs(ctx, width * 0.55, depth * 0.58);
+
+    const body = ctx.createLinearGradient(0, -depth / 3, 0, depth / 2);
+    body.addColorStop(0, "#6d7681");
+    body.addColorStop(1, "#2a3139");
+    roundRect(ctx, -width * 0.26, -depth * 0.15, width * 0.52, depth * 0.4, 12 * metrics.unit);
+    ctx.fillStyle = body;
+    ctx.fill();
+
+    const lens = ctx.createRadialGradient(width * 0.12, -depth * 0.02, width * 0.02, width * 0.12, -depth * 0.02, width * 0.2);
+    lens.addColorStop(0, "#8fd0ff");
+    lens.addColorStop(0.4, "#28517b");
+    lens.addColorStop(1, "#101924");
+    ctx.beginPath();
+    ctx.arc(width * 0.12, -depth * 0.02, width * 0.2, 0, Math.PI * 2);
+    ctx.fillStyle = lens;
+    ctx.fill();
+  }
+
+  function drawPlanSoftbox(ctx, width, depth, metrics) {
+    drawTripodShadow(ctx, width * 0.92, depth * 0.92);
+    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
+    ctx.lineWidth = 3 * metrics.unit;
+    ctx.lineCap = "round";
+    drawTripodLegs(ctx, width * 0.44, depth * 0.5);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, -depth * 0.2);
+    ctx.stroke();
+
+    roundRect(ctx, -width * 0.42, -depth * 0.42, width * 0.84, depth * 0.54, 16 * metrics.unit);
+    const panel = ctx.createLinearGradient(0, -depth * 0.42, 0, depth * 0.12);
+    panel.addColorStop(0, "#fbfcfd");
+    panel.addColorStop(0.58, "#e6eaef");
+    panel.addColorStop(1, "#bcc5cf");
+    ctx.fillStyle = panel;
+    ctx.fill();
+    ctx.lineWidth = 4 * metrics.unit;
+    ctx.strokeStyle = "#222a33";
+    ctx.stroke();
+  }
+
+  function drawPlanStriplight(ctx, width, depth, metrics) {
+    drawTripodShadow(ctx, width * 0.96, depth * 0.96);
+    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
+    ctx.lineWidth = 3 * metrics.unit;
+    ctx.lineCap = "round";
+    drawTripodLegs(ctx, width * 0.56, depth * 0.56);
+
+    roundRect(ctx, -width * 0.22, -depth * 0.48, width * 0.44, depth * 0.92, 14 * metrics.unit);
+    const panel = ctx.createLinearGradient(0, -depth * 0.46, 0, depth * 0.42);
+    panel.addColorStop(0, "#fbfbfc");
+    panel.addColorStop(0.6, "#e7eaee");
+    panel.addColorStop(1, "#bec6ce");
+    ctx.fillStyle = panel;
+    ctx.fill();
+    ctx.lineWidth = 4 * metrics.unit;
+    ctx.strokeStyle = "#252c35";
+    ctx.stroke();
+  }
+
+  function drawPlanReflector(ctx, width, depth, metrics) {
+    drawTripodShadow(ctx, width * 0.92, depth * 0.92);
+    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
+    ctx.lineWidth = 3 * metrics.unit;
+    ctx.lineCap = "round";
+    drawTripodLegs(ctx, width * 0.4, depth * 0.42);
+
+    const disc = ctx.createRadialGradient(-width * 0.18, -depth * 0.18, width * 0.08, 0, 0, width * 0.54);
+    disc.addColorStop(0, "#ffffff");
+    disc.addColorStop(0.42, "#e4e8eb");
+    disc.addColorStop(1, "#98a2ae");
+    ctx.fillStyle = disc;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, width * 0.48, depth * 0.48, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 3 * metrics.unit;
+    ctx.strokeStyle = "rgba(61,67,76,0.9)";
+    ctx.stroke();
+  }
+
+  function drawPlanFlag(ctx, width, depth, metrics) {
+    drawTripodShadow(ctx, width * 1.08, width * 0.68);
+    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
+    ctx.lineWidth = 3 * metrics.unit;
+    ctx.lineCap = "round";
+    drawTripodLegs(ctx, width * 0.36, width * 0.34);
+
+    roundRect(ctx, -width * 0.48, -depth * 0.4, width * 0.96, depth * 0.8, 12 * metrics.unit);
+    const panel = ctx.createLinearGradient(0, -depth * 0.4, 0, depth * 0.4);
+    panel.addColorStop(0, "#444d57");
+    panel.addColorStop(1, "#171b20");
+    ctx.fillStyle = panel;
+    ctx.fill();
+    ctx.lineWidth = 3 * metrics.unit;
+    ctx.strokeStyle = "#0b0d10";
+    ctx.stroke();
+  }
+
+  function drawPlanVFlat(ctx, width, depth, metrics) {
+    const panelWidth = width * 0.44;
+    const panelHeight = width * 1.02;
+    ctx.save();
+    ctx.translate(-width * 0.12, 0);
+    roundRect(ctx, -panelWidth, -panelHeight / 2, panelWidth, panelHeight, 12 * metrics.unit);
+    ctx.fillStyle = "#f7f4ef";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(60, 61, 66, 0.24)";
+    ctx.lineWidth = 3 * metrics.unit;
+    ctx.stroke();
+
+    ctx.translate(width * 0.24, 0);
+    ctx.rotate(degreesToRadians(18));
+    roundRect(ctx, 0, -panelHeight / 2, panelWidth, panelHeight, 12 * metrics.unit);
+    ctx.fillStyle = "#e8e0d4";
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawPlanStand(ctx, width, depth, metrics) {
+    drawTripodShadow(ctx, Math.max(width, 20 * metrics.unit), Math.max(depth, 20 * metrics.unit));
+    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
+    ctx.lineWidth = 3 * metrics.unit;
+    ctx.lineCap = "round";
+    drawTripodLegs(ctx, Math.max(width * 0.26, 14 * metrics.unit), Math.max(depth * 0.26, 14 * metrics.unit));
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, -depth * 0.38);
+    ctx.stroke();
+
+    ctx.fillStyle = "#d7dde4";
+    ctx.beginPath();
+    ctx.arc(0, -depth * 0.42, 5 * metrics.unit, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = "#e1ac56";
+    ctx.lineWidth = 2.2 * metrics.unit;
+    ctx.beginPath();
+    ctx.moveTo(0, -depth * 0.42);
+    ctx.lineTo(width * 0.34, -depth * 0.58);
+    ctx.stroke();
+
+    ctx.fillStyle = "#efc884";
+    roundRect(ctx, width * 0.24, -depth * 0.7, Math.max(width * 0.16, 8 * metrics.unit), Math.max(depth * 0.12, 8 * metrics.unit), 5 * metrics.unit);
+    ctx.fill();
+  }
+
+  function drawPlanStool(ctx, width, depth, metrics) {
+    drawTripodShadow(ctx, width * 0.82, depth * 0.82);
+    const seat = ctx.createRadialGradient(-width * 0.14, -depth * 0.18, width * 0.05, 0, 0, width * 0.42);
+    seat.addColorStop(0, "#5f6973");
+    seat.addColorStop(0.5, "#343c45");
+    seat.addColorStop(1, "#1d232a");
+    ctx.fillStyle = seat;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, width * 0.42, depth * 0.42, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(82,94,111,0.92)";
+    ctx.lineWidth = 3 * metrics.unit;
+    ctx.lineCap = "round";
+    drawTripodLegs(ctx, width * 0.36, depth * 0.36);
+  }
+
+  function drawPlanTable(ctx, width, depth, metrics) {
+    drawTripodShadow(ctx, width * 1.04, depth * 1.08);
+    roundRect(ctx, -width * 0.5, -depth * 0.34, width, depth * 0.68, 16 * metrics.unit);
+    const top = ctx.createLinearGradient(0, -depth * 0.34, 0, depth * 0.34);
+    top.addColorStop(0, "#897767");
+    top.addColorStop(1, "#58483d");
+    ctx.fillStyle = top;
+    ctx.fill();
+    ctx.strokeStyle = "rgba(39,32,28,0.9)";
+    ctx.lineWidth = 4 * metrics.unit;
+    ctx.stroke();
+
+    ctx.strokeStyle = "rgba(105, 93, 84, 0.94)";
+    ctx.lineWidth = 3 * metrics.unit;
+    ctx.beginPath();
+    ctx.moveTo(-width * 0.34, -depth * 0.18);
+    ctx.lineTo(-width * 0.22, depth * 0.24);
+    ctx.moveTo(width * 0.34, -depth * 0.18);
+    ctx.lineTo(width * 0.22, depth * 0.24);
+    ctx.stroke();
+  }
+
+  function drawPlanBeam(ctx, item, metrics, lengthMeters, widthMeters, color) {
+    const center = studioToPlan(item.x, item.y, metrics);
+    const angle = degreesToRadians(item.rotation);
+    const length = lengthMeters * metrics.scale;
+    const halfSpread = widthMeters * metrics.scale;
+    const forwardX = Math.cos(angle);
+    const forwardY = Math.sin(angle);
+    const sideX = -Math.sin(angle);
+    const sideY = Math.cos(angle);
+
+    const tipX = center.x + forwardX * length;
+    const tipY = center.y + forwardY * length;
+    const leftX = center.x + sideX * halfSpread;
+    const leftY = center.y + sideY * halfSpread;
+    const rightX = center.x - sideX * halfSpread;
+    const rightY = center.y - sideY * halfSpread;
+
+    const gradient = ctx.createLinearGradient(center.x, center.y, tipX, tipY);
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, "rgba(255,255,255,0)");
+
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.moveTo(leftX, leftY);
+    ctx.lineTo(rightX, rightY);
+    ctx.lineTo(tipX + sideX * halfSpread * 0.9, tipY + sideY * halfSpread * 0.34);
+    ctx.lineTo(tipX - sideX * halfSpread * 0.9, tipY - sideY * halfSpread * 0.34);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawTripodShadow(ctx, width, depth) {
+    const shadow = ctx.createRadialGradient(0, 8, width * 0.05, 0, 8, Math.max(width, depth) * 0.72);
+    shadow.addColorStop(0, "rgba(0,0,0,0.2)");
+    shadow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = shadow;
+    ctx.beginPath();
+    ctx.ellipse(0, 10, width * 0.64, depth * 0.42, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawTripodLegs(ctx, radiusX, radiusY) {
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(radiusX * 0.92, radiusY * 0.84);
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-radiusX * 0.96, radiusY * 0.9);
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, -radiusY * 0.86);
+    ctx.stroke();
+  }
+
+  function drawIsoView(targetCtx, width, height) {
+    const ctx = targetCtx || isoCtx;
+    const canvasWidth = width || refs.isoCanvas.width;
+    const canvasHeight = height || refs.isoCanvas.height;
+    const metrics = getIsoMetrics(canvasWidth, canvasHeight);
+    const floor = getFloorColor();
+    const backdrop = getBackdropColor();
+
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    const bg = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+    bg.addColorStop(0, "rgba(255,255,255,0.08)");
+    bg.addColorStop(1, "rgba(255,255,255,0.02)");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    drawIsoStudio(ctx, metrics, floor.color, backdrop.color);
+
+    state.items.slice().sort(function (a, b) {
+      return (a.x + a.y) - (b.x + b.y);
+    }).forEach(function (item) {
+      drawIsoItem(ctx, item, metrics);
+    });
+  }
+
+  function drawIsoStudio(ctx, metrics, floorColor, backdropColor) {
+    const a = isoProject(0, STUDIO.depth, 0, metrics);
+    const b = isoProject(STUDIO.width, STUDIO.depth, 0, metrics);
+    const c = isoProject(STUDIO.width, 0, 0, metrics);
+    const d = isoProject(0, 0, 0, metrics);
+
+    const floorGradient = ctx.createLinearGradient(0, d.y, 0, a.y);
+    floorGradient.addColorStop(0, lightenHex(floorColor, 0.18));
+    floorGradient.addColorStop(1, darkenHex(floorColor, 0.2));
+    ctx.fillStyle = floorGradient;
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.lineTo(c.x, c.y);
+    ctx.lineTo(d.x, d.y);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.22)";
+    ctx.lineWidth = 1.2 * metrics.unit;
+    for (let x = 0.5; x < STUDIO.width; x += 0.5) {
+      const front = isoProject(x, STUDIO.depth, 0, metrics);
+      const back = isoProject(x, 0, 0, metrics);
+      ctx.beginPath();
+      ctx.moveTo(front.x, front.y);
+      ctx.lineTo(back.x, back.y);
+      ctx.stroke();
+    }
+    for (let y = 0.5; y < STUDIO.depth; y += 0.5) {
+      const left = isoProject(0, y, 0, metrics);
+      const right = isoProject(STUDIO.width, y, 0, metrics);
+      ctx.beginPath();
+      ctx.moveTo(left.x, left.y);
+      ctx.lineTo(right.x, right.y);
+      ctx.stroke();
+    }
+
+    const wallBL = isoProject(0, 0, 0, metrics);
+    const wallBR = isoProject(STUDIO.width, 0, 0, metrics);
+    const wallTR = isoProject(STUDIO.width, 0, STUDIO.backdropHeight, metrics);
+    const wallTL = isoProject(0, 0, STUDIO.backdropHeight, metrics);
+    const wallGradient = ctx.createLinearGradient(0, wallTL.y, 0, wallBL.y);
+    wallGradient.addColorStop(0, lightenHex(backdropColor, 0.12));
+    wallGradient.addColorStop(1, darkenHex(backdropColor, 0.08));
+    ctx.fillStyle = wallGradient;
+    ctx.beginPath();
+    ctx.moveTo(wallBL.x, wallBL.y);
+    ctx.lineTo(wallBR.x, wallBR.y);
+    ctx.lineTo(wallTR.x, wallTR.y);
+    ctx.lineTo(wallTL.x, wallTL.y);
+    ctx.closePath();
+    ctx.fill();
+
+    const sweepLeft = isoProject(0, STUDIO.backdropDepth, 0, metrics);
+    const sweepRight = isoProject(STUDIO.width, STUDIO.backdropDepth, 0, metrics);
+    ctx.fillStyle = rgbaFromHex(lightenHex(backdropColor, 0.08), 0.82);
+    ctx.beginPath();
+    ctx.moveTo(wallBL.x, wallBL.y);
+    ctx.lineTo(wallBR.x, wallBR.y);
+    ctx.lineTo(sweepRight.x, sweepRight.y);
+    ctx.lineTo(sweepLeft.x, sweepLeft.y);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawIsoItem(ctx, item, metrics) {
+    if (item.family === "subject") drawIsoSubject(ctx, item, metrics);
+    else if (item.family === "camera") drawIsoCamera(ctx, item, metrics);
+    else if (item.family === "softbox") drawIsoLightPanel(ctx, item, metrics, item.width * 0.86, item.depth * 0.84, 0.08, "#f3f5f7");
+    else if (item.family === "striplight") drawIsoLightPanel(ctx, item, metrics, item.width * 0.9, item.depth * 1.8, 0.07, "#f2f4f6");
+    else if (item.family === "reflector") drawIsoReflector(ctx, item, metrics);
+    else if (item.family === "flag") drawIsoPanel(ctx, item, metrics, item.width * 0.95, item.depth, item.height * 0.54, item.height * 0.44, "#23272c");
+    else if (item.family === "vflat") drawIsoVFlat(ctx, item, metrics);
+    else if (item.family === "stand") drawIsoGripStand(ctx, item, metrics);
+    else if (item.family === "stool") drawIsoStool(ctx, item, metrics);
+    else if (item.family === "table") drawIsoTable(ctx, item, metrics);
+  }
+
+  function drawIsoSubject(ctx, item, metrics) {
+    const base = isoProject(item.x, item.y, 0, metrics);
+    const head = isoProject(item.x, item.y, Math.max(1.2, item.height - 0.07), metrics);
+    const shoulderLeft = isoProject(item.x - 0.16, item.y, item.height * 0.8, metrics);
+    const shoulderRight = isoProject(item.x + 0.16, item.y, item.height * 0.8, metrics);
+    const hip = isoProject(item.x, item.y, item.height * 0.45, metrics);
+    const footLeft = isoProject(item.x - 0.08, item.y + 0.04, 0, metrics);
+    const footRight = isoProject(item.x + 0.08, item.y + 0.04, 0, metrics);
+
+    drawIsoShadow(ctx, base.x, base.y + 3 * metrics.unit, 22 * metrics.unit, 10 * metrics.unit);
+    ctx.strokeStyle = "#2d343d";
+    ctx.lineWidth = 3.2 * metrics.unit;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(hip.x, hip.y);
+    ctx.lineTo(footLeft.x, footLeft.y);
+    ctx.moveTo(hip.x, hip.y);
+    ctx.lineTo(footRight.x, footRight.y);
+    ctx.moveTo(shoulderLeft.x, shoulderLeft.y);
+    ctx.lineTo(hip.x, hip.y);
+    ctx.lineTo(shoulderRight.x, shoulderRight.y);
+    ctx.stroke();
+
+    const torso = ctx.createLinearGradient(0, shoulderLeft.y, 0, hip.y);
+    torso.addColorStop(0, "#4b5561");
+    torso.addColorStop(1, "#20262d");
+    ctx.strokeStyle = torso;
+    ctx.lineWidth = 8 * metrics.unit;
+    ctx.beginPath();
+    ctx.moveTo(shoulderLeft.x, shoulderLeft.y);
+    ctx.lineTo(shoulderRight.x, shoulderRight.y);
+    ctx.moveTo((shoulderLeft.x + shoulderRight.x) / 2, shoulderLeft.y);
+    ctx.lineTo(hip.x, hip.y);
+    ctx.stroke();
+
+    ctx.fillStyle = "#dfbc9c";
+    ctx.beginPath();
+    ctx.arc(head.x, head.y, 8 * metrics.unit, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawIsoCamera(ctx, item, metrics) {
+    const bodyHeight = Math.max(1.2, item.height - 0.15);
+    drawIsoStand(ctx, item, metrics, bodyHeight - 0.12);
+    drawIsoPrism(ctx, item.x, item.y - 0.08, bodyHeight - 0.28, 0.38, 0.28, 0.18, item.rotation, metrics, {
+      top: "#68717b",
+      left: "#2a3037",
+      right: "#414a54"
+    });
+    const lensCenter = isoProject(item.x + Math.cos(degreesToRadians(item.rotation)) * 0.14, item.y + Math.sin(degreesToRadians(item.rotation)) * 0.14, bodyHeight - 0.16, metrics);
+    const lens = ctx.createRadialGradient(lensCenter.x - 2, lensCenter.y - 2, 1, lensCenter.x, lensCenter.y, 9 * metrics.unit);
+    lens.addColorStop(0, "#8fc8ff");
+    lens.addColorStop(0.4, "#28517b");
+    lens.addColorStop(1, "#101924");
+    ctx.fillStyle = lens;
+    ctx.beginPath();
+    ctx.arc(lensCenter.x, lensCenter.y, 7 * metrics.unit, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawIsoLightPanel(ctx, item, metrics, panelWidth, panelHeight, thickness, panelColor) {
+    const topHeight = item.height;
+    const panelBaseZ = Math.max(0.8, topHeight - Math.max(0.55, panelHeight) - 0.18);
+    drawIsoStand(ctx, item, metrics, topHeight - 0.08);
+    drawIsoVerticalPrism(ctx, item.x, item.y, panelBaseZ, panelWidth, thickness, Math.max(0.6, panelHeight), item.rotation, metrics, {
+      front: panelColor,
+      side: "#bcc4cc",
+      edge: "#2a2f36"
+    });
+  }
+
+  function drawIsoReflector(ctx, item, metrics) {
+    drawIsoStand(ctx, item, metrics, item.height - 0.18);
+    const center = isoProject(item.x, item.y, item.height - 0.48, metrics);
+    const gradient = ctx.createRadialGradient(center.x - 4 * metrics.unit, center.y - 5 * metrics.unit, 2, center.x, center.y, 20 * metrics.unit);
+    gradient.addColorStop(0, "#ffffff");
+    gradient.addColorStop(0.55, "#e2e7eb");
+    gradient.addColorStop(1, "#98a2ac");
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.ellipse(center.x, center.y, 18 * metrics.unit, 12 * metrics.unit, -0.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(63,68,75,0.88)";
+    ctx.lineWidth = 2 * metrics.unit;
+    ctx.stroke();
+  }
+
+  function drawIsoVFlat(ctx, item, metrics) {
+    const radians = degreesToRadians(item.rotation);
+    drawIsoVerticalPrism(ctx, item.x - Math.cos(radians) * 0.12, item.y - Math.sin(radians) * 0.12, 0, item.width * 0.46, 0.04, item.height * 0.82, item.rotation - 10, metrics, {
+      front: "#f8f5ef",
+      side: "#ddd4c7",
+      edge: "rgba(55,55,55,0.22)"
+    });
+    drawIsoVerticalPrism(ctx, item.x + Math.cos(radians) * 0.12, item.y + Math.sin(radians) * 0.12, 0, item.width * 0.46, 0.04, item.height * 0.82, item.rotation + 18, metrics, {
+      front: "#ece3d8",
+      side: "#d1c5b8",
+      edge: "rgba(55,55,55,0.22)"
+    });
+  }
+
+  function drawIsoGripStand(ctx, item, metrics) {
+    drawIsoStand(ctx, item, metrics, Math.max(1.4, item.height - 0.08));
+    const head = isoProject(item.x, item.y, Math.max(1.15, item.height - 0.16), metrics);
+    ctx.fillStyle = "#d8dde3";
+    ctx.beginPath();
+    ctx.ellipse(head.x, head.y, 6 * metrics.unit, 4 * metrics.unit, -0.45, 0, Math.PI * 2);
+    ctx.fill();
+
+    const radians = degreesToRadians(item.rotation);
+    const armEnd = isoProject(item.x + Math.cos(radians) * Math.min(0.62, item.width * 0.36), item.y + Math.sin(radians) * Math.min(0.62, item.width * 0.36), Math.max(1.0, item.height - 0.28), metrics);
+    ctx.strokeStyle = "#e1ac56";
+    ctx.lineWidth = 2 * metrics.unit;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(head.x, head.y);
+    ctx.lineTo(armEnd.x, armEnd.y);
+    ctx.stroke();
+
+    ctx.fillStyle = "#efc884";
+    ctx.beginPath();
+    ctx.arc(armEnd.x, armEnd.y, 4 * metrics.unit, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawIsoStool(ctx, item, metrics) {
+    const seatHeight = item.height;
+    const center = isoProject(item.x, item.y, seatHeight, metrics);
+    const base = isoProject(item.x, item.y, 0, metrics);
+    drawIsoShadow(ctx, base.x, base.y + 2 * metrics.unit, 16 * metrics.unit, 8 * metrics.unit);
+    ctx.fillStyle = "#303841";
+    ctx.beginPath();
+    ctx.ellipse(center.x, center.y, 14 * metrics.unit, 8 * metrics.unit, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#5a636d";
+    ctx.lineWidth = 2.6 * metrics.unit;
+    const legA = isoProject(item.x - 0.12, item.y - 0.08, 0, metrics);
+    const legB = isoProject(item.x + 0.12, item.y - 0.08, 0, metrics);
+    const legC = isoProject(item.x, item.y + 0.12, 0, metrics);
+    ctx.beginPath();
+    ctx.moveTo(center.x - 6 * metrics.unit, center.y);
+    ctx.lineTo(legA.x, legA.y);
+    ctx.moveTo(center.x + 6 * metrics.unit, center.y);
+    ctx.lineTo(legB.x, legB.y);
+    ctx.moveTo(center.x, center.y + 2 * metrics.unit);
+    ctx.lineTo(legC.x, legC.y);
+    ctx.stroke();
+  }
+
+  function drawIsoTable(ctx, item, metrics) {
+    drawIsoPrism(ctx, item.x, item.y, item.height - 0.06, item.width * 0.92, item.depth * 0.92, 0.08, item.rotation, metrics, {
+      top: "#8a7969",
+      left: "#5c4c40",
+      right: "#6f5e51"
+    });
+    const radians = degreesToRadians(item.rotation);
+    const corners = orientedCorners(item.x, item.y, item.width * 0.32, item.depth * 0.28, radians);
+    ctx.strokeStyle = "#74685f";
+    ctx.lineWidth = 2.5 * metrics.unit;
+    corners.forEach(function (corner) {
+      const top = isoProject(corner.x, corner.y, item.height - 0.06, metrics);
+      const bottom = isoProject(corner.x, corner.y, 0, metrics);
+      ctx.beginPath();
+      ctx.moveTo(top.x, top.y);
+      ctx.lineTo(bottom.x, bottom.y);
+      ctx.stroke();
+    });
+  }
+
+  function drawIsoPanel(ctx, item, metrics, width, thickness, height, zBase, color) {
+    drawIsoStand(ctx, item, metrics, zBase + height);
+    drawIsoVerticalPrism(ctx, item.x, item.y, zBase, width, thickness, height, item.rotation, metrics, {
+      front: color,
+      side: darkenHex(color, 0.22),
+      edge: "#0f1012"
+    });
+  }
+
+  function drawIsoStand(ctx, item, metrics, topZ) {
+    const base = isoProject(item.x, item.y, 0, metrics);
+    const top = isoProject(item.x, item.y, topZ, metrics);
+    drawIsoShadow(ctx, base.x, base.y + 2 * metrics.unit, 16 * metrics.unit, 7 * metrics.unit);
+    ctx.strokeStyle = "#545d66";
+    ctx.lineWidth = 2.4 * metrics.unit;
+    ctx.lineCap = "round";
+    const leg1 = isoProject(item.x + 0.18, item.y + 0.12, 0, metrics);
+    const leg2 = isoProject(item.x - 0.18, item.y + 0.12, 0, metrics);
+    const leg3 = isoProject(item.x, item.y - 0.2, 0, metrics);
+    ctx.beginPath();
+    ctx.moveTo(base.x, base.y);
+    ctx.lineTo(leg1.x, leg1.y);
+    ctx.moveTo(base.x, base.y);
+    ctx.lineTo(leg2.x, leg2.y);
+    ctx.moveTo(base.x, base.y);
+    ctx.lineTo(leg3.x, leg3.y);
+    ctx.moveTo(base.x, base.y);
+    ctx.lineTo(top.x, top.y);
+    ctx.stroke();
+  }
+
+  function drawIsoPrism(ctx, centerX, centerY, zBase, width, depth, height, rotation, metrics, colors) {
+    const radians = degreesToRadians(rotation);
+    const corners = orientedCorners(centerX, centerY, width / 2, depth / 2, radians);
+    const a = isoProject(corners[0].x, corners[0].y, zBase, metrics);
+    const b = isoProject(corners[1].x, corners[1].y, zBase, metrics);
+    const c = isoProject(corners[2].x, corners[2].y, zBase, metrics);
+    const d = isoProject(corners[3].x, corners[3].y, zBase, metrics);
+    const aTop = isoProject(corners[0].x, corners[0].y, zBase + height, metrics);
+    const bTop = isoProject(corners[1].x, corners[1].y, zBase + height, metrics);
+    const cTop = isoProject(corners[2].x, corners[2].y, zBase + height, metrics);
+    const dTop = isoProject(corners[3].x, corners[3].y, zBase + height, metrics);
+
+    ctx.fillStyle = colors.left;
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(d.x, d.y);
+    ctx.lineTo(dTop.x, dTop.y);
+    ctx.lineTo(aTop.x, aTop.y);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = colors.right;
+    ctx.beginPath();
+    ctx.moveTo(d.x, d.y);
+    ctx.lineTo(c.x, c.y);
+    ctx.lineTo(cTop.x, cTop.y);
+    ctx.lineTo(dTop.x, dTop.y);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = colors.top;
+    ctx.beginPath();
+    ctx.moveTo(aTop.x, aTop.y);
+    ctx.lineTo(bTop.x, bTop.y);
+    ctx.lineTo(cTop.x, cTop.y);
+    ctx.lineTo(dTop.x, dTop.y);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawIsoVerticalPrism(ctx, centerX, centerY, zBase, width, depth, height, rotation, metrics, colors) {
+    const radians = degreesToRadians(rotation);
+    const corners = orientedCorners(centerX, centerY, width / 2, depth / 2, radians);
+    const fl = isoProject(corners[0].x, corners[0].y, zBase, metrics);
+    const fr = isoProject(corners[1].x, corners[1].y, zBase, metrics);
+    const br = isoProject(corners[2].x, corners[2].y, zBase, metrics);
+    const bl = isoProject(corners[3].x, corners[3].y, zBase, metrics);
+    const flTop = isoProject(corners[0].x, corners[0].y, zBase + height, metrics);
+    const frTop = isoProject(corners[1].x, corners[1].y, zBase + height, metrics);
+    const brTop = isoProject(corners[2].x, corners[2].y, zBase + height, metrics);
+    const blTop = isoProject(corners[3].x, corners[3].y, zBase + height, metrics);
+
+    ctx.fillStyle = colors.side;
+    ctx.beginPath();
+    ctx.moveTo(fr.x, fr.y);
+    ctx.lineTo(br.x, br.y);
+    ctx.lineTo(brTop.x, brTop.y);
+    ctx.lineTo(frTop.x, frTop.y);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = colors.front;
+    ctx.beginPath();
+    ctx.moveTo(fl.x, fl.y);
+    ctx.lineTo(fr.x, fr.y);
+    ctx.lineTo(frTop.x, frTop.y);
+    ctx.lineTo(flTop.x, flTop.y);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = colors.edge;
+    ctx.lineWidth = 1.6 * metrics.unit;
+    ctx.beginPath();
+    ctx.moveTo(fl.x, fl.y);
+    ctx.lineTo(fr.x, fr.y);
+    ctx.lineTo(br.x, br.y);
+    ctx.lineTo(bl.x, bl.y);
+    ctx.closePath();
+    ctx.moveTo(flTop.x, flTop.y);
+    ctx.lineTo(frTop.x, frTop.y);
+    ctx.lineTo(brTop.x, brTop.y);
+    ctx.lineTo(blTop.x, blTop.y);
+    ctx.closePath();
+    ctx.moveTo(fl.x, fl.y);
+    ctx.lineTo(flTop.x, flTop.y);
+    ctx.moveTo(fr.x, fr.y);
+    ctx.lineTo(frTop.x, frTop.y);
+    ctx.moveTo(br.x, br.y);
+    ctx.lineTo(brTop.x, brTop.y);
+    ctx.moveTo(bl.x, bl.y);
+    ctx.lineTo(blTop.x, blTop.y);
+    ctx.stroke();
+  }
+
+  function drawIsoShadow(ctx, x, y, rx, ry) {
+    const shadow = ctx.createRadialGradient(x, y, rx * 0.1, x, y, rx);
+    shadow.addColorStop(0, "rgba(0,0,0,0.18)");
+    shadow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = shadow;
+    ctx.beginPath();
+    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function exportPdf() {
+    const win = window.open("", "_blank", "noopener,noreferrer");
+    if (!win) {
+      window.alert("Le navigateur a bloque la fenetre d'export.");
+      return;
+    }
+
+    const planExport = createExportCanvas(1800, 1180, drawPlanView);
+    const isoExport = createExportCanvas(1200, 760, drawIsoView);
+    const floor = getFloorColor();
+    const backdrop = getBackdropColor();
+    const dateLabel = new Date().toLocaleString("fr-FR");
+    const rows = state.items.length ? state.items.map(function (item) {
+      return `<tr><td>${escapeHtml(item.label)}</td><td>${escapeHtml(item.typeLabel)}</td><td>${escapeHtml(item.variantLabel)} (${escapeHtml(item.sizeLabel)})</td><td>${formatMeters(item.x)} m</td><td>${formatMeters(item.y)} m</td><td>${Math.round(item.rotation)}&deg;</td></tr>`;
+    }).join("") : '<tr><td colspan="6">Aucun element place.</td></tr>';
+
+    const html = `
+      <!DOCTYPE html>
+      <html lang="fr">
+      <head>
+        <meta charset="UTF-8">
+        <title>Plan de studio</title>
+        <style>
+          body{font-family:"Segoe UI",sans-serif;margin:24px;color:#18202b;background:#fff;}
+          h1{margin:0 0 6px;font-family:Georgia,"Times New Roman",serif;font-size:30px;}
+          p{margin:0;color:#566173;line-height:1.45;}
+          .meta{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 20px;}
+          .pill{padding:8px 12px;border-radius:999px;background:#edf4ff;color:#3560a8;font-weight:700;font-size:12px;}
+          .grid{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;align-items:start;}
+          .card{border:1px solid #d6deeb;border-radius:22px;padding:14px;break-inside:avoid;}
+          .card h2{margin:0 0 8px;font-size:18px;}
+          img{width:100%;display:block;border-radius:14px;border:1px solid #dbe3ef;background:#f5f8fc;}
+          table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px;}
+          th,td{padding:9px 8px;border-bottom:1px solid #e7edf5;text-align:left;}
+          th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#708096;}
+          @media print{body{margin:12px;} .grid{grid-template-columns:1fr;}}
+        </style>
+      </head>
+      <body>
+        <h1>Plan de studio photo</h1>
+        <p>Export genere le ${escapeHtml(dateLabel)}.</p>
+        <div class="meta">
+          <span class="pill">Studio ${STUDIO.width} x ${STUDIO.depth} m</span>
+          <span class="pill">Sol : ${escapeHtml(floor.label)}</span>
+          <span class="pill">Fond : ${escapeHtml(backdrop.label)}</span>
+          <span class="pill">${state.items.length} element(s)</span>
+        </div>
+        <div class="grid">
+          <div class="card"><h2>Vue de dessus</h2><img src="${planExport}" alt="Vue de dessus"></div>
+          <div class="card"><h2>Vue isometrique</h2><img src="${isoExport}" alt="Vue isometrique"></div>
+        </div>
+        <div class="card" style="margin-top:18px;">
+          <h2>Elements places</h2>
+          <table>
+            <thead>
+              <tr><th>Nom</th><th>Type</th><th>Taille</th><th>X</th><th>Y</th><th>Rotation</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <script>window.onload=function(){setTimeout(function(){window.print();},250);};<\/script>
+      </body>
+      </html>
+    `;
+
+    win.document.open();
+    win.document.write(html);
+    win.document.close();
+  }
+
+  function createExportCanvas(width, height, renderer) {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    renderer(canvas.getContext("2d"), width, height);
+    return canvas.toDataURL("image/png");
+  }
+
+  function resizeCanvas(canvas) {
+    const ratio = window.devicePixelRatio || 1;
+    const width = Math.max(1, Math.round(canvas.clientWidth * ratio));
+    const height = Math.max(1, Math.round(canvas.clientHeight * ratio));
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+    }
+  }
+
+  function getPlanMetrics(width, height) {
+    const padding = Math.min(width, height) * 0.075;
+    const scale = Math.min((width - padding * 2) / STUDIO.width, (height - padding * 2) / STUDIO.depth);
+    return {
+      left: (width - STUDIO.width * scale) / 2,
+      top: (height - STUDIO.depth * scale) / 2,
+      scale: scale,
+      unit: Math.max(0.8, scale / 118)
+    };
+  }
+
+  function getIsoMetrics(width, height) {
+    const scale = Math.min(width / (STUDIO.width + STUDIO.depth + 2.4), height / 7.4);
+    return {
+      originX: width / 2,
+      originY: height * 0.76,
+      scaleX: scale,
+      scaleY: scale * 0.48,
+      scaleZ: scale * 0.95,
+      unit: Math.max(0.9, scale / 14)
+    };
+  }
+
+  function studioToPlan(x, y, metrics) {
+    return {
+      x: metrics.left + x * metrics.scale,
+      y: metrics.top + y * metrics.scale
+    };
+  }
+
+  function planToStudio(x, y, metrics) {
+    return {
+      x: (x - metrics.left) / metrics.scale,
+      y: (y - metrics.top) / metrics.scale
+    };
+  }
+
+  function isoProject(x, y, z, metrics) {
+    const centeredX = x - STUDIO.width / 2;
+    const centeredY = y - STUDIO.depth / 2;
+    return {
+      x: metrics.originX + (centeredX - centeredY) * metrics.scaleX,
+      y: metrics.originY + (centeredX + centeredY) * metrics.scaleY - z * metrics.scaleZ
+    };
+  }
+
+  function orientedCorners(centerX, centerY, halfWidth, halfDepth, radians) {
+    const ux = Math.cos(radians) * halfWidth;
+    const uy = Math.sin(radians) * halfWidth;
+    const vx = -Math.sin(radians) * halfDepth;
+    const vy = Math.cos(radians) * halfDepth;
+    return [
+      { x: centerX - ux - vx, y: centerY - uy - vy },
+      { x: centerX + ux - vx, y: centerY + uy - vy },
+      { x: centerX + ux + vx, y: centerY + uy + vy },
+      { x: centerX - ux + vx, y: centerY - uy + vy }
+    ];
+  }
+
+  function getFloorColor() {
+    return FLOOR_COLORS.find(function (entry) {
+      return entry.id === state.floorId;
+    }) || FLOOR_COLORS[0];
+  }
+
+  function getBackdropColor() {
+    return BACKDROP_COLORS.find(function (entry) {
+      return entry.id === state.backdropId;
+    }) || BACKDROP_COLORS[0];
+  }
+
+  function formatMeters(value) {
+    return value.toFixed(1);
+  }
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function degreesToRadians(deg) {
+    return (deg * Math.PI) / 180;
+  }
+
+  function radiansToDegrees(rad) {
+    return (rad * 180) / Math.PI;
+  }
+
+  function normalizeDegrees(deg) {
+    const value = deg % 360;
+    return value < 0 ? value + 360 : value;
+  }
+
+  function roundRect(ctx, x, y, width, height, radius) {
+    const r = Math.min(radius, width / 2, height / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + width, y, x + width, y + height, r);
+    ctx.arcTo(x + width, y + height, x, y + height, r);
+    ctx.arcTo(x, y + height, x, y, r);
+    ctx.arcTo(x, y, x + width, y, r);
+    ctx.closePath();
+  }
+
+  function roundTopRect(ctx, x, y, width, height, radius) {
+    const r = Math.min(radius, width / 2, height / 2);
+    ctx.beginPath();
+    ctx.moveTo(x, y + height);
+    ctx.lineTo(x, y + r);
+    ctx.arcTo(x, y, x + r, y, r);
+    ctx.lineTo(x + width - r, y);
+    ctx.arcTo(x + width, y, x + width, y + r, r);
+    ctx.lineTo(x + width, y + height);
+    ctx.closePath();
+  }
+
+  function hexToRgb(hex) {
+    const clean = hex.replace("#", "");
+    const full = clean.length === 3 ? clean.split("").map(function (char) { return char + char; }).join("") : clean;
+    const int = parseInt(full, 16);
+    return {
+      r: (int >> 16) & 255,
+      g: (int >> 8) & 255,
+      b: int & 255
+    };
+  }
+
+  function mixHex(hexA, hexB, ratio) {
+    const a = hexToRgb(hexA);
+    const b = hexToRgb(hexB);
+    return rgbToHex(
+      Math.round(a.r + (b.r - a.r) * ratio),
+      Math.round(a.g + (b.g - a.g) * ratio),
+      Math.round(a.b + (b.b - a.b) * ratio)
+    );
+  }
+
+  function lightenHex(hex, ratio) {
+    return mixHex(hex, "#ffffff", ratio);
+  }
+
+  function darkenHex(hex, ratio) {
+    return mixHex(hex, "#000000", ratio);
+  }
+
+  function rgbToHex(r, g, b) {
+    return "#" + [r, g, b].map(function (value) {
+      return value.toString(16).padStart(2, "0");
+    }).join("");
+  }
+
+  function rgbaFromHex(hex, alpha) {
+    const rgb = hexToRgb(hex);
+    return `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha})`;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  init();
+})();
+

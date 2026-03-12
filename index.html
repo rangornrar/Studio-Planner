@@ -1,727 +1,160 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="fr" dir="ltr">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Studio Planner Pro – Refactored</title>
-  <link rel="stylesheet" href="assets/css/styles.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
-  <script defer src="assets/js/core.js"></script>
-  <script defer src="assets/js/views.js"></script>
-  <script defer src="assets/js/export.js"></script>
-  <script defer src="assets/js/product.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LITE Studio Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/simple-studio.css">
 </head>
+
 <body>
-<!-- ══ SIDEBAR ══ -->
-<aside id="sidebar">
-<div id="sbar-top">
-<div class="logo-mark">📐</div>
-<div>
-<div class="logo-text">Studio Planner</div>
-<div class="logo-sub">V5 Pro</div>
-</div>
-<button id="collapse-btn" onclick="collapseBar()" title="Réduire">‹</button>
-</div>
-<div id="sbar-scroll">
-<!-- Projet -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">🗂️</span><span class="sec-ttl">Projet &amp; Templates</span><span class="sec-arr o">›</span>
-</div>
-<div class="sec-body o">
-<div class="rw">
-<div class="col"><label>Nom du projet</label><input id="projectName" placeholder="Ex : Portrait corporate" type="text"/></div>
-<div class="col"><label>Client</label><input id="projectClient" placeholder="Ex : Dupont Studio" type="text"/></div>
-</div>
-<div class="rw">
-<div class="col"><label>Type de séance</label>
-<select id="projectShootType">
-<option>Portrait</option><option>Corporate</option><option>Mode</option><option>Beauté</option><option>Packshot</option><option>Boudoir</option><option>Famille</option><option>Autre</option>
-</select>
-</div>
-<div class="col"><label>Branding / Studio</label><input id="projectBrand" placeholder="Ex : Studio Lumière" type="text"/></div>
-</div>
-<div class="col" style="margin-bottom:6px"><label>Notes projet</label><input id="projectNotes" placeholder="Ex : fond gris, rendu soft, cadrage buste" type="text"/></div>
-<div class="g2">
-<button class="b-blue" onclick="saveCurrentProject()">💾 Sauver projet</button>
-<button onclick="openProjectHub()">📚 Bibliothèque</button>
-</div>
-<div class="g2">
-<button onclick="saveCurrentTemplate()">⭐ Sauver template</button>
-<button class="b-green" onclick="exportSetupReport()">🧾 PDF setup</button>
-</div>
-</div>
-</div>
-<!-- Studio -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">🏠</span><span class="sec-ttl">Studio</span><span class="sec-arr o">›</span>
-</div>
-<div class="sec-body o">
-<div class="rw">
-<div class="col"><label>Largeur cm</label><input id="rW" max="3000" min="100" step="10" type="number" value="600"/></div>
-<div class="col"><label>Profondeur cm</label><input id="rH" max="3000" min="100" step="10" type="number" value="400"/></div>
-</div>
-<div class="rw">
-<div class="col"><label>Échelle px/10cm</label><input id="scP" max="40" min="2" step="1" type="number" value="20"/></div>
-<div class="col"><label>Grille cm</label><input id="grS" max="200" min="10" step="10" type="number" value="50"/></div>
-</div>
-<div class="g2">
-<button class="b-blue" onclick="applyRoom()">✓ Appliquer</button>
-<button onclick="recenter()">⊕ Centrer</button>
-</div>
-</div>
-</div>
-<!-- Sujets -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">👤</span><span class="sec-ttl">Sujets &amp; Caméras</span><span class="sec-arr o">›</span>
-</div>
-<div class="sec-body o">
-<div class="g2">
-<button onclick="addMaleStanding()">🧔 Homme debout</button>
-<button onclick="addFemaleStanding()">👩 Femme debout</button>
-<button onclick="addMaleSitting()">🪑 Homme assis</button>
-<button onclick="addFemaleSitting()">🪑 Femme assise</button>
-<button onclick="addChildStanding()">🧒 Enfant</button>
-<button onclick="addCoupleStanding()">🧑‍🤝‍🧑 Couple</button>
-<button onclick="addLyingSubject()">🛋 Allongé</button>
-<button onclick="addProductTable()">🧴 Produit</button>
-</div>
-<label style="margin:6px 0 4px">Caméras</label>
-<div class="rw3">
-<button onclick="addCamera('24mm',74,200)">24mm</button>
-<button onclick="addCamera('35mm',60,240)">35mm</button>
-<button onclick="addCamera('50mm',47,250)">50mm</button>
-<button onclick="addCamera('85mm',29,280)">85mm</button>
-<button onclick="addCamera('135mm',18,320)">135mm</button>
-<button onclick="addCamera('200mm',12,360)">200mm</button>
-</div>
-<div class="g2" style="margin-top:4px">
-<button onclick="addTripod()">🎯 Trépied</button>
-<button onclick="addChair()">🪑 Chaise</button>
-</div>
-</div>
-</div>
-<!-- Lumières -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">💡</span><span class="sec-ttl">Sources lumière</span><span class="sec-arr o">›</span>
-</div>
-<div class="sec-body o">
-<div class="g2">
-<button onclick="addLight('softbox_60x60')">Softbox 60×60</button>
-<button onclick="addLight('softbox_90x120')">Softbox 90×120</button>
-<button onclick="addLight('stripbox_30x120')">Stripbox 30×120</button>
-<button onclick="addLight('octo_90')">Octobox 90</button>
-<button onclick="addLight('octo_120')">Octobox 120</button>
-<button onclick="addLight('octo_150')">Octobox 150</button>
-<button onclick="addLight('umbrella_100')">Parapluie 100</button>
-<button onclick="addLight('umbrella_120')">Parapluie 120</button>
-<button onclick="addLight('beauty_dish_42')">Beauty Dish 42</button>
-<button onclick="addLight('beauty_dish_55')">Beauty Dish 55</button>
-<button onclick="addLight('flash_studio')">Flash studio</button>
-<button onclick="addLight('led_panel_small')">LED panel S</button>
-<button onclick="addLight('led_panel_large')">LED panel L</button>
-<button onclick="addLight('ring_light_45')">Ring light 45</button>
-<button onclick="addLight('fresnel')">Fresnel</button>
-<button onclick="addLight('snoot')">Snoot</button>
-<button onclick="addLight('bare_bulb')">Bare bulb</button>
-</div>
-</div>
-</div>
-<!-- Bibliothèque matériel réel -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">🧰</span><span class="sec-ttl">Matériel réel</span><span class="sec-arr">›</span>
-</div>
-<div class="sec-body">
-<label style="margin:0 0 4px">Flashs / LEDs</label>
-<div class="g2">
-<button onclick="addRealLight('godox_sk400ii')">Godox SK400II</button>
-<button onclick="addRealLight('godox_ad200')">Godox AD200Pro</button>
-<button onclick="addRealLight('godox_ad400')">Godox AD400Pro</button>
-<button onclick="addRealLight('aputure_300d')">Aputure 300D</button>
-</div>
-<label style="margin:6px 0 4px">Modeleurs</label>
-<div class="g2">
-<button onclick="addRealModifier('godox_octa120')">Octa 120</button>
-<button onclick="addRealModifier('godox_strip30120')">Strip 30×120</button>
-<button onclick="addRealModifier('umbrella_silver105')">Parapluie argent 105</button>
-<button onclick="addRealModifier('umbrella_white105')">Parapluie blanc 105</button>
-</div>
-</div>
-</div>
-<!-- Modifs -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">🔧</span><span class="sec-ttl">Modificateurs</span><span class="sec-arr">›</span>
-</div>
-<div class="sec-body">
-<div class="g2">
-<button onclick="addMod('reflector_80')">Réflecteur 80</button>
-<button onclick="addMod('reflector_110x180')">Panneau 110×180</button>
-<button onclick="addMod('scrim_120x120')">Diffusion 120×120</button>
-<button onclick="addMod('vflat_100x200')">V-Flat 100×200</button>
-<button onclick="addMod('flag_60x90')">Drapeau 60×90</button>
-<button onclick="addMod('barn_door')">Coupe-flux</button>
-<button onclick="addMod('grid_40')">Grid 40°</button>
-<button onclick="addMod('gel')">Gélatine</button>
-<button onclick="addStand()">Pied lumière</button>
-<button onclick="addBoomStand()">Boom arm</button>
-<button onclick="addBackdrop()">Fond 2.72m</button>
-<button onclick="addCyclo()">Mur / Cyclo</button>
-</div>
-</div>
-</div>
-<!-- Presets -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">⚡</span><span class="sec-ttl">Presets</span><span class="sec-arr o">›</span>
-</div>
-<div class="sec-body o">
-<div class="g2">
-<button onclick="presetClamshell()">Clamshell</button>
-<button onclick="presetRembrandt()">Rembrandt</button>
-<button onclick="presetThreeLights()">3 lights</button>
-<button onclick="presetHighKey()">High key</button>
-<button onclick="presetLowKey()">Low key</button>
-<button onclick="presetPackshot()">Packshot</button>
-<button onclick="presetButterfly()">Butterfly</button>
-<button onclick="presetSplitLight()">Split</button>
-<button onclick="presetCorporate()">Corporate</button>
-<button onclick="presetBoudoir()">Boudoir</button>
-<button onclick="presetCouple()">Couple</button>
-<button onclick="presetFullBodyFashion()">Mode plein pied</button>
-</div>
-</div>
-</div>
-<!-- Sélection -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">✏️</span><span class="sec-ttl">Objet sélectionné</span><span class="sec-arr o">›</span>
-</div>
-<div class="sec-body o">
-<div class="sm" id="noSel" style="color:var(--text3)">Aucun objet sélectionné</div>
-<div id="selCtrl" style="display:none">
-<div class="col" style="margin-bottom:7px">
-<label>Nom</label>
-<input id="lblIn" oninput="setLabel(this.value)" placeholder="Nom…" type="text"/>
-</div>
-<div class="sr"><label>Angle</label>
-<input id="srAng" max="359" min="0" oninput="setAngle(this.value)" type="range" value="0"/>
-<span class="sv" id="vAng">0°</span></div>
-<div class="sr"><label>Faisceau</label>
-<input id="srBeam" max="500" min="40" oninput="setBeam(this.value)" type="range" value="140"/>
-<span class="sv" id="vBeam">—</span></div>
-<div class="sr"><label>Opacité</label>
-<input id="srOpac" max="100" min="10" oninput="setOpacity(this.value)" type="range" value="100"/>
-<span class="sv" id="vOpac">100%</span></div>
-<div class="sr"><label>Hauteur</label>
-<input id="srHeight" max="260" min="20" oninput="setRealHeight(this.value)" type="range" value="175"/>
-<span class="sv" id="vHeight">175cm</span></div>
-<div class="sr"><label>Élévation</label>
-<input id="srElev" max="260" min="0" oninput="setElevation(this.value)" type="range" value="0"/>
-<span class="sv" id="vElev">0cm</span></div>
-<div id="tempRow" style="display:none;margin-bottom:9px">
-<label style="margin-bottom:5px">Température couleur</label>
-<div class="swats">
-<div class="sw" onclick="setTemp(this,'#ffd0a0','#ff8c1a','2800K – Tungstène')" style="background:#ff8c1a" title="2800K Tungstène"></div>
-<div class="sw" onclick="setTemp(this,'#ffe4b5','#ffb347','3200K – Halogène')" style="background:#ffb347" title="3200K Halogène"></div>
-<div class="sw" onclick="setTemp(this,'#fff0d4','#e8c870','3500K – Warm white')" style="background:#ffe0a0" title="3500K Warm"></div>
-<div class="sw on" onclick="setTemp(this,'#d4eeff','#4a8eff','5500K – Daylight')" style="background:#a8d4ff" title="5500K Daylight"></div>
-<div class="sw" onclick="setTemp(this,'#dceeff','#70a8ff','6500K – Nuageux')" style="background:#c0d8ff" title="6500K Nuageux"></div>
-<div class="sw" onclick="setTemp(this,'#d4e4ff','#88aaff','7000K – Flash')" style="background:#b0c8ff" title="7000K Flash"></div>
-<div class="sw" onclick="setTemp(this,'#f8c0f8','#e040e0','Rose')" style="background:#f07aef" title="Rose"></div>
-<div class="sw" onclick="setTemp(this,'#b8f0b8','#22c07a','Vert')" style="background:#6ade6a" title="Vert"></div>
-</div>
-<div class="sm" id="tempLbl" style="margin-top:3px;color:var(--text3)">5500K – Daylight</div>
-</div>
-<div class="g3" style="margin-bottom:5px">
-<button onclick="bringFwd()">↑ Avant</button>
-<button onclick="sendBwd()">↓ Arrière</button>
-<button class="b-amber" onclick="dupSel()">⊕ Copie</button>
-</div>
-<div class="g2" style="margin-bottom:5px">
-<button onclick="toggleBeam()">👁 Faisceau</button>
-<button onclick="toggleDistLine()">📏 Distance</button>
-</div>
-<div class="g2" style="margin-bottom:5px">
-<button onclick="rot45(1)">↻ +45°</button>
-<button onclick="rot45(-1)">↺ −45°</button>
-</div>
-<button class="b-red" onclick="delSel()">🗑 Supprimer</button>
-</div>
-</div>
-</div>
-<!-- Calques -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">📋</span><span class="sec-ttl">Calques</span><span class="sec-arr">›</span>
-</div>
-<div class="sec-body">
-<div id="layerList"><div class="sm" style="color:var(--text3)">Aucun élément</div></div>
-<button onclick="buildLayers()" style="margin-top:6px;font-size:11px">↺ Actualiser</button>
-</div>
-</div>
-<!-- Notes -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">📝</span><span class="sec-ttl">Notes &amp; Mesures</span><span class="sec-arr">›</span>
-</div>
-<div class="sec-body">
-<div class="g2">
-<button onclick="addNote()">+ Note</button>
-<button onclick="addMeasure()">+ Mesure</button>
-</div>
-</div>
-</div>
-<!-- Export -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">💾</span><span class="sec-ttl">Export</span><span class="sec-arr o">›</span>
-</div>
-<div class="sec-body o">
-<div class="g2" style="margin-bottom:5px">
-<button class="b-green" onclick="exportPNG()">⬇ PNG</button>
-<button class="b-green" onclick="exportLegend()">⬇ + Légende</button>
-</div>
-<div class="g2" style="margin-bottom:5px">
-<button class="b-green" onclick="saveJSON()">💾 JSON</button>
-<button onclick="loadJSON()">📂 Charger</button>
-</div>
-<div class="g2">
-<button onclick="window.print()">🖨 Imprimer</button>
-<button class="b-red" onclick="clearScene()">🗑 Vider</button>
-</div>
-</div>
-</div>
-<!-- Raccourcis -->
-<div class="sec">
-<div class="sec-hdr" onclick="toggleSec(this)">
-<span class="sec-ico">⌨️</span><span class="sec-ttl">Raccourcis</span><span class="sec-arr">›</span>
-</div>
-<div class="sec-body">
-<div class="sm" style="line-height:2">
-<div><span class="pill">Suppr</span> supprimer</div>
-<div><span class="pill">Ctrl Z/Y</span> undo / redo</div>
-<div><span class="pill">R</span> +45° <span class="pill">Shift+R</span> −45°</div>
-<div><span class="pill">Molette</span> zoom</div>
-<div><span class="pill">Espace+drag</span> pan</div>
-<div><span class="pill">Alt+drag</span> libre (no snap)</div>
-<div><span class="pill">Clic droit</span> menu</div>
-</div>
-</div>
-</div>
-</div><!-- sbar-scroll -->
-<div id="theme-btn" onclick="toggleTheme()">
-<span id="th-ico">🌙</span>
-<span id="th-lbl">Mode sombre</span>
-</div>
-</aside>
-<!-- ══ MAIN ══ -->
-<main id="main">
-<div id="toolbar">
-<div class="toolbar-section">
-<span class="toolbar-label">Vue</span>
-<button class="tb b-blue" onclick="applyRoom()">✓ Studio</button>
-<button class="tb" onclick="recenter()">⊕ Centrer</button>
-</div>
-<div class="tsep"></div>
-<div class="toolbar-section">
-<span class="toolbar-label">Zoom</span>
-<button class="tb-ico b-ghost" onclick="zoomOut()">−</button>
-<span class="zdsp" id="zLbl">100%</span>
-<button class="tb-ico b-ghost" onclick="zoomIn()">+</button>
-<button class="tb b-ghost" onclick="zoomReset()">1:1</button>
-</div>
-<div class="tsep"></div>
-<div class="toolbar-section">
-<span class="toolbar-label">Édition</span>
-<button class="tb b-amber" onclick="undo()" title="Ctrl+Z">↩</button>
-<button class="tb b-amber" onclick="redo()" title="Ctrl+Y">↪</button>
-<button class="tb" id="snapBtn" onclick="toggleSnap()">⊞ Snap</button>
-<button class="tb" id="distBtn" onclick="toggleDistances()">📏 Dist.</button>
-<button class="tb" id="camBtn" onclick="toggleCam()">📷 Vues</button>
-</div>
-<div class="tsep"></div>
-<div class="toolbar-section">
-<span class="toolbar-label">Fichiers</span>
-<button class="tb b-green" onclick="exportPNG()">⬇ PNG</button>
-<button class="tb b-green" onclick="exportLegend()">+ Légende</button>
-<button class="tb b-green" onclick="saveJSON()">💾</button>
-<button class="tb b-ghost" onclick="window.print()">🖨</button>
-</div>
-</div>
-<div id="topProjectBar">
-<div id="topProjectMeta">
-<strong id="tpName">Projet sans titre</strong>
-<span class="metric-pill">Client <span id="tpClient">—</span></span>
-<span class="metric-pill">Type <span id="tpType">Portrait</span></span>
-<span class="metric-pill">Objets <span id="tpObjects">0</span></span>
-<span class="metric-pill">Audit <span class="metric-score" id="tpScore">—</span></span>
-</div>
-<div id="topProjectControls">
-<div class="project-control-group">
-<span class="project-control-label">Navigation</span>
-<div id="topProjectGlobalActions">
-<button class="tb" onclick="openDashboard()">🏠 Accueil</button>
-<button class="tb" onclick="openProjectHub()">🗂️ Projets</button>
-<button class="tb" onclick="openCatalogModal()">🧰 Catalogue</button>
-<button class="tb" onclick="openAuditModal()">🩺 Audit</button>
-</div>
-</div>
-<div class="project-control-group">
-<span class="project-control-label">Projet</span>
-<div id="topProjectActions">
-<button class="tb" onclick="saveCurrentVariant()">🧪 Variante</button>
-<button class="tb b-green" onclick="exportSetupReport()">🧾 Export setup</button>
-</div>
-</div>
-</div>
-</div>
-<div id="workspace">
-<div id="cvWrap"><canvas id="c"></canvas></div>
-<!-- Camera front-view panel -->
-<div id="camPanel">
-<div id="cam-hdr">
-<h3>📷 Vue de face</h3>
-<div class="cam-tabs">
-<button class="cam-tab on" id="tab-pos" onclick="setCamTab('pos')">Face</button>
-<button class="cam-tab" id="tab-light" onclick="setCamTab('light')">Éclairage</button>
-<button class="cam-tab" id="tab-iso" onclick="setCamTab('iso')">Isométrique</button>
-</div>
-<button class="b-ghost" onclick="toggleCam()" style="width:auto;padding:3px 8px;font-size:11px">✕</button>
-</div>
-<canvas id="camCanvas"></canvas>
-</div>
-</div>
-<div id="statusBar">
-<span>X <span class="sv2" id="sX">—</span> cm</span>
-<span class="sp">|</span>
-<span>Y <span class="sv2" id="sY">—</span> cm</span>
-<span class="sp">|</span>
-<span>∠ <span class="sv2" id="sAng">—</span>°</span>
-<span class="sp">|</span>
-<span>Zoom <span class="sv2" id="sZoom">100</span>%</span>
-<span class="sp" id="distSep" style="display:none">|</span>
-<span id="sDist" style="display:none">📏 <span class="sv2" id="sDistV">—</span> cm</span>
-<span style="color:var(--text3);font-size:10px;margin-left:4px">Molette=zoom · Espace=pan · R=+45°</span>
-</div>
-</main>
-<div class="modal" id="dashboardModal">
-<div class="modal-dialog">
-<div class="modal-head">
-<div><h3 style="font-size:18px">🏠 Dashboard Studio Planner</h3><div class="muted">Accueil produit, accès rapide, projets récents et profils de studio.</div></div>
-<button class="small-btn b-ghost" onclick="closeDashboard()">✕</button>
-</div>
-<div class="dashboard-grid">
-<div class="dashboard-stack">
-<div class="hero-banner">
-<h3>Prépare un setup pro, pas une loterie lumineuse.</h3>
-<p>Retrouve tes projets récents, démarre depuis un profil de studio et exporte une fiche propre sans repartir d’un canvas nu comme un lundi matin.</p>
-<div class="g2" style="margin-top:12px">
-<button class="b-blue" onclick="startBlankProject()">＋ Nouveau projet vide</button>
-<button class="b-green" onclick="saveCurrentProject();renderDashboard()">💾 Sauver le projet courant</button>
-</div>
-</div>
-<div class="modal-card">
-<h4>Actions rapides</h4>
-<div class="quick-grid">
-<div class="quick-card"><strong>Portrait corporate</strong><span>Projet propre avec fond, caméra et setup équilibré.</span><button class="small-btn b-blue" onclick="closeDashboard();presetCorporate()">Lancer</button></div>
-<div class="quick-card"><strong>Packshot</strong><span>Base produit rapide avec fond et lumière contrôlée.</span><button class="small-btn b-blue" onclick="closeDashboard();presetPackshot()">Lancer</button></div>
-<div class="quick-card"><strong>Audit du projet courant</strong><span>Vérifie le score, les alertes et la checklist pro.</span><button class="small-btn" onclick="closeDashboard();openAuditModal()">Ouvrir</button></div>
-<div class="quick-card"><strong>Templates métier</strong><span>Charge une base propre selon le type de séance.</span><button class="small-btn b-blue" onclick="closeDashboard();openTemplatesModal()">Explorer</button></div>
-<div class="quick-card"><strong>Export setup client</strong><span>Génère la fiche imprimable avec vues, matériel et recommandations.</span><button class="small-btn b-green" onclick="closeDashboard();exportSetupReport()">Exporter</button></div>
-</div>
-</div>
-<div class="modal-card">
-<h4>Projets récents</h4>
-<div class="recent-list" id="dashboardProjects"></div>
-</div>
-</div>
-<div class="dashboard-stack">
-<div class="modal-card">
-<h4>Profils de studio</h4>
-<div class="profile-grid" id="dashboardProfiles"></div>
-</div>
-<div class="modal-card">
-<h4>Templates récents</h4>
-<div class="recent-list" id="dashboardTemplates"></div>
-</div>
-<div class="modal-card">
-<h4>Résumé produit</h4>
-<div class="report-note" id="dashboardSummary">Aucun résumé disponible.</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="modal" id="projModal">
-<div class="modal-dialog">
-<div class="modal-head">
-<div>
-<h3 style="font-size:16px">🗂️ Hub projet</h3>
-<div class="muted">Projets, templates, variantes et résumé qualité.</div>
-</div>
-<button class="small-btn b-ghost" onclick="closeProjectHub()">✕</button>
-</div>
-<div class="modal-grid">
-<div style="display:flex;flex-direction:column;gap:14px">
-<div class="modal-card"><h4>Projets</h4><div class="proj-list" id="projectList"></div></div>
-<div class="modal-card"><h4>Templates</h4><div class="proj-list" id="templateList"></div></div>
-</div>
-<div style="display:flex;flex-direction:column;gap:14px">
-<div class="modal-card"><h4>Variantes de la scène</h4><div class="muted">Capture l’état courant pour tester plusieurs directions artistiques.</div><div class="variant-list" id="variantList" style="margin-top:10px"></div></div>
-<div class="modal-card"><h4>Résumé courant</h4><div class="muted" id="projectHubSummary">Aucun projet chargé.</div></div>
-<div class="modal-card"><h4>Audit courant</h4><div class="audit-list" id="projectHubAudit"></div></div>
-</div>
-</div>
-</div>
-</div>
-<div class="modal" id="catalogModal">
-<div class="modal-dialog modal-dialog-wide">
-<div class="modal-head">
-<div><h3 style="font-size:16px">🧰 Catalogue matériel premium</h3><div class="muted">Recherche rapide, fiches détaillées et ajout contextuel d’équipements crédibles.</div></div>
-<button class="small-btn b-ghost" onclick="closeCatalogModal()">✕</button>
-</div>
-<div class="catalog-tools">
-<input id="catalogSearch" oninput="renderCatalog()" placeholder="Rechercher : softbox, Godox, couple, fond…" type="text"/>
-<select id="catalogFilter" onchange="renderCatalog()"><option value="all">Toutes catégories</option><option value="subject">Sujets</option><option value="light">Lumières</option><option value="modifier">Modificateurs</option><option value="background">Fonds</option><option value="accessory">Accessoires</option><option value="preset">Presets</option></select>
-<select id="catalogUseCase" onchange="renderCatalog()"><option value="all">Tous usages</option><option value="portrait">Portrait</option><option value="beauty">Beauté</option><option value="corporate">Corporate</option><option value="fashion">Mode</option><option value="packshot">Packshot</option><option value="couple">Couple</option></select>
-</div>
-<div class="catalog-layout">
-<div class="catalog-list" id="catalogList"></div>
-<div class="catalog-detail" id="catalogDetail"><div class="muted">Sélectionne un élément pour afficher sa fiche détaillée.</div></div>
-</div>
-</div>
-</div>
-<div class="modal" id="templatesModal">
-<div class="modal-dialog modal-dialog-wide">
-<div class="modal-head">
-<div><h3 style="font-size:16px">🗂️ Templates métier</h3><div class="muted">Des setups prêts à l’emploi, expliqués proprement et classés par usage réel.</div></div>
-<button class="small-btn b-ghost" onclick="closeTemplatesModal()">✕</button>
-</div>
-<div class="catalog-tools">
-<input id="templateSearch" oninput="renderTemplateLibrary()" placeholder="Rechercher : corporate, beauté, famille, packshot…" type="text"/>
-<select id="templateFilter" onchange="renderTemplateLibrary()"><option value="all">Toutes séances</option><option value="Portrait">Portrait</option><option value="Beauté">Beauté</option><option value="Corporate">Corporate</option><option value="Mode">Mode</option><option value="Packshot">Packshot</option><option value="Couple">Couple</option><option value="Famille">Famille</option></select>
-</div>
-<div class="catalog-layout">
-<div class="template-grid" id="templateLibraryList"></div>
-<div class="catalog-detail" id="templateDetail"><div class="muted">Choisis un template pour afficher sa fiche complète.</div></div>
-</div>
-</div>
-</div>
-<div class="modal" id="auditModal">
-<div class="modal-dialog">
-<div class="modal-head">
-<div><h3 style="font-size:16px">🩺 Audit de setup</h3><div class="muted">Diagnostic rapide pour transformer un montage “ça ira” en setup vendable.</div></div>
-<button class="small-btn b-ghost" onclick="closeAuditModal()">✕</button>
-</div>
-<div class="modal-grid">
-<div class="modal-card">
-<h4>Score &amp; KPIs</h4>
-<div id="auditScoreLine"></div>
-<div class="kpi-grid" id="auditKpis"></div>
-</div>
-<div class="modal-card">
-<h4>Checklist pro</h4>
-<ul class="checklist" id="auditChecklist"></ul>
-<h4 style="margin-top:12px">Points de vigilance</h4>
-<div class="audit-list" id="auditWarnings"></div>
-</div>
-</div>
-</div>
-</div>
-<div class="modal" id="welcomeModal">
-<div class="modal-dialog" style="max-width:760px">
-<div class="modal-head">
-<div><h3 style="font-size:18px">✨ Bienvenue dans Studio Planner Pro</h3><div class="muted">Version produit : tu prépares un setup, pas une peinture rupestre avec des softboxes.</div></div>
-<button class="small-btn b-ghost" onclick="closeWelcomeModal()">✕</button>
-</div>
-<div class="modal-grid">
-<div class="modal-card">
-<h4>Démarrage rapide</h4>
-<ul class="checklist">
-<li>Renseigne le projet et le type de séance.</li>
-<li>Ajoute un sujet puis une caméra.</li>
-<li>Ouvre le catalogue pour insérer du matériel réaliste.</li>
-<li>Lance l’audit avant export pour repérer les incohérences.</li>
-</ul>
-</div>
-<div class="modal-card">
-<h4>Actions utiles</h4>
-<div class="g2">
-<button class="b-blue" onclick="closeWelcomeModal();openCatalogModal()">🧰 Ouvrir le catalogue</button>
-<button onclick="closeWelcomeModal();openAuditModal()">🩺 Voir l’audit</button>
-<button onclick="closeWelcomeModal();openDashboard()">🏠 Dashboard</button><button onclick="closeWelcomeModal();openProjectHub()">🗂️ Projets</button>
-<button class="b-green" onclick="closeWelcomeModal();exportSetupReport()">🧾 Export setup</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Context Menu -->
-<div id="ctx">
-<div class="ci" onclick="cx('dup')"><span class="ci-ico">⊕</span>Dupliquer</div>
-<div class="ci" onclick="cx('beam')"><span class="ci-ico">👁</span>Faisceau on/off</div>
-<div class="ci" onclick="cx('dist')"><span class="ci-ico">📏</span>Distance au sujet</div>
-<div class="csep"></div>
-<div class="ci" onclick="cx('front')"><span class="ci-ico">↑</span>Premier plan</div>
-<div class="ci" onclick="cx('back')"><span class="ci-ico">↓</span>Arrière-plan</div>
-<div class="csep"></div>
-<div class="ci" onclick="cx('r45')"><span class="ci-ico">↻</span>Rotation +45°</div>
-<div class="ci" onclick="cx('rm45')"><span class="ci-ico">↺</span>Rotation −45°</div>
-<div class="csep"></div>
-<div class="ci danger" onclick="cx('del')"><span class="ci-ico">🗑</span>Supprimer</div>
-</div>
-<div id="toast"></div>
+  <div class="page">
+    <div class="support-strip" id="supportStrip" aria-label="Support Ko-fi">
+      <span class="support-text" id="supportText">Cet outil vous aide ? Soutenez son evolution.</span>
+      <a class="support-btn" id="supportButton" href="https://ko-fi.com/D1D21VSKW5" target="_blank"
+        rel="noreferrer noopener">
+        Soutenir sur Ko-fi
+      </a>
+    </div>
 
+    <header class="appbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <span class="brand-ring"></span>
+          <span class="brand-core"></span>
+          <span class="brand-beam"></span>
+        </div>
+        <div class="brand-copy">
+          <h1>LITE Studio</h1>
+          <p id="brandTagline">Photo set planner</p>
+        </div>
+      </div>
 
-<style id="v9-premium-style">
-.premium-inline{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.frame-select{width:auto!important;min-width:92px}
-.locked-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:var(--amber-soft);color:var(--amber);border:1px solid var(--amber);font-size:11px;font-weight:700}
-.specs{margin-top:6px;font-size:11px;color:var(--text2);line-height:1.5}
-.specs b{color:var(--text)}
-.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.compare-box{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2)}
-.compare-box h5{font-size:13px;margin:0 0 8px}
-.compare-box ul{margin:8px 0 0 18px;padding:0}
-@media (max-width:860px){.compare-grid{grid-template-columns:1fr}}
-</style>
-<script id="v9-premium-script">
-(function(){
-  const EXT_PROPS=['ctype','hasBeam','beamLen','lblIdx','bmIdx','isSO','_grid','_room','_legend','_beam','lightTemp','__uid','realW','realH','realD','heightCm','elevCm','subjectVariant','genderVariant','powerWs','locked','realEqKey','viewOverride','elevOverride','focalMm'];
-  const DETAILED_GEAR={
-    godox_sk400ii:{cat:'light',label:'Godox SK400II',specs:'400 Ws · Bowens · flash studio',powerWs:400,base:'flash_studio'},
-    godox_ad200pro:{cat:'light',label:'Godox AD200Pro',specs:'200 Ws · autonome · compact',powerWs:200,base:'flash_studio'},
-    godox_ad400pro:{cat:'light',label:'Godox AD400Pro',specs:'400 Ws · autonome · puissant',powerWs:400,base:'flash_studio'},
-    aputure_300d:{cat:'light',label:'Aputure 300D',specs:'LED COB · Fresnel possible · continu',powerWs:300,base:'fresnel'},
-    octa120_real:{cat:'light',label:'Octa 120',specs:'Ø120 cm · source ronde',powerWs:300,base:'octo_120'},
-    strip_30x120_real:{cat:'light',label:'Stripbox 30×120',specs:'30×120 cm · rim / plein pied',powerWs:300,base:'stripbox_30x120'},
-    umbrella_silver105:{cat:'modifier',label:'Parapluie argent 105',specs:'Ø105 cm · contrasté',base:'umbrella_100'},
-    umbrella_white105:{cat:'modifier',label:'Parapluie blanc 105',specs:'Ø105 cm · doux',base:'umbrella_100'},
-    vflat_100x200:{cat:'modifier',label:'V-Flat 100×200',specs:'100×200 cm · contraste / occlusion',base:'vflat_100x200'},
-    scrim_120x120:{cat:'modifier',label:'Diffusion 120×120',specs:'120×120 cm · adoucit la source',base:'scrim_120x120'},
-    reflector_110x180:{cat:'modifier',label:'Réflecteur 110×180',specs:'110×180 cm · fill passif',base:'reflector_110x180'}
-  };
-  window.currentFrameRatio = window.currentFrameRatio || '3:2';
+      <nav class="menu-bar" id="mainMenuBar" aria-label="Menu principal">
+        <div class="menu" data-menu="file">
+          <button class="menu-trigger" id="menuFileTrigger" type="button" data-menu-trigger="file">Fichier</button>
+          <div class="menu-panel file-panel">
+            <button class="menu-item" id="actionReset" type="button" data-menu-action="reset">Remettre a zero</button>
+            <button class="menu-item" id="actionCopyImage" type="button" data-menu-action="copy-image">Copier
+              l'image</button>
+            <button class="menu-item" id="actionExportPng" type="button" data-menu-action="export-png">Telecharger
+              PNG</button>
+            <button class="menu-item" id="actionPrint" type="button" data-menu-action="print">Imprimer</button>
+          </div>
+        </div>
 
-  function escapeHtml2(str=''){return String(str).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-  function getSceneBlockers(){return cv.getObjects().filter(o=>o.visible!==false && ['modifier','background'].includes(o.ctype));}
-  function pointSegmentDistance(px,py,x1,y1,x2,y2){const dx=x2-x1,dy=y2-y1; const len2=dx*dx+dy*dy||1; let t=((px-x1)*dx+(py-y1)*dy)/len2; t=Math.max(0,Math.min(1,t)); const sx=x1+t*dx, sy=y1+t*dy; return {dist:Math.hypot(px-sx,py-sy),t};}
-  function blockerRadiusCm(o){const w=o.realW||o.widthCm||px2cm(o.getScaledWidth?.()||40), h=o.realH||o.heightCm||px2cm(o.getScaledHeight?.()||40); return Math.max(20,Math.max(w,h)*0.45);}
-  function blockerFactor(o){const name=(getLbl(o)||'').toLowerCase(); if(name.includes('diffusion')||name.includes('scrim')) return 0.72; if(name.includes('réflecteur')) return 0.92; if(name.includes('v-flat')||name.includes('drapeau')||name.includes('flag')||o.ctype==='background') return 0.28; return 0.55; }
-  function occlusionFactor(light,subject){let factor=1; const x1=light.left,y1=light.top,x2=subject.left,y2=subject.top; getSceneBlockers().forEach(o=>{ if(o===light||o===subject) return; const rcm=blockerRadiusCm(o); const rpx=cm2px(rcm); const hit=pointSegmentDistance(o.left,o.top,x1,y1,x2,y2); if(hit.t>0.12 && hit.t<0.9 && hit.dist<rpx){ factor*=blockerFactor(o); } }); return Math.max(0.12,factor); }
+        <div class="menu" data-menu="color">
+          <button class="menu-trigger" id="menuColorTrigger" type="button" data-menu-trigger="color">Couleur</button>
+          <div class="menu-panel color-panel">
+            <section class="submenu-block">
+              <div class="submenu-head">
+                <span id="floorMenuLabel">Sol</span>
+              </div>
+              <div class="menu-swatch-grid" id="floorMenuSwatches"></div>
+            </section>
+            <section class="submenu-block">
+              <div class="submenu-head">
+                <span id="backdropMenuLabel">Fond</span>
+              </div>
+              <div class="menu-swatch-grid" id="backdropMenuSwatches"></div>
+            </section>
+          </div>
+        </div>
 
-  const oldCompute=window.computeSubjectLighting;
-  window.computeSubjectLighting=function(subject,lights){
-    const zones={left:0.08,right:0.08,top:0.03,rim:0};
-    let rimSide='right';
-    const colorAcc={r:0,g:0,b:0,n:0};
-    lights.forEach(light=>{
-      if(light.visible===false) return;
-      const beam=light._objects?.[light.bmIdx];
-      if(beam&&beam.visible===false) return;
-      const distCm=Math.max(20,px2cm(Math.hypot(subject.left-light.left,subject.top-light.top)));
-      const power=Math.max(30, +light.powerWs || 300);
-      let intensity = (power*35) / (distCm*distCm); // inverse square law, scaled for canvas preview
-      intensity = clamp(intensity,0,1.4);
-      const toSub=Math.atan2(subject.top-light.top,subject.left-light.left);
-      const aim=deg2rad(light.angle||0);
-      const delta=Math.abs(Math.atan2(Math.sin(toSub-aim),Math.cos(toSub-aim)));
-      const beamFactor=Math.max(0,1-delta/(Math.PI/2));
-      intensity*=Math.pow(beamFactor,1.35);
-      intensity*=occlusionFactor(light,subject);
-      if(intensity<0.01) return;
-      const relX=light.left-subject.left, relY=light.top-subject.top;
-      if(relX<-10) zones.left += intensity*1.08;
-      if(relX>10) zones.right += intensity*1.08;
-      if(Math.abs(relX)<=25){zones.left+=intensity*0.40; zones.right+=intensity*0.40;}
-      if(relY<-10) zones.top += intensity*0.82;
-      if(Math.abs(relX)>35){ zones.rim += intensity*0.5; rimSide = relX<0?'left':'right'; }
-      const tc=getTempRGB(light.lightTemp||'5500K');
-      colorAcc.r += tc.r*intensity; colorAcc.g += tc.g*intensity; colorAcc.b += tc.b*intensity; colorAcc.n += intensity;
-    });
-    const color=colorAcc.n>0?{r:Math.round(colorAcc.r/colorAcc.n),g:Math.round(colorAcc.g/colorAcc.n),b:Math.round(colorAcc.b/colorAcc.n)}:{r:200,g:215,b:255};
-    return {leftIntensity:zones.left,rightIntensity:zones.right,topIntensity:zones.top,rimIntensity:zones.rim,rimSide,color};
-  }
+        <div class="menu" data-menu="presets">
+          <button class="menu-trigger" id="menuPresetsTrigger" type="button"
+            data-menu-trigger="presets">Presets</button>
+          <div class="menu-panel preset-panel">
+            <div class="preset-menu-list" id="presetMenuList"></div>
+          </div>
+        </div>
 
-  const oldDrawCam=window.drawCam;
-  function drawFrameOverlay(){
-    if(!camOpen) return; const c=document.getElementById('camCanvas'); if(!c||!c.width) return; const ctx=c.getContext('2d');
-    const W=c.width,H=c.height; let ratio=null;
-    if(currentFrameRatio==='3:2') ratio=3/2; else if(currentFrameRatio==='4:5') ratio=4/5; else if(currentFrameRatio==='1:1') ratio=1; else if(currentFrameRatio==='16:9') ratio=16/9; else return;
-    let fw=W*0.9, fh=fw/ratio; if(fh>H*0.84){fh=H*0.84; fw=fh*ratio;} const fx=(W-fw)/2, fy=(H-fh)/2;
-    ctx.save(); ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=1.2; ctx.strokeRect(fx,fy,fw,fh);
-    ctx.strokeStyle='rgba(255,255,255,.18)'; ctx.setLineDash([5,5]);
-    ctx.beginPath(); ctx.moveTo(fx+fw/3,fy); ctx.lineTo(fx+fw/3,fy+fh); ctx.moveTo(fx+2*fw/3,fy); ctx.lineTo(fx+2*fw/3,fy+fh); ctx.moveTo(fx,fy+fh/3); ctx.lineTo(fx+fw,fy+fh/3); ctx.moveTo(fx,fy+2*fh/3); ctx.lineTo(fx+fw,fy+2*fh/3); ctx.stroke();
-    ctx.setLineDash([]); ctx.fillStyle='rgba(255,255,255,.65)'; ctx.font='11px Inter,Segoe UI,Arial'; ctx.fillText('Cadre '+currentFrameRatio,fx+10,fy+16); ctx.restore();
-  }
-  window.drawCam=function(){ oldDrawCam(); drawFrameOverlay(); };
+        <div class="menu" data-menu="language">
+          <button class="menu-trigger" id="menuLanguageTrigger" type="button"
+            data-menu-trigger="language">Langue</button>
+          <div class="menu-panel language-panel">
+            <div class="language-menu-list" id="languageMenuList">
+              <button class="language-item active" type="button" data-language-id="fr">
+                <strong>Francais</strong>
+              </button>
+              <button class="language-item" type="button" data-language-id="en">
+                <strong>English</strong>
+              </button>
+              <button class="language-item" type="button" data-language-id="es">
+                <strong>Espanol</strong>
+              </button>
+              <button class="language-item" type="button" data-language-id="de">
+                <strong>Deutsch</strong>
+              </button>
+              <button class="language-item" type="button" data-language-id="ar">
+                <strong>العربية</strong>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
 
-  const oldAddLight=window.addLight;
-  window.addLight=function(key){ oldAddLight(key); const o=sel(); if(o&&o.ctype==='light'&& !o.powerWs) o.powerWs=300; };
+      <div class="appbar-status">
+        <span class="status-pill" id="studioBadge"></span>
+        <span class="status-pill" id="countBadge"></span>
+      </div>
+    </header>
 
-  window.setPower=function(v){ const o=sel(); if(!o||o.ctype!=='light') return; o.powerWs=+v; const out=document.getElementById('vPower'); if(out) out.textContent=(+v)+' Ws'; if(camOpen) drawCam(); saveState(); };
+    <div class="workspace">
+      <aside class="library-panel">
+        <div class="panel-top">
+          <div>
+            <p class="panel-eyebrow" id="libraryEyebrow">Bibliotheque</p>
+            <h2 id="libraryTitle">Elements et tailles</h2>
+          </div>
+          <p class="panel-copy" id="libraryCopy">Ajoutez un element, glissez-le dans le plan, puis tournez-le avec la
+            poignee orange.</p>
+        </div>
 
-  const oldAddRealGear=window.addRealGear;
-  if(oldAddRealGear){ window.addRealGear=function(key){ oldAddRealGear(key); const o=sel(); const info=DETAILED_GEAR[key]; if(o&&info){ o.realEqKey=key; if(info.powerWs) o.powerWs=info.powerWs; setLabel(info.label||getLbl(o)); cv.requestRenderAll(); if(camOpen) drawCam(); } }; }
-  window.toggleLockSel=function(){ const o=sel(); if(!o) return; const locked=!o.locked; o.locked=locked; o.lockMovementX=locked; o.lockMovementY=locked; o.lockRotation=locked; o.lockScalingX=locked; o.lockScalingY=locked; o.hasControls=!locked; o.selectable=true; cv.requestRenderAll(); syncSel(); toast(locked?'Objet verrouillé':'Objet déverrouillé'); saveState(); };
+        <div class="category-tabs" id="categoryTabs"></div>
+        <div class="palette-panel" id="palettePanel"></div>
 
-  const baseSync=window.syncSel;
-  window.syncSel=function(){ baseSync(); const o=sel(); const noSel=document.getElementById('noSel'); const sc=document.getElementById('selCtrl'); if(!o||o._room||o._grid||o._legend){return;} if(sc){
-      let wrap=document.getElementById('powerWrap');
-      if(!wrap){
-        wrap=document.createElement('div'); wrap.id='powerWrap'; wrap.className='sr'; wrap.style.display='none';
-        wrap.innerHTML='<label>Puissance</label><input type="range" id="srPower" min="30" max="1200" step="10"><span class="sv" id="vPower">300 Ws</span>';
-        const beamRow=document.getElementById('tempRow'); beamRow.parentNode.insertBefore(wrap, beamRow);
-        document.getElementById('srPower').addEventListener('input',e=>setPower(e.target.value));
-      }
-      const btnRow=document.getElementById('lockBtnRow') || (()=>{ const d=document.createElement('div'); d.id='lockBtnRow'; d.className='g2'; d.style.marginBottom='5px'; d.innerHTML='<button id="lockBtn" onclick="toggleLockSel()">🔒 Verrouiller</button><div id="lockInfo" class="locked-badge" style="display:none">🔐 Verrouillé</div>'; sc.appendChild(d); return d; })();
-      const powerWrap=document.getElementById('powerWrap'); const powerSlider=document.getElementById('srPower'); const lockBtn=document.getElementById('lockBtn'); const lockInfo=document.getElementById('lockInfo');
-      if(o.ctype==='light'){ powerWrap.style.display='flex'; powerSlider.value=+o.powerWs||300; document.getElementById('vPower').textContent=(+o.powerWs||300)+' Ws'; } else powerWrap.style.display='none';
-      if(lockBtn) lockBtn.textContent=o.locked?'🔓 Déverrouiller':'🔒 Verrouiller'; if(lockInfo) lockInfo.style.display=o.locked?'inline-flex':'none';
-    } };
+        <div class="selection-panel empty" id="selectionPanel">
+          Selectionnez un element dans le plan pour ajuster sa position, sa rotation ou le supprimer.
+        </div>
+      </aside>
 
-  // serialize / restore extension
-  window.serializeCurrentProject=function(){return {meta:{...getProjectMeta(),frameRatio:currentFrameRatio},room:{RW,RH,PPX,GS},canvas:cv.toJSON(EXT_PROPS)};};
-  window.restoreSerializedProject=function(payload){if(!payload)return; const room=payload.room||{}; RW=room.RW||RW; RH=room.RH||RH; PPX=room.PPX||PPX; GS=room.GS||GS; document.getElementById('rW').value=RW; document.getElementById('rH').value=RH; document.getElementById('scP').value=PPX; document.getElementById('grS').value=GS; setProjectMeta(payload.meta||{}); currentFrameRatio=(payload.meta&&payload.meta.frameRatio)||currentFrameRatio||'3:2'; const frSel=document.getElementById('frameRatioSelect'); if(frSel) frSel.value=currentFrameRatio; cv.loadFromJSON(payload.canvas,()=>{refs(); cv.getObjects().forEach(o=>{ if(o.locked){ o.lockMovementX=true; o.lockMovementY=true; o.lockRotation=true; o.lockScalingX=true; o.lockScalingY=true; o.hasControls=false; } }); fitCanvas(); cv.requestRenderAll(); buildLayers(); if(camOpen) drawCam(); updateProjectHub?.(); updateTopProjectBar?.(); toast('Projet chargé');}); };
+      <main class="stage-panel">
+        <div class="stage-topbar">
+          <div>
+            <p class="panel-eyebrow" id="planEyebrow">Plan principal</p>
+            <h2 id="planTitle">Vue de dessus</h2>
+          </div>
+          <div class="stage-hints">
+            <span class="hint-pill" id="hintDrag">Glisser = deplacer</span>
+            <span class="hint-pill accent" id="hintRotate">Poignee orange = rotation</span>
+          </div>
+        </div>
 
-  // Save shoot-type template
-  window.saveShootTypeTemplate=function(){ const m=getProjectMeta(); const payload=serializeCurrentProject(); payload.meta.name=`Template ${m.shootType||'Séance'} · ${new Date().toLocaleDateString('fr-FR')}`; payload.meta.template=true; const all=getLocalCollection(STORAGE_KEYS.templates); all.unshift(payload); setLocalCollection(STORAGE_KEYS.templates,all.slice(0,40)); updateProjectHub(); toast('Template de séance sauvegardé'); };
+        <div class="stage-canvas-wrap">
+          <canvas id="planCanvas" aria-label="Vue de dessus du studio photo"></canvas>
 
-  // Detailed catalog render
-  const moreCatalog=[
-    {cat:'template',label:'Template Portrait corporate',desc:'Base soft et propre pour portrait business.',run:()=>{presetCorporate(); setProjectMeta({...getProjectMeta(),shootType:'Corporate'});} , specs:'1 sujet · 2 lumières · rendu propre'},
-    {cat:'template',label:'Template Beauté butterfly',desc:'Source frontale beauté + fill.',run:()=>{presetButterfly(); setProjectMeta({...getProjectMeta(),shootType:'Beauté'});} , specs:'beauty dish · fill · portrait serré'},
-    {cat:'template',label:'Template Couple',desc:'Base équilibrée pour 2 sujets.',run:()=>{presetCouple(); setProjectMeta({...getProjectMeta(),shootType:'Famille'});} , specs:'2 sujets · 2 sources principales'},
-    {cat:'template',label:'Template Packshot',desc:'Base produit e-commerce.',run:()=>{presetPackshot(); setProjectMeta({...getProjectMeta(),shootType:'Packshot'});} , specs:'fond · diffusion · lumière produit'}
-  ];
-  window.PRODUCT_CATALOG = (window.PRODUCT_CATALOG||[]).concat(moreCatalog);
-  window.renderCatalog=function(){
-    const q=(document.getElementById('catalogSearch')?.value||'').toLowerCase().trim();
-    const f=document.getElementById('catalogFilter')?.value||'all'; const list=document.getElementById('catalogList'); if(!list) return;
-    const rows=(window.PRODUCT_CATALOG||[]).filter(x=>(f==='all'||x.cat===f)&&(!q||(x.label+' '+(x.desc||'')+' '+(x.specs||'')+' '+x.cat).toLowerCase().includes(q)));
-    list.innerHTML=rows.map((x)=>`<div class="catalog-item"><div class="cat">${escapeHtml2(x.cat)}</div><strong>${escapeHtml2(x.label)}</strong><div class="desc">${escapeHtml2(x.desc||'')}</div>${x.specs?`<div class="specs"><b>Specs</b> · ${escapeHtml2(x.specs)}</div>`:''}<button class="b-blue" onclick="runCatalogItem(${window.PRODUCT_CATALOG.indexOf(x)})">Ajouter</button></div>`).join('') || '<div class="muted">Aucun résultat. Cette bibliothèque est détaillée, pas télépathe.</div>';
-  };
+          <section class="iso-overlay">
+            <div class="iso-head">
+              <div>
+                <p class="panel-eyebrow" id="previewEyebrow">Apercu</p>
+                <h3 id="previewTitle">Vue isometrique</h3>
+              </div>
+            </div>
+            <canvas id="isoCanvas" aria-label="Vue isometrique du studio photo"></canvas>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
 
-  // Share link
-  window.copyShareLink=function(){ try{ const payload=serializeCurrentProject(); const raw=encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(payload))))); const url=location.origin+location.pathname+'#sp='+raw; navigator.clipboard.writeText(url); toast('Lien de partage copié'); }catch(e){ console.error(e); alert('Impossible de générer le lien.'); } };
-  window.loadFromShareHash=function(){ if(!location.hash.startsWith('#sp=')) return; try{ const raw=location.hash.slice(4); const payload=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(raw))))); restoreSerializedProject(payload); toast('Projet chargé depuis le lien'); }catch(e){ console.warn('share hash invalid',e); } };
-
-  // Variant compare modal
-  function createCompareModal(){ if(document.getElementById('compareModal')) return; const el=document.createElement('div'); el.id='compareModal'; el.className='modal'; el.innerHTML=`<div class="modal-dialog"><div class="modal-head"><div><h3 style="font-size:16px">🆚 Comparaison de variantes</h3><div class="muted">Compare deux variantes du même projet sans jouer au jeu des sept différences à l’œil nu.</div></div><button class="small-btn b-ghost" onclick="closeCompareModal()">✕</button></div><div class="modal-grid"><div class="modal-card"><div class="rw"><div class="col"><label>Variante A</label><select id="compareA"></select></div><div class="col"><label>Variante B</label><select id="compareB"></select></div></div><div class="g2" style="margin-top:10px"><button class="b-blue" onclick="renderVariantCompare()">Comparer</button><button onclick="loadComparedVariant('A')">Charger A</button></div></div><div class="modal-card"><div id="compareBody" class="muted">Choisis deux variantes puis lance la comparaison.</div></div></div></div>`; document.body.appendChild(el); }
-  window.openCompareModal=function(){ createCompareModal(); document.getElementById('compareModal').classList.add('open'); const vars=getLocalCollection(STORAGE_KEYS.variants).filter(v=>(v.meta?.variantOf||'')===(getProjectMeta().name||'')); const opts=vars.map((v,i)=>`<option value="${i}">${escapeHtml2(v.meta?.variantLabel||('Variante '+(i+1)))}</option>`).join(''); document.getElementById('compareA').innerHTML=opts; document.getElementById('compareB').innerHTML=opts; if(vars.length>1) document.getElementById('compareB').value='1'; renderVariantCompare(); };
-  window.closeCompareModal=function(){ document.getElementById('compareModal')?.classList.remove('open'); };
-  window.renderVariantCompare=function(){ const vars=getLocalCollection(STORAGE_KEYS.variants).filter(v=>(v.meta?.variantOf||'')===(getProjectMeta().name||'')); const a=vars[+document.getElementById('compareA').value||0], b=vars[+document.getElementById('compareB').value||0]; const body=document.getElementById('compareBody'); if(!a||!b){body.innerHTML='<div class="muted">Il faut au moins deux variantes sauvegardées pour comparer.</div>'; return;} const ca=countPayload(a), cb=countPayload(b); body.innerHTML=`<div class="compare-grid"><div class="compare-box"><h5>A · ${escapeHtml2(a.meta?.variantLabel||'Variante A')}</h5>${summaryBox(a,ca)}</div><div class="compare-box"><h5>B · ${escapeHtml2(b.meta?.variantLabel||'Variante B')}</h5>${summaryBox(b,cb)}</div></div><div class="note" style="margin-top:12px"><strong>Différences clés</strong><ul><li>Δ lumières : <strong>${cb.lights-ca.lights>=0?'+':''}${cb.lights-ca.lights}</strong></li><li>Δ modificateurs : <strong>${cb.mods-ca.mods>=0?'+':''}${cb.mods-ca.mods}</strong></li><li>Δ sujets : <strong>${cb.subjects-ca.subjects>=0?'+':''}${cb.subjects-ca.subjects}</strong></li><li>Éléments A/B : <strong>${ca.total}</strong> vs <strong>${cb.total}</strong></li></ul></div>`; };
-  window.loadComparedVariant=function(which){ const select=document.getElementById(which==='A'?'compareA':'compareB'); loadStoredVariant(+select.value||0); closeCompareModal(); };
-  function countPayload(p){ const objs=(p.canvas?.objects||[]).filter(o=>o.isSO||o.ctype==='note'||o.ctype==='measure'); return {total:objs.length, lights:objs.filter(o=>o.ctype==='light').length, mods:objs.filter(o=>o.ctype==='modifier').length, subjects:objs.filter(o=>o.ctype==='subject').length, cameras:objs.filter(o=>o.ctype==='camera').length}; }
-  function summaryBox(p,c){ return `<div class="muted">${escapeHtml2(p.meta?.shootType||'—')} ${p.meta?.client?('· '+escapeHtml2(p.meta.client)):''}</div><ul><li>${c.subjects} sujet(s)</li><li>${c.lights} lumière(s)</li><li>${c.mods} modificateur(s)</li><li>${c.cameras} caméra(s)</li></ul>`; }
-
-
-</script>
-<script src="assets/js/enhancements_v14.js"></script>
+  <script src="js/simple-studio.js" defer></script>
 </body>
+
 </html>
