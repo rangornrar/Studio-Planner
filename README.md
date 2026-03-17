@@ -4,9 +4,9 @@ Langues : [Français](README.md) · [FR](README.fr.md) · [English](README.en.md
 
 # LITE Studio
 
-LITE Studio est une application web autonome pour preparer un plan de studio photo.
+LITE Studio est une application web autonome pour preparer un plan de studio photo sur desktop et mobile.
 
-Elle permet de positionner des elements realistes de plateau, de changer les couleurs du sol et du fond, d'afficher une vue de dessus avec une petite vue isometrique, d'utiliser des presets de studio et d'imprimer directement le plan principal.
+Elle aide a construire rapidement un set, mesurer les distances utiles du plateau, zoomer dans le plan, sauvegarder des presets personnalises et exporter le schema en PNG ou PDF.
 
 ## Captures d'ecran
 
@@ -24,32 +24,38 @@ Elle permet de positionner des elements realistes de plateau, de changer les cou
 
 ## Fonctionnalites
 
-- Vue de dessus principale du studio avec mini vue isometrique.
-- Bibliotheque d'elements classes par categories avec plusieurs tailles.
-- Deplacement et rotation des elements a la souris.
-- Changement rapide de la couleur du sol et des fonds photo.
-- Grande banque de presets classes par categories.
+- Interface responsive utilisable sur mobile et desktop.
+- Vue de dessus avec zoom, molette sur desktop, pinch-to-zoom sur mobile et apercu isometrique zoombable.
+- Bibliotheque d'elements avec recherche par type, taille ou famille.
+- Mesures automatiques entre sujet, camera, fond et sources, plus un mode de mesure manuel.
+- Reglages d'element et informations metier : hauteur, orientation, puissance source et lecture estimee a ISO 100.
+- Presets integres et presets personnalises sauvegardes dans le navigateur.
+- Export PNG, export PDF et impression directe du plan.
 - Interface multilingue : francais, anglais, espagnol, allemand et arabe.
-- Impression directe du plan principal.
-- Remise a zero du plateau en un clic.
 
 ## Demarrage rapide
 
 Aucune installation n'est necessaire.
 
-1. Ouvrez [index.html](index.html) dans un navigateur moderne.
+1. Ouvrez [app.html](app.html) dans un navigateur moderne pour lancer l'application, ou [index.html](index.html) pour la landing.
 2. Ajoutez des elements depuis la bibliotheque.
-3. Deplacez-les sur le plan et tournez-les avec la poignee orange.
-4. Utilisez le menu `Couleur` pour changer le sol et le fond.
-5. Utilisez le menu `Presets` pour charger une configuration existante.
-6. Utilisez le menu `Fichier > Imprimer` pour imprimer la vue de dessus.
+3. Deplacez-les dans le plan et tournez-les avec la poignee orange.
+4. Utilisez la molette sur desktop ou le pinch sur mobile pour zoomer dans la vue de dessus.
+5. Activez `Mesure` pour afficher les distances autour du sujet ou tracer une mesure manuelle.
+6. Utilisez le menu `Presets` pour charger un preset ou sauvegarder votre propre configuration.
+7. Utilisez le menu `Fichier` pour copier l'image, exporter en PNG ou PDF, ou imprimer le plan.
 
 ## Structure du projet
 
-- `index.html` : interface principale.
-- `css/simple-studio.css` : design, mise en page et styles d'impression.
-- `js/simple-studio.js` : logique du studio, rendu canvas, presets, langues et interactions.
-- `docs/screenshots/` : captures d'ecran du README.
+- `index.html` : landing page publique.
+- `app.html` : application de plan de studio photo.
+- `css/simple-studio.css` : design, responsive, mise en page et styles d'impression.
+- `css/site.css` : styles de la landing et des pages editoriales.
+- `js/simple-studio.js` : logique du studio, rendu canvas, langues, presets, mesures et interactions.
+- `js/site-i18n.js` et `js/site-copy-*.js` : contenus et localisation des pages publiques.
+- `guide.html`, `presets.html`, `faq.html` : pages d'explication et d'accompagnement.
+- `schema-eclairage-portrait.html`, `plan-studio-boudoir.html`, `lighting-diagram-interview.html` : pages ciblees SEO reliees a l'application.
+- `docs/screenshots/` : captures d'ecran utilisees dans le README et les apercus.
 
 ## Parametres d'URL utiles
 

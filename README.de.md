@@ -4,9 +4,9 @@ Sprachen: [Français](README.md) · [FR](README.fr.md) · [English](README.en.md
 
 # LITE Studio
 
-LITE Studio ist eine eigenstandige Web-App zur Planung eines Fotostudio-Setups.
+LITE Studio ist eine eigenstandige Web-App zur Planung eines Foto-Sets auf Desktop und Mobilgerat.
 
-Sie ermoglicht das Platzieren realistischer Studio-Elemente, das Andern von Boden- und Hintergrundfarben, das Arbeiten mit einer grossen Draufsicht und einer kleinen isometrischen Vorschau, das Laden von Studio-Presets sowie das direkte Drucken der Draufsicht.
+Sie hilft dabei, ein Setup schnell aufzubauen, wichtige Abstanden auf dem Set zu messen, im Plan zu zoomen, eigene Presets zu speichern und das Layout als PNG oder PDF zu exportieren.
 
 ## Screenshots
 
@@ -24,34 +24,40 @@ Sie ermoglicht das Platzieren realistischer Studio-Elemente, das Andern von Bode
 
 ## Funktionen
 
-- Grosse Draufsicht des Studios mit kleiner isometrischer Vorschau.
-- Nach Kategorien organisierte Bibliothek mit mehreren Groessen pro Element.
-- Verschieben und Drehen aller Elemente mit der Maus.
-- Schneller Wechsel von Boden- und Fotohintergrundfarben.
-- Umfangreiche Preset-Bibliothek nach Kategorien sortiert.
+- Responsive Oberflache fur Mobilgerate und Desktop.
+- Draufsicht mit Zoom, Mausrad auf Desktop, Pinch-to-Zoom auf Mobilgeraten und zoombarer isometrischer Vorschau.
+- Elementbibliothek mit Suche nach Typ, Grosse oder Familie.
+- Automatische Messwerte zwischen Motiv, Kamera, Hintergrund und Lichtquellen sowie ein manueller Messmodus.
+- Element-Einstellungen und praktische Angaben wie Hohe, Ausrichtung, Lichtleistung und geschaetzte Blende bei ISO 100.
+- Integrierte Presets und benutzerdefinierte Presets, die im Browser gespeichert werden.
+- PNG-Export, PDF-Export und direktes Drucken des Hauptplans.
 - Mehrsprachige Oberflache: Franzosisch, Englisch, Spanisch, Deutsch und Arabisch.
-- Direktes Drucken der Draufsicht.
-- Zurucksetzen des Setups mit einem Klick.
 
 ## Schnellstart
 
 Es ist keine Installation erforderlich.
 
-1. Offnen Sie [index.html](index.html) in einem modernen Browser.
+1. Offnen Sie [app.html](app.html) in einem modernen Browser, um die Anwendung zu starten, oder [index.html](index.html) fur die offentliche Landingpage.
 2. Fugen Sie Elemente aus der Bibliothek hinzu.
 3. Bewegen Sie sie im Plan und drehen Sie sie mit dem orangefarbenen Griff.
-4. Verwenden Sie das Menu `Farbe`, um Boden und Hintergrund zu andern.
-5. Verwenden Sie das Menu `Presets`, um ein bestehendes Setup zu laden.
-6. Verwenden Sie `Datei > Drucken`, um die Draufsicht zu drucken.
+4. Verwenden Sie das Mausrad auf Desktop oder die Pinch-Geste auf Mobilgeraten, um in die Draufsicht zu zoomen.
+5. Aktivieren Sie `Messen`, um Abstanden rund um das Motiv anzuzeigen oder eine manuelle Messung zu zeichnen.
+6. Verwenden Sie das Menu `Presets`, um ein Preset zu laden oder ein eigenes Setup zu speichern.
+7. Verwenden Sie das Menu `Datei`, um das Bild zu kopieren, PNG oder PDF zu exportieren oder den Plan zu drucken.
 
 ## Projektstruktur
 
-- `index.html`: Hauptoberflache.
-- `css/simple-studio.css`: Design, Layout und Druckstile.
-- `js/simple-studio.js`: Studio-Logik, Canvas-Rendering, Presets, Sprachen und Interaktionen.
-- `docs/screenshots/`: im README verwendete Screenshots.
+- `index.html`: offentliche Landingpage.
+- `app.html`: Anwendung fur die Planung von Foto-Sets.
+- `css/simple-studio.css`: Design, Responsive-Verhalten, Layout und Druckstile.
+- `css/site.css`: Styles fur Landingpage und redaktionelle Seiten.
+- `js/simple-studio.js`: Studio-Logik, Canvas-Rendering, Sprachen, Presets, Messungen und Interaktionen.
+- `js/site-i18n.js` und `js/site-copy-*.js`: Inhalte und Lokalisierung der offentlichen Seiten.
+- `guide.html`, `presets.html`, `faq.html`: erklarende Begleitseiten.
+- `schema-eclairage-portrait.html`, `plan-studio-boudoir.html`, `lighting-diagram-interview.html`: SEO-Seiten mit Verlinkung zur App.
+- `docs/screenshots/`: Screenshots fur README und Vorschaubilder.
 
-## Nützliche URL-Parameter
+## Nutzliche URL-Parameter
 
 Mit einfachen URL-Parametern kann direkt eine Sprache oder ein Preset geoffnet werden:
 

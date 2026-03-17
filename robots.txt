@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lumierestudio.archi-it.fr/sitemap.xml

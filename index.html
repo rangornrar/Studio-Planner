@@ -1,160 +1,169 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
-
+<html lang="fr" dir="ltr" data-page="index">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LITE Studio Planner</title>
+  <meta name="theme-color" content="#07111f">
+  <title>Plan de studio photo en ligne, mesures et export PDF | Lumiere Studio</title>
+  <meta name="description" content="Creez un plan de studio photo en ligne sur mobile ou desktop : sujets, lumieres, cameras, mesures automatiques, presets, zoom, export PNG ou PDF et impression du plan.">
+  <link rel="canonical" href="https://lumierestudio.archi-it.fr/">
+  <link rel="alternate" hreflang="fr" href="https://lumierestudio.archi-it.fr/">
+  <link rel="alternate" hreflang="en" href="https://lumierestudio.archi-it.fr/en/">
+  <link rel="alternate" hreflang="es" href="https://lumierestudio.archi-it.fr/es/">
+  <link rel="alternate" hreflang="de" href="https://lumierestudio.archi-it.fr/de/">
+  <link rel="alternate" hreflang="ar" href="https://lumierestudio.archi-it.fr/ar/">
+  <link rel="alternate" hreflang="x-default" href="https://lumierestudio.archi-it.fr/">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Lumiere Studio">
+  <meta property="og:title" content="Lumiere Studio - Plan de studio photo en ligne, mesures et export PDF">
+  <meta property="og:description" content="Studio photo en ligne pour construire un plan de studio photo, afficher les mesures utiles, zoomer dans le plateau et exporter un lighting diagram propre.">
+  <meta property="og:url" content="https://lumierestudio.archi-it.fr/">
+  <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
+  <meta property="og:image:alt" content="Capture de l'application Lumiere Studio avec vue de dessus, mesures et apercu isometrique">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Lumiere Studio - Plan de studio photo en ligne, mesures et export PDF">
+  <meta name="twitter:description" content="Creez un plan de studio photo, mesurez les distances cle, zoomez dans le plateau et exportez un lighting diagram en PNG ou PDF.">
+  <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
+  <meta name="twitter:image:alt" content="Capture de l'application Lumiere Studio avec vue de dessus, mesures et apercu isometrique">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="css/simple-studio.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Lumiere Studio",
+  "applicationCategory": "PhotographyApplication",
+  "applicationSubCategory": "Photo Studio Planner",
+  "operatingSystem": "Web",
+  "url": "https://lumierestudio.archi-it.fr/",
+  "image": "https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png",
+  "description": "Studio photo en ligne pour construire un plan de studio photo, afficher les mesures utiles, zoomer dans le plateau et exporter un lighting diagram propre.",
+  "inLanguage": "fr",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  }
+}
+  </script>
 </head>
-
 <body>
-  <div class="page">
-    <div class="support-strip" id="supportStrip" aria-label="Support Ko-fi">
-      <span class="support-text" id="supportText">Cet outil vous aide ? Soutenez son evolution.</span>
-      <a class="support-btn" id="supportButton" href="https://ko-fi.com/D1D21VSKW5" target="_blank"
-        rel="noreferrer noopener">
-        Soutenir sur Ko-fi
+  <div class="top-strip">
+    <div class="site-shell top-strip-inner">
+      <div class="top-copy" id="topCopy">Cet outil vous aide ? Soutenez son evolution et aidez a faire grandir Lumiere Studio.</div>
+      <a class="top-kofi" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">
+        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Soutenir Lumiere Studio sur Ko-fi">
       </a>
     </div>
-
-    <header class="appbar">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <span class="brand-ring"></span>
-          <span class="brand-core"></span>
-          <span class="brand-beam"></span>
-        </div>
-        <div class="brand-copy">
-          <h1>LITE Studio</h1>
-          <p id="brandTagline">Photo set planner</p>
-        </div>
-      </div>
-
-      <nav class="menu-bar" id="mainMenuBar" aria-label="Menu principal">
-        <div class="menu" data-menu="file">
-          <button class="menu-trigger" id="menuFileTrigger" type="button" data-menu-trigger="file">Fichier</button>
-          <div class="menu-panel file-panel">
-            <button class="menu-item" id="actionReset" type="button" data-menu-action="reset">Remettre a zero</button>
-            <button class="menu-item" id="actionCopyImage" type="button" data-menu-action="copy-image">Copier
-              l'image</button>
-            <button class="menu-item" id="actionExportPng" type="button" data-menu-action="export-png">Telecharger
-              PNG</button>
-            <button class="menu-item" id="actionPrint" type="button" data-menu-action="print">Imprimer</button>
-          </div>
-        </div>
-
-        <div class="menu" data-menu="color">
-          <button class="menu-trigger" id="menuColorTrigger" type="button" data-menu-trigger="color">Couleur</button>
-          <div class="menu-panel color-panel">
-            <section class="submenu-block">
-              <div class="submenu-head">
-                <span id="floorMenuLabel">Sol</span>
-              </div>
-              <div class="menu-swatch-grid" id="floorMenuSwatches"></div>
-            </section>
-            <section class="submenu-block">
-              <div class="submenu-head">
-                <span id="backdropMenuLabel">Fond</span>
-              </div>
-              <div class="menu-swatch-grid" id="backdropMenuSwatches"></div>
-            </section>
-          </div>
-        </div>
-
-        <div class="menu" data-menu="presets">
-          <button class="menu-trigger" id="menuPresetsTrigger" type="button"
-            data-menu-trigger="presets">Presets</button>
-          <div class="menu-panel preset-panel">
-            <div class="preset-menu-list" id="presetMenuList"></div>
-          </div>
-        </div>
-
-        <div class="menu" data-menu="language">
-          <button class="menu-trigger" id="menuLanguageTrigger" type="button"
-            data-menu-trigger="language">Langue</button>
-          <div class="menu-panel language-panel">
-            <div class="language-menu-list" id="languageMenuList">
-              <button class="language-item active" type="button" data-language-id="fr">
-                <strong>Francais</strong>
-              </button>
-              <button class="language-item" type="button" data-language-id="en">
-                <strong>English</strong>
-              </button>
-              <button class="language-item" type="button" data-language-id="es">
-                <strong>Espanol</strong>
-              </button>
-              <button class="language-item" type="button" data-language-id="de">
-                <strong>Deutsch</strong>
-              </button>
-              <button class="language-item" type="button" data-language-id="ar">
-                <strong>العربية</strong>
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <div class="appbar-status">
-        <span class="status-pill" id="studioBadge"></span>
-        <span class="status-pill" id="countBadge"></span>
-      </div>
-    </header>
-
-    <div class="workspace">
-      <aside class="library-panel">
-        <div class="panel-top">
-          <div>
-            <p class="panel-eyebrow" id="libraryEyebrow">Bibliotheque</p>
-            <h2 id="libraryTitle">Elements et tailles</h2>
-          </div>
-          <p class="panel-copy" id="libraryCopy">Ajoutez un element, glissez-le dans le plan, puis tournez-le avec la
-            poignee orange.</p>
-        </div>
-
-        <div class="category-tabs" id="categoryTabs"></div>
-        <div class="palette-panel" id="palettePanel"></div>
-
-        <div class="selection-panel empty" id="selectionPanel">
-          Selectionnez un element dans le plan pour ajuster sa position, sa rotation ou le supprimer.
-        </div>
-      </aside>
-
-      <main class="stage-panel">
-        <div class="stage-topbar">
-          <div>
-            <p class="panel-eyebrow" id="planEyebrow">Plan principal</p>
-            <h2 id="planTitle">Vue de dessus</h2>
-          </div>
-          <div class="stage-hints">
-            <span class="hint-pill" id="hintDrag">Glisser = deplacer</span>
-            <span class="hint-pill accent" id="hintRotate">Poignee orange = rotation</span>
-          </div>
-        </div>
-
-        <div class="stage-canvas-wrap">
-          <canvas id="planCanvas" aria-label="Vue de dessus du studio photo"></canvas>
-
-          <section class="iso-overlay">
-            <div class="iso-head">
-              <div>
-                <p class="panel-eyebrow" id="previewEyebrow">Apercu</p>
-                <h3 id="previewTitle">Vue isometrique</h3>
-              </div>
-            </div>
-            <canvas id="isoCanvas" aria-label="Vue isometrique du studio photo"></canvas>
-          </section>
-        </div>
-      </main>
-    </div>
   </div>
-
-  <script src="js/simple-studio.js" defer></script>
+  <header class="site-nav">
+    <div class="site-shell site-nav-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-copy">
+          <strong>Lumiere Studio</strong>
+          <span id="brandTagline">Photo Studio Planner</span>
+        </span>
+      </a>
+      <div class="site-nav-tools">
+        <nav class="nav-links" id="siteNavLinks" aria-label="Navigation principale">
+          <a href="app.html">Application</a><a href="guide.html">Guide</a><a href="presets.html">Presets</a><a href="faq.html">FAQ</a>
+        </nav>
+        <nav class="language-switcher" aria-label="Choisir la langue de la page">
+    <span class="language-switcher-label">Langues</span>
+    <div class="language-switcher-list">
+      <a class="language-chip active" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Francais" aria-current="page">
+      <span class="language-chip-code">FR</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/en/" hreflang="en" lang="en" title="English">
+      <span class="language-chip-code">EN</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Espanol">
+      <span class="language-chip-code">ES</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/de/" hreflang="de" lang="de" title="Deutsch">
+      <span class="language-chip-code">DE</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/ar/" hreflang="ar" lang="ar" title="العربية">
+      <span class="language-chip-code">AR</span>
+    </a>
+    </div>
+  </nav>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="site-shell">
+        <article class="hero-copy hero-panel">
+          <div class="hero-panel-main" id="heroCopyContent"><p class="eyebrow">Plan de studio photo en ligne</p><h1>Construisez votre plan de studio photo, verifiez les distances et partagez un setup propre avant le shoot.</h1><p>Lumiere Studio aide les photographes, assistants et petites equipes video a placer leurs lumieres, fonds, cameras et modificateurs, puis a valider le plateau sur mobile ou desktop.</p><div class="hero-actions"><a class="button-link primary" href="app.html">Ouvrir l'application</a><a class="button-link secondary" href="guide.html">Lire le guide</a></div><div class="hero-points"><div class="point-chip"><strong>Mobile + desktop</strong>Travaillez depuis le plateau avec une interface exploitable sur telephone comme sur ordinateur.</div><div class="point-chip"><strong>Mesures automatiques</strong>Affichez les distances sujet camera fond et sources en un clic avec le mode Mesure.</div><div class="point-chip"><strong>Zoom souris et pinch</strong>Zoomez dans la vue de dessus a la molette sur desktop ou au pinch sur mobile.</div><div class="point-chip"><strong>Presets perso + PDF</strong>Sauvegardez vos variantes et exportez un plan clair en PNG, PDF ou impression.</div></div></div>
+          <div class="hero-inline-media" id="heroVisualContent"><figure><img src="docs/screenshots/studio-portrait.png" alt="Exemple de plan de studio photo avec mesures et apercu isometrique dans Lumiere Studio"><figcaption class="hero-caption">La version actuelle permet de zoomer, mesurer les distances cle et exporter un plan propre en PNG ou PDF.</figcaption></figure></div>
+        </article>
+      </div>
+    </section>
+    <section class="section section-tight">
+      <div class="site-shell">
+        <div class="intro-panel" id="introPanelContent"><p class="eyebrow">Studio photo en ligne</p><h2>Un studio photo en ligne plus utile qu'un simple schema.</h2><p>Placez sujets, lumieres, cameras et modificateurs, activez Mesure pour afficher les distances sujet camera fond, puis sauvegardez votre variante.</p><p>Que vous cherchiez un studio photo en ligne, un plan de studio photo ou un lighting diagram imprimable, l'outil sert autant a la prepa qu'au terrain.</p><div class="keyword-list"><span class="keyword-chip">Plan de studio photo</span><span class="keyword-chip">Schema d'eclairage photo</span><span class="keyword-chip">Mesures studio</span><span class="keyword-chip">Export PDF</span></div></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="site-shell">
+        <div class="section-head" id="featuresHeadContent"><p class="eyebrow">En un coup d'oeil</p><h2>Un outil pense pour la pre production, le brief et l'usage terrain.</h2><p>L'application ne sert pas seulement a dessiner un plan : elle aide a valider les distances, garder un plateau lisible et produire un document partageable.</p></div>
+        <div class="card-grid" id="featureCardsContent"><article class="info-card"><h3>Sur le terrain</h3><p>La vue de dessus reste lisible sur desktop et mobile, avec zoom molette ou pinch, labels visibles et bibliotheque accessible.</p><div class="meta-list"><span>Mobile</span><span>Desktop</span><span>Zoom</span></div></article><article class="info-card"><h3>Preparation metier</h3><p>Le mode Mesure affiche les distances sujet camera fond et sources, avec puissance et lecture estimee pour mieux briefer l'equipe.</p><div class="meta-list"><span>Distances</span><span>Puissance</span><span>Lecture estimee</span></div></article><article class="info-card"><h3>Sortie et partage</h3><p>Chargez un preset, sauvegardez votre propre version puis exportez l'image, le PDF ou la vue imprimee pour l'equipe ou le client.</p><div class="meta-list"><span>Preset perso</span><span>PNG PDF</span><span>Impression</span></div></article></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="site-shell">
+        <div class="section-head" id="capturesHeadContent"><p class="eyebrow">Captures</p><h2>Trois exemples de setups avec l'interface actuelle.</h2><p>Les captures montrent la nouvelle interface, les labels lisibles, les outils de zoom et les mesures utiles au plateau.</p></div>
+        <div class="screenshot-grid" id="screenshotGridContent"><article class="shot-card hero-copy"><figure><img src="docs/screenshots/studio-portrait.png" alt="Preset portrait avec mesures du sujet vers la source, la camera et le fond dans Lumiere Studio"><figcaption>Preset portrait avec lecture claire des distances sujet source camera et fond.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="docs/screenshots/studio-boudoir.png" alt="Preset boudoir avec mobilier, fond colore et interface mise a jour dans Lumiere Studio"><figcaption>Preset boudoir avec mobilier, fond colore et interface mise a jour pour desktop et mobile.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="docs/screenshots/studio-video.png" alt="Preset interview avec camera, panneaux LED et distances utiles dans Lumiere Studio"><figcaption>Preset interview avec axe camera lisible, panneaux LED et mesures utiles pour le tournage.</figcaption></figure></article></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="site-shell article-grid" id="resourcesGridContent"><article class="article-card"><p class="eyebrow">Guide pratique</p><h2>Comment preparer un setup de studio photo</h2><p>Une methode rapide pour placer le sujet, la camera, la source cle puis verifier les distances au bon moment.</p><ul><li>Construire un plan lisible vite</li><li>Utiliser Mesure et le zoom sans perdre du temps</li></ul><p><a class="button-link secondary" href="guide.html">Lire le guide</a></p></article><article class="article-card"><p class="eyebrow">Banque de presets</p><h2>Des presets integres et des variantes que vous pouvez sauvegarder</h2><p>Les presets accelerent la preparation et vos versions personnalisees restent stockees dans le navigateur.</p><ul><li>Portrait, boudoir, corporate, produit et video</li><li>Preset de depart puis variante perso</li></ul><p><a class="button-link secondary" href="presets.html">Explorer les presets</a></p></article><article class="article-card"><p class="eyebrow">Questions frequentes</p><h2>Les reponses utiles avant le shooting</h2><p>Mobile, mesures, export PDF, langues et zoom : l'essentiel est resume ici.</p><ul><li>Verifier les distances utiles au plateau</li><li>Exporter un plan propre pour l'equipe</li></ul><p><a class="button-link secondary" href="faq.html">Ouvrir la FAQ</a></p></article></div>
+    </section>
+    <section class="section">
+      <div class="site-shell">
+        <div class="cta-panel" id="ctaPanelContent"><p class="eyebrow">Pret a preparer votre prochain setup</p><h2>Ouvrez l'application, ajustez votre setup et exportez un plan propre.</h2><p>L'application fonctionne dans le navigateur sur mobile et desktop, prend en charge cinq langues et permet de sauvegarder vos presets perso.</p><div class="cta-actions"><a class="button-link primary" href="app.html">Lancer Lumiere Studio</a><a class="button-link secondary" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">Soutenir le projet</a></div></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="site-shell">
+        <div class="section-head" id="seoPagesHeadContent"><p class="eyebrow">Pages SEO</p><h2>Trois pages ciblees pour des recherches tres concretes.</h2><p>Ces pages repondent a une intention claire puis envoient directement vers l'application avec le bon preset charge.</p></div>
+        <div class="card-grid" id="seoPagesCardsContent"><article class="info-card"><h3>Schema d'eclairage portrait</h3><p>Une base portrait studio avec key light a 45 degres, mesures utiles et export propre en PDF.</p><div class="quick-links"><a href="schema-eclairage-portrait.html">Lire la page</a><a href="app.html?preset=portrait-soft-45">Ouvrir le preset</a></div></article><article class="info-card"><h3>Plan de studio boudoir</h3><p>Mobilier, ambiance, fond, distance au fond et circulation pour preparer une seance boudoir studio.</p><div class="quick-links"><a href="plan-studio-boudoir.html">Lire la page</a><a href="app.html?preset=boudoir-parabolic">Ouvrir le preset</a></div></article><article class="info-card"><h3>Lighting diagram interview</h3><p>Un setup video studio clair avec distance camera sujet, panneaux LED et export rapide pour le brief.</p><div class="quick-links"><a href="lighting-diagram-interview.html">Lire la page</a><a href="app.html?preset=interview-led">Ouvrir le preset</a></div></article></div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="site-shell translation-panel">
+    <div class="translation-copy">
+      <strong>Versions</strong>
+      <span>Cette page est disponible dans les langues suivantes.</span>
+    </div>
+    <nav class="translation-links" aria-label="Choisir la langue de la page">
+      <a class="translation-chip active" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Francais" aria-current="page">
+      <span class="translation-code">FR</span>
+      <span>Francais</span>
+    </a><a class="translation-chip" href="https://lumierestudio.archi-it.fr/en/" hreflang="en" lang="en" title="English">
+      <span class="translation-code">EN</span>
+      <span>English</span>
+    </a><a class="translation-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Espanol">
+      <span class="translation-code">ES</span>
+      <span>Espanol</span>
+    </a><a class="translation-chip" href="https://lumierestudio.archi-it.fr/de/" hreflang="de" lang="de" title="Deutsch">
+      <span class="translation-code">DE</span>
+      <span>Deutsch</span>
+    </a><a class="translation-chip" href="https://lumierestudio.archi-it.fr/ar/" hreflang="ar" lang="ar" title="العربية">
+      <span class="translation-code">AR</span>
+      <span>العربية</span>
+    </a>
+    </nav>
+  </div>
+    <div class="site-shell footer-inner">
+      <div id="footerCopy">Lumiere Studio · plan de studio photo, mesures, lighting diagram et presets studio.</div>
+      <div class="footer-links" id="footerLinks">
+        <a href="app.html">Application</a><a href="guide.html">Guide</a><a href="presets.html">Presets</a><a href="faq.html">FAQ</a>
+      </div>
+    </div>
+  </footer>
 </body>
-
 </html>

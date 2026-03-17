@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumiere Studio App | Plan de studio photo, mesures et export PDF</title>
+  <meta name="description"
+    content="Ouvrez l application Lumiere Studio pour preparer un set photo sur mobile ou desktop, mesurer les distances cle, zoomer dans le plan, sauvegarder vos presets et exporter en PNG ou PDF.">
+  <meta name="theme-color" content="#120f16">
+  <link rel="canonical" href="https://lumierestudio.archi-it.fr/app.html">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Lumiere Studio">
+  <meta property="og:title" content="Lumiere Studio App | Plan de studio photo, mesures et export PDF">
+  <meta property="og:description"
+    content="Application web pour placer lumieres, cameras et sujets, afficher les mesures automatiques, zoomer dans le plan et exporter un setup propre en PNG ou PDF.">
+  <meta property="og:url" content="https://lumierestudio.archi-it.fr/app.html">
+  <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
+  <meta property="og:image:alt" content="Capture de l application Lumiere Studio avec mesures, zoom et vue isometrique">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Lumiere Studio App | Plan de studio photo, mesures et export PDF">
+  <meta name="twitter:description"
+    content="Preparez un set photo sur mobile ou desktop, mesurez les distances sujet camera fond, sauvegardez vos presets et exportez en PNG ou PDF.">
+  <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
+  <meta name="twitter:image:alt" content="Capture de l application Lumiere Studio avec mesures, zoom et vue isometrique">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Lumiere Studio App",
+      "applicationCategory": "PhotographyApplication",
+      "applicationSubCategory": "Photo Studio Planner",
+      "operatingSystem": "Web",
+      "url": "https://lumierestudio.archi-it.fr/app.html",
+      "image": "https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png",
+      "description": "Application web pour preparer un plan de studio photo sur mobile ou desktop, afficher les mesures utiles, zoomer dans le plan et exporter en PNG ou PDF.",
+      "featureList": [
+        "Vue de dessus du studio avec zoom souris et pinch",
+        "Mini vue isometrique integree",
+        "Mesures automatiques sujet camera fond et sources",
+        "Recherche dans la bibliotheque d elements",
+        "Presets integres et presets personnalises",
+        "Export PNG, PDF et impression"
+      ],
+      "inLanguage": ["fr", "en", "es", "de", "ar"],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/simple-studio.css">
+</head>
+
+<body>
+  <div class="page">
+    <div class="support-strip" id="supportStrip" aria-label="Support Ko-fi">
+      <span class="support-text" id="supportText">Cet outil vous aide ? Soutenez son evolution.</span>
+      <a class="support-btn" id="supportButton" href="https://ko-fi.com/D1D21VSKW5" target="_blank"
+        rel="noreferrer noopener">
+        Soutenir sur Ko-fi
+      </a>
+    </div>
+
+    <header class="appbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <span class="brand-ring"></span>
+          <span class="brand-core"></span>
+          <span class="brand-beam"></span>
+        </div>
+        <div class="brand-copy">
+          <h1>LITE Studio</h1>
+          <p id="brandTagline">Photo set planner</p>
+        </div>
+      </div>
+
+      <nav class="menu-bar" id="mainMenuBar" aria-label="Menu principal">
+        <div class="menu" data-menu="file">
+          <button class="menu-trigger" id="menuFileTrigger" type="button" data-menu-trigger="file">Fichier</button>
+        <div class="menu-panel file-panel">
+            <button class="menu-item" id="actionReset" type="button" data-menu-action="reset">Remettre a zero</button>
+            <button class="menu-item" id="actionCopyImage" type="button" data-menu-action="copy-image">Copier
+              l'image</button>
+            <button class="menu-item" id="actionExportPng" type="button" data-menu-action="export-png">Telecharger
+              PNG</button>
+            <button class="menu-item" id="actionExportPdf" type="button" data-menu-action="export-pdf">Telecharger
+              PDF</button>
+            <button class="menu-item" id="actionPrint" type="button" data-menu-action="print">Imprimer</button>
+          </div>
+        </div>
+
+        <div class="menu" data-menu="color">
+          <button class="menu-trigger" id="menuColorTrigger" type="button" data-menu-trigger="color">Couleur</button>
+          <div class="menu-panel color-panel">
+            <section class="submenu-block">
+              <div class="submenu-head">
+                <span id="floorMenuLabel">Sol</span>
+              </div>
+              <div class="menu-swatch-grid" id="floorMenuSwatches"></div>
+            </section>
+            <section class="submenu-block">
+              <div class="submenu-head">
+                <span id="backdropMenuLabel">Fond</span>
+              </div>
+              <div class="menu-swatch-grid" id="backdropMenuSwatches"></div>
+            </section>
+          </div>
+        </div>
+
+        <div class="menu" data-menu="presets">
+          <button class="menu-trigger" id="menuPresetsTrigger" type="button"
+            data-menu-trigger="presets">Presets</button>
+          <div class="menu-panel preset-panel">
+            <div class="preset-menu-toolbar">
+              <button class="preset-save-btn" id="actionSavePreset" type="button">Sauvegarder ce preset</button>
+            </div>
+            <div class="preset-menu-list" id="presetMenuList"></div>
+          </div>
+        </div>
+
+        <div class="menu" data-menu="language">
+          <button class="menu-trigger" id="menuLanguageTrigger" type="button"
+            data-menu-trigger="language">Langue</button>
+          <div class="menu-panel language-panel">
+            <div class="language-menu-list" id="languageMenuList">
+              <button class="language-item active" type="button" data-language-id="fr">
+                <strong>Francais</strong>
+              </button>
+              <button class="language-item" type="button" data-language-id="en">
+                <strong>English</strong>
+              </button>
+              <button class="language-item" type="button" data-language-id="es">
+                <strong>Espanol</strong>
+              </button>
+              <button class="language-item" type="button" data-language-id="de">
+                <strong>Deutsch</strong>
+              </button>
+              <button class="language-item" type="button" data-language-id="ar">
+                <strong>العربية</strong>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="appbar-status">
+        <span class="status-pill" id="studioBadge"></span>
+        <span class="status-pill" id="countBadge"></span>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="library-panel">
+        <div class="panel-top">
+          <div>
+            <p class="panel-eyebrow" id="libraryEyebrow">Bibliotheque</p>
+            <h2 id="libraryTitle">Elements et tailles</h2>
+          </div>
+          <p class="panel-copy" id="libraryCopy">Ajoutez vos elements, mesurez automatiquement les distances, zoomez
+            dans le plan et exportez votre set en PNG ou PDF.</p>
+        </div>
+
+        <label class="search-field" for="librarySearch">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="librarySearch" type="search" autocomplete="off" spellcheck="false"
+            placeholder="Rechercher un element">
+        </label>
+
+        <div class="category-tabs" id="categoryTabs"></div>
+
+        <div class="selection-panel empty" id="selectionPanel">
+          Selectionnez un element dans le plan pour ajuster sa position, sa rotation ou le supprimer.
+        </div>
+
+        <div class="palette-panel" id="palettePanel"></div>
+      </aside>
+
+      <main class="stage-panel">
+        <div class="stage-topbar">
+          <div>
+            <p class="panel-eyebrow" id="planEyebrow">Plan principal</p>
+            <h2 id="planTitle">Vue de dessus</h2>
+          </div>
+          <div class="stage-hints">
+            <span class="hint-pill passive" id="hintDrag">Glisser = deplacer</span>
+            <span class="hint-pill accent passive" id="hintRotate">Poignee orange = rotation</span>
+            <div class="stage-zoom-tools" aria-label="Zoom plan">
+              <button class="stage-zoom-tool" id="planZoomOut" type="button" aria-label="Zoom out">-</button>
+              <button class="stage-zoom-tool stage-zoom-value" id="planZoomReset" type="button">100%</button>
+              <button class="stage-zoom-tool" id="planZoomIn" type="button" aria-label="Zoom in">+</button>
+            </div>
+            <button class="hint-pill stage-tool" id="measureToggle" type="button" aria-pressed="false">Mesure</button>
+          </div>
+        </div>
+
+        <div class="stage-canvas-wrap">
+          <canvas id="planCanvas" aria-label="Vue de dessus du studio photo"></canvas>
+
+          <section class="iso-overlay">
+            <div class="iso-head">
+              <div>
+                <p class="panel-eyebrow" id="previewEyebrow">Apercu</p>
+                <h3 id="previewTitle">Vue isometrique</h3>
+              </div>
+              <div class="iso-tools" aria-label="Zoom isometrique">
+                <button class="iso-tool" id="isoZoomOut" type="button" aria-label="Zoom out">-</button>
+                <button class="iso-tool iso-value" id="isoZoomReset" type="button">100%</button>
+                <button class="iso-tool" id="isoZoomIn" type="button" aria-label="Zoom in">+</button>
+              </div>
+            </div>
+            <canvas id="isoCanvas" aria-label="Vue isometrique du studio photo"></canvas>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/simple-studio.js" defer></script>
+</body>
+
+</html>

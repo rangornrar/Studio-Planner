@@ -7,6 +7,7 @@
   };
 
   const STORAGE_KEY_LANGUAGE = "lite-studio-language";
+  const STORAGE_KEY_CUSTOM_PRESETS = "lite-studio-custom-presets";
   const LANGUAGE_OPTIONS = [
     { id: "fr", code: "FR", nativeLabel: "Français", dir: "ltr" },
     { id: "en", code: "EN", nativeLabel: "English", dir: "ltr" },
@@ -18,7 +19,8 @@
   const LOCALES = {
     fr: {
       dir: "ltr",
-      documentTitle: "LITE Studio Planner",
+      documentTitle: "Lumiere Studio App | Plan de studio photo, mesures et export PDF",
+      metaDescription: "Ouvrez l application Lumiere Studio pour preparer un set photo sur mobile ou desktop, mesurer les distances cle, zoomer dans le plan, sauvegarder vos presets et exporter en PNG ou PDF.",
       supportAriaLabel: "Support Ko-fi",
       supportText: "Cet outil vous aide ? Soutenez son evolution.",
       supportButton: "Soutenir sur Ko-fi",
@@ -34,6 +36,7 @@
         reset: "Remettre a zero",
         copyImage: "Copier l'image",
         exportPng: "Telecharger PNG",
+        exportPdf: "Telecharger PDF",
         print: "Imprimer"
       },
       colors: {
@@ -43,13 +46,14 @@
       library: {
         eyebrow: "Bibliotheque",
         title: "Elements et tailles",
-        copy: "Ajoutez un element, glissez-le dans le plan, puis tournez-le avec la poignee orange."
+        copy: "Ajoutez vos elements, mesurez automatiquement les distances, zoomez dans le plan et exportez votre set en PNG ou PDF."
       },
       stage: {
         eyebrow: "Plan principal",
         title: "Vue de dessus",
         hintDrag: "Glisser = deplacer",
         hintRotate: "Poignee orange = rotation",
+        hintMeasure: "Mesure",
         previewEyebrow: "Apercu",
         previewTitle: "Vue isometrique",
         planAriaLabel: "Vue de dessus du studio photo",
@@ -76,7 +80,8 @@
     },
     en: {
       dir: "ltr",
-      documentTitle: "LITE Studio Planner",
+      documentTitle: "Lumiere Studio App | Photo set planner with measurements and PDF export",
+      metaDescription: "Open the Lumiere Studio app to plan a photo set on mobile or desktop, review key distances, zoom the plan, save custom presets, and export PNG or PDF.",
       supportAriaLabel: "Support Ko-fi",
       supportText: "Helpful tool? Support its evolution.",
       supportButton: "Support on Ko-fi",
@@ -92,6 +97,7 @@
         reset: "Reset layout",
         copyImage: "Copy image",
         exportPng: "Download PNG",
+        exportPdf: "Download PDF",
         print: "Print"
       },
       colors: {
@@ -101,13 +107,14 @@
       library: {
         eyebrow: "Library",
         title: "Elements and sizes",
-        copy: "Add an item, drag it on the plan, then rotate it with the orange handle."
+        copy: "Add your elements, review automatic distances, zoom the plan, and export your setup as PNG or PDF."
       },
       stage: {
         eyebrow: "Main plan",
         title: "Top view",
         hintDrag: "Drag = move",
         hintRotate: "Orange handle = rotate",
+        hintMeasure: "Measure",
         previewEyebrow: "Preview",
         previewTitle: "Isometric view",
         planAriaLabel: "Top view of the photo studio",
@@ -179,7 +186,8 @@
     },
     es: {
       dir: "ltr",
-      documentTitle: "LITE Studio Planner",
+      documentTitle: "Lumiere Studio App | Planificador de sets fotograficos con medidas y exportacion PDF",
+      metaDescription: "Abre la aplicacion Lumiere Studio para planificar un set fotografico en movil o escritorio, medir distancias utiles, acercar el plano, guardar presets propios y exportar en PNG o PDF.",
       supportAriaLabel: "Soporte Ko-fi",
       supportText: "¿Esta herramienta te ayuda? Apoya su evolución.",
       supportButton: "Apoyar en Ko-fi",
@@ -195,6 +203,7 @@
         reset: "Reiniciar set",
         copyImage: "Copiar imagen",
         exportPng: "Descargar PNG",
+        exportPdf: "Descargar PDF",
         print: "Imprimir"
       },
       colors: {
@@ -204,13 +213,14 @@
       library: {
         eyebrow: "Biblioteca",
         title: "Elementos y tamanos",
-        copy: "Agrega un elemento, arrastralo al plano y giralo con el asa naranja."
+        copy: "Agrega tus elementos, revisa medidas automaticas, acerca el plano y exporta tu set en PNG o PDF."
       },
       stage: {
         eyebrow: "Plano principal",
         title: "Vista superior",
         hintDrag: "Arrastrar = mover",
         hintRotate: "Asa naranja = rotacion",
+        hintMeasure: "Medir",
         previewEyebrow: "Vista previa",
         previewTitle: "Vista isometrica",
         planAriaLabel: "Vista superior del estudio fotografico",
@@ -282,7 +292,8 @@
     },
     de: {
       dir: "ltr",
-      documentTitle: "LITE Studio Planner",
+      documentTitle: "Lumiere Studio App | Planer fur Foto-Sets mit Messwerten und PDF-Export",
+      metaDescription: "Offne die Lumiere Studio App, plane ein Foto-Set auf Mobilgerat oder Desktop, miss wichtige Abstanden, zoome im Plan, speichere eigene Presets und exportiere PNG oder PDF.",
       supportAriaLabel: "Ko-fi-Unterstutzung",
       supportText: "Hilft dir dieses Tool? Unterstutze seine Weiterentwicklung.",
       supportButton: "Auf Ko-fi unterstutzen",
@@ -298,6 +309,7 @@
         reset: "Layout zurucksetzen",
         copyImage: "Bild kopieren",
         exportPng: "PNG herunterladen",
+        exportPdf: "PDF herunterladen",
         print: "Drucken"
       },
       colors: {
@@ -307,13 +319,14 @@
       library: {
         eyebrow: "Bibliothek",
         title: "Elemente und Grossen",
-        copy: "Fuge ein Element hinzu, ziehe es in den Plan und drehe es mit dem orangefarbenen Griff."
+        copy: "Fuge deine Elemente hinzu, nutze automatische Messwerte, zoome im Plan und exportiere dein Setup als PNG oder PDF."
       },
       stage: {
         eyebrow: "Hauptplan",
         title: "Draufsicht",
         hintDrag: "Ziehen = bewegen",
         hintRotate: "Oranger Griff = drehen",
+        hintMeasure: "Messen",
         previewEyebrow: "Vorschau",
         previewTitle: "Isometrische Ansicht",
         planAriaLabel: "Draufsicht des Fotostudios",
@@ -385,7 +398,8 @@
     },
     ar: {
       dir: "rtl",
-      documentTitle: "LITE Studio Planner",
+      documentTitle: "Lumiere Studio App | مخطط استوديو تصوير مع قياسات وتصدير PDF",
+      metaDescription: "افتح تطبيق Lumiere Studio لتخطيط إعداد استوديو تصوير على الجوال أو الكمبيوتر، وقياس المسافات المهمة، وتكبير المخطط، وحفظ إعداداتك الخاصة، وتصدير PNG أو PDF.",
       supportAriaLabel: "دعم Ko-fi",
       supportText: "هل هذه الأداة مفيدة لك؟ ادعم تطويرها.",
       supportButton: "ادعم عبر Ko-fi",
@@ -401,6 +415,7 @@
         reset: "إعادة الضبط",
         copyImage: "نسخ الصورة",
         exportPng: "تنزيل PNG",
+        exportPdf: "تنزيل PDF",
         print: "طباعة"
       },
       colors: {
@@ -410,13 +425,14 @@
       library: {
         eyebrow: "المكتبة",
         title: "العناصر والمقاسات",
-        copy: "أضف عنصراً ثم اسحبه داخل المخطط ولفّه باستخدام المقبض البرتقالي."
+        copy: "أضف عناصر المشهد، راجع القياسات التلقائية، كبّر المخطط، وصدّر الإعداد بصيغة PNG أو PDF."
       },
       stage: {
         eyebrow: "المخطط الرئيسي",
         title: "منظر علوي",
         hintDrag: "سحب = تحريك",
         hintRotate: "المقبض البرتقالي = تدوير",
+        hintMeasure: "قياس",
         previewEyebrow: "معاينة",
         previewTitle: "منظور أيزومتري",
         planAriaLabel: "منظر علوي لاستوديو التصوير",
@@ -2391,17 +2407,26 @@
   ];
 
   const refs = {
+    librarySearch: document.getElementById("librarySearch"),
     categoryTabs: document.getElementById("categoryTabs"),
     palettePanel: document.getElementById("palettePanel"),
     floorMenuSwatches: document.getElementById("floorMenuSwatches"),
     backdropMenuSwatches: document.getElementById("backdropMenuSwatches"),
     presetMenuList: document.getElementById("presetMenuList"),
+    actionSavePreset: document.getElementById("actionSavePreset"),
     languageMenuList: document.getElementById("languageMenuList"),
     selectionPanel: document.getElementById("selectionPanel"),
     studioBadge: document.getElementById("studioBadge"),
     countBadge: document.getElementById("countBadge"),
     planCanvas: document.getElementById("planCanvas"),
     isoCanvas: document.getElementById("isoCanvas"),
+    measureToggle: document.getElementById("measureToggle"),
+    planZoomOut: document.getElementById("planZoomOut"),
+    planZoomReset: document.getElementById("planZoomReset"),
+    planZoomIn: document.getElementById("planZoomIn"),
+    isoZoomOut: document.getElementById("isoZoomOut"),
+    isoZoomReset: document.getElementById("isoZoomReset"),
+    isoZoomIn: document.getElementById("isoZoomIn"),
     menus: Array.from(document.querySelectorAll(".menu")),
     menuTriggers: Array.from(document.querySelectorAll("[data-menu-trigger]")),
     menuPanels: Array.from(document.querySelectorAll(".menu-panel")),
@@ -2417,12 +2442,24 @@
     backdropId: BACKDROP_COLORS[3].id,
     activeCategoryId: PALETTE_CATEGORIES[0].id,
     language: launchOptions.language || detectInitialLanguage(),
+    paletteQuery: "",
+    customPresets: loadCustomPresets(),
     items: [],
     selectedId: null,
     interaction: null,
     hoverItemId: null,
     hoverHandle: false,
+    measurementMode: false,
+    measureStart: null,
+    measurePreview: null,
+    measureEnd: null,
     openMenu: null,
+    planZoom: 1,
+    planPanX: 0,
+    planPanY: 0,
+    activePointers: new Map(),
+    pinchGesture: null,
+    isoZoom: 1,
     nextId: 1
   };
 
@@ -2498,6 +2535,13 @@
   }
 
   function getLocalizedPresetCategory(category) {
+    if (category.id === "custom") {
+      return {
+        label: getUiCopy("customPresets"),
+        description: getUiCopy("customPresetsDescription")
+      };
+    }
+
     const bundle = getLocaleBundle();
     const categoryCopy = bundle.presetCategories && bundle.presetCategories[category.id];
     return {
@@ -3193,11 +3237,156 @@
     }
   };
   const UI_COPY = {
-    fr: { x: "X (m)", y: "Y (m)", studio: "Studio {width} x {depth} m" },
-    en: { x: "X (m)", y: "Y (m)", studio: "Studio {width} x {depth} m" },
-    es: { x: "X (m)", y: "Y (m)", studio: "Estudio {width} x {depth} m" },
-    de: { x: "X (m)", y: "Y (m)", studio: "Studio {width} x {depth} m" },
-    ar: { x: "س (م)", y: "ص (م)", studio: "استوديو {width} x {depth} م" }
+    fr: {
+      x: "X (m)",
+      y: "Y (m)",
+      studio: "Studio {width} x {depth} m",
+      searchPlaceholder: "Rechercher un element, une taille ou un type",
+      searchEmpty: "Aucun element ne correspond a cette recherche.",
+      savePreset: "Sauvegarder ce preset",
+      savePresetPrompt: "Nom du preset personnalise",
+      savePresetEmpty: "Ajoutez au moins un element avant de sauvegarder un preset.",
+      savePresetSaved: "Preset enregistre : {name}",
+      customPresets: "Vos presets",
+      customPresetsDescription: "Presets sauvegardes dans ce navigateur.",
+      exportPdf: "Telecharger PDF",
+      pdfFailed: "Impossible de generer le PDF.",
+      zoomOut: "Zoom arriere",
+      zoomIn: "Zoom avant",
+      zoomReset: "{value}%",
+      metricHeight: "Hauteur",
+      metricRotation: "Orientation",
+      metricSubjectDistance: "Distance sujet",
+      metricCameraDistance: "Distance camera",
+      metricBackdropDistance: "Distance fond",
+      metricLightAngle: "Angle vers le sujet",
+      metricMainLightDistance: "Distance source",
+      metricMainLightPower: "Puissance source",
+      metricEstimatedFStop: "Lecture estimee (ISO 100)",
+      power: "Puissance",
+      powerHint: "Influence le cone lumineux et la lecture estimee sur le sujet le plus proche.",
+      guideMainLight: "source"
+    },
+    en: {
+      x: "X (m)",
+      y: "Y (m)",
+      studio: "Studio {width} x {depth} m",
+      searchPlaceholder: "Search by element, size or type",
+      searchEmpty: "No element matches this search.",
+      savePreset: "Save this preset",
+      savePresetPrompt: "Custom preset name",
+      savePresetEmpty: "Add at least one element before saving a preset.",
+      savePresetSaved: "Preset saved: {name}",
+      customPresets: "Your presets",
+      customPresetsDescription: "Presets stored in this browser.",
+      exportPdf: "Download PDF",
+      pdfFailed: "Unable to generate the PDF.",
+      zoomOut: "Zoom out",
+      zoomIn: "Zoom in",
+      zoomReset: "{value}%",
+      metricHeight: "Height",
+      metricRotation: "Orientation",
+      metricSubjectDistance: "Subject distance",
+      metricCameraDistance: "Camera distance",
+      metricBackdropDistance: "Backdrop distance",
+      metricLightAngle: "Angle to subject",
+      metricMainLightDistance: "Light distance",
+      metricMainLightPower: "Light power",
+      metricEstimatedFStop: "Estimated f-stop (ISO 100)",
+      power: "Power",
+      powerHint: "Affects the light spread and the estimated reading on the nearest subject.",
+      guideMainLight: "light"
+    },
+    es: {
+      x: "X (m)",
+      y: "Y (m)",
+      studio: "Estudio {width} x {depth} m",
+      searchPlaceholder: "Buscar por elemento, tamano o tipo",
+      searchEmpty: "Ningun elemento coincide con esta busqueda.",
+      savePreset: "Guardar este preset",
+      savePresetPrompt: "Nombre del preset personalizado",
+      savePresetEmpty: "Agrega al menos un elemento antes de guardar un preset.",
+      savePresetSaved: "Preset guardado: {name}",
+      customPresets: "Tus presets",
+      customPresetsDescription: "Presets guardados en este navegador.",
+      exportPdf: "Descargar PDF",
+      pdfFailed: "No se pudo generar el PDF.",
+      zoomOut: "Alejar",
+      zoomIn: "Acercar",
+      zoomReset: "{value}%",
+      metricHeight: "Altura",
+      metricRotation: "Orientacion",
+      metricSubjectDistance: "Distancia al sujeto",
+      metricCameraDistance: "Distancia de camara",
+      metricBackdropDistance: "Distancia al fondo",
+      metricLightAngle: "Angulo al sujeto",
+      metricMainLightDistance: "Distancia de luz",
+      metricMainLightPower: "Potencia de luz",
+      metricEstimatedFStop: "f-stop estimado (ISO 100)",
+      power: "Potencia",
+      powerHint: "Afecta el cono de luz y la lectura estimada sobre el sujeto mas cercano.",
+      guideMainLight: "luz"
+    },
+    de: {
+      x: "X (m)",
+      y: "Y (m)",
+      studio: "Studio {width} x {depth} m",
+      searchPlaceholder: "Nach Element, Grosse oder Typ suchen",
+      searchEmpty: "Kein Element passt zu dieser Suche.",
+      savePreset: "Dieses Preset speichern",
+      savePresetPrompt: "Name des benutzerdefinierten Presets",
+      savePresetEmpty: "Fugen Sie mindestens ein Element hinzu, bevor Sie ein Preset speichern.",
+      savePresetSaved: "Preset gespeichert: {name}",
+      customPresets: "Eigene Presets",
+      customPresetsDescription: "Im Browser gespeicherte Presets.",
+      exportPdf: "PDF herunterladen",
+      pdfFailed: "PDF konnte nicht erstellt werden.",
+      zoomOut: "Verkleinern",
+      zoomIn: "Vergrossern",
+      zoomReset: "{value}%",
+      metricHeight: "Hohe",
+      metricRotation: "Ausrichtung",
+      metricSubjectDistance: "Abstand zum Motiv",
+      metricCameraDistance: "Kameraabstand",
+      metricBackdropDistance: "Abstand zum Hintergrund",
+      metricLightAngle: "Winkel zum Motiv",
+      metricMainLightDistance: "Lichtabstand",
+      metricMainLightPower: "Lichtleistung",
+      metricEstimatedFStop: "Geschaetzte Blende (ISO 100)",
+      power: "Leistung",
+      powerHint: "Beeinflusst den Lichtkegel und die geschaetzte Messung am naechsten Motiv.",
+      guideMainLight: "licht"
+    },
+    ar: {
+      x: "س (م)",
+      y: "ص (م)",
+      studio: "استوديو {width} x {depth} م",
+      searchPlaceholder: "ابحث حسب العنصر او الحجم او النوع",
+      searchEmpty: "لا يوجد عنصر يطابق هذا البحث.",
+      savePreset: "احفظ هذا الاعداد",
+      savePresetPrompt: "اسم الاعداد المخصص",
+      savePresetEmpty: "اضف عنصرا واحدا على الاقل قبل حفظ الاعداد.",
+      savePresetSaved: "تم حفظ الاعداد: {name}",
+      customPresets: "اعداداتك",
+      customPresetsDescription: "اعدادات محفوظة في هذا المتصفح.",
+      exportPdf: "تنزيل PDF",
+      pdfFailed: "تعذر انشاء ملف PDF.",
+      zoomOut: "تصغير",
+      zoomIn: "تكبير",
+      zoomReset: "{value}%",
+      metricHeight: "الارتفاع",
+      metricRotation: "الاتجاه",
+      metricSubjectDistance: "المسافة الى الهدف",
+      metricCameraDistance: "مسافة الكاميرا",
+      metricBackdropDistance: "المسافة الى الخلفية",
+      metricLightAngle: "زاوية نحو الهدف",
+      metricMainLightDistance: "مسافة الضوء",
+      metricMainLightPower: "قدرة الضوء",
+      metricEstimatedFStop: "قراءة f-stop تقديرية (ISO 100)",
+      power: "القدرة",
+      powerHint: "تؤثر على انتشار الضوء والقراءة التقديرية على اقرب هدف.",
+      guideMainLight: "ضوء"
+    }
   };
 
   const COLOR_NOUN_TRANSLATIONS = {
@@ -3539,7 +3728,7 @@
   }
 
   function getLocalizedPresetName(preset) {
-    if (state.language === "fr") return preset.name;
+    if (preset.isCustom || state.language === "fr") return preset.name;
 
     const dictionary = PRESET_TOKEN_TRANSLATIONS[state.language] || PRESET_TOKEN_TRANSLATIONS.en;
     const tokens = preset.id.split("-").map(function (token) {
@@ -3550,6 +3739,7 @@
   }
 
   function getLocalizedPresetSummary(preset) {
+    if (preset.isCustom) return buildDynamicPresetSummary(preset);
     if (state.language === "fr") return preset.summary;
 
     const labels = [];
@@ -3601,6 +3791,19 @@
     document.documentElement.dir = getLocaleBundle().dir || "ltr";
     document.title = t("documentTitle");
 
+    const metaDescription = document.querySelector('meta[name="description"]');
+    const metaOgTitle = document.querySelector('meta[property="og:title"]');
+    const metaOgDescription = document.querySelector('meta[property="og:description"]');
+    const metaTwitterTitle = document.querySelector('meta[name="twitter:title"]');
+    const metaTwitterDescription = document.querySelector('meta[name="twitter:description"]');
+    const localizedMetaDescription = t("metaDescription");
+
+    if (metaDescription) metaDescription.setAttribute("content", localizedMetaDescription);
+    if (metaOgTitle) metaOgTitle.setAttribute("content", t("documentTitle"));
+    if (metaOgDescription) metaOgDescription.setAttribute("content", localizedMetaDescription);
+    if (metaTwitterTitle) metaTwitterTitle.setAttribute("content", t("documentTitle"));
+    if (metaTwitterDescription) metaTwitterDescription.setAttribute("content", localizedMetaDescription);
+
     const supportStrip = document.getElementById("supportStrip");
     const supportText = document.getElementById("supportText");
     const supportButton = document.getElementById("supportButton");
@@ -3613,6 +3816,7 @@
     const actionReset = document.getElementById("actionReset");
     const actionCopyImage = document.getElementById("actionCopyImage");
     const actionExportPng = document.getElementById("actionExportPng");
+    const actionExportPdf = document.getElementById("actionExportPdf");
     const actionPrint = document.getElementById("actionPrint");
     const floorMenuLabel = document.getElementById("floorMenuLabel");
     const backdropMenuLabel = document.getElementById("backdropMenuLabel");
@@ -3623,6 +3827,7 @@
     const planTitle = document.getElementById("planTitle");
     const hintDrag = document.getElementById("hintDrag");
     const hintRotate = document.getElementById("hintRotate");
+    const measureToggle = document.getElementById("measureToggle");
     const previewEyebrow = document.getElementById("previewEyebrow");
     const previewTitle = document.getElementById("previewTitle");
 
@@ -3638,6 +3843,7 @@
     if (actionReset) actionReset.textContent = t("actions.reset");
     if (actionCopyImage) actionCopyImage.textContent = t("actions.copyImage");
     if (actionExportPng) actionExportPng.textContent = t("actions.exportPng");
+    if (actionExportPdf) actionExportPdf.textContent = t("actions.exportPdf");
     if (actionPrint) actionPrint.textContent = t("actions.print");
     if (floorMenuLabel) floorMenuLabel.textContent = t("colors.floor");
     if (backdropMenuLabel) backdropMenuLabel.textContent = t("colors.backdrop");
@@ -3648,10 +3854,19 @@
     if (planTitle) planTitle.textContent = t("stage.title");
     if (hintDrag) hintDrag.textContent = t("stage.hintDrag");
     if (hintRotate) hintRotate.textContent = t("stage.hintRotate");
+    if (measureToggle) measureToggle.textContent = t("stage.hintMeasure");
     if (previewEyebrow) previewEyebrow.textContent = t("stage.previewEyebrow");
     if (previewTitle) previewTitle.textContent = t("stage.previewTitle");
+    if (refs.librarySearch) refs.librarySearch.placeholder = getUiCopy("searchPlaceholder");
+    if (refs.actionSavePreset) refs.actionSavePreset.textContent = getUiCopy("savePreset");
+    if (refs.planZoomOut) refs.planZoomOut.setAttribute("aria-label", getUiCopy("zoomOut"));
+    if (refs.planZoomIn) refs.planZoomIn.setAttribute("aria-label", getUiCopy("zoomIn"));
+    if (refs.isoZoomOut) refs.isoZoomOut.setAttribute("aria-label", getUiCopy("zoomOut"));
+    if (refs.isoZoomIn) refs.isoZoomIn.setAttribute("aria-label", getUiCopy("zoomIn"));
     if (refs.planCanvas) refs.planCanvas.setAttribute("aria-label", t("stage.planAriaLabel"));
     if (refs.isoCanvas) refs.isoCanvas.setAttribute("aria-label", t("stage.isoAriaLabel"));
+    renderPlanZoomUi();
+    renderIsoZoomUi();
   }
 
   function applyLanguage(language, persist) {
@@ -3677,6 +3892,144 @@
     renderPalette();
     renderPresetMenu();
     renderAll();
+  }
+
+  function renderPlanZoomUi() {
+    if (!refs.planZoomReset) return;
+    const value = Math.round(state.planZoom * 100);
+    refs.planZoomReset.textContent = getUiCopy("zoomReset", { value: value });
+    if (refs.planZoomOut) refs.planZoomOut.disabled = state.planZoom <= 0.71;
+    if (refs.planZoomIn) refs.planZoomIn.disabled = state.planZoom >= 2.39;
+  }
+
+  function renderIsoZoomUi() {
+    if (!refs.isoZoomReset) return;
+    const value = Math.round(state.isoZoom * 100);
+    refs.isoZoomReset.textContent = getUiCopy("zoomReset", { value: value });
+    if (refs.isoZoomOut) refs.isoZoomOut.disabled = state.isoZoom <= 0.71;
+    if (refs.isoZoomIn) refs.isoZoomIn.disabled = state.isoZoom >= 2.19;
+  }
+
+  function syncMeasurementToggle() {
+    if (!refs.measureToggle) return;
+    refs.measureToggle.classList.toggle("active", state.measurementMode);
+    refs.measureToggle.setAttribute("aria-pressed", state.measurementMode ? "true" : "false");
+  }
+
+  function toggleMeasurementMode() {
+    state.measurementMode = !state.measurementMode;
+    state.measureStart = null;
+    state.measurePreview = null;
+    state.measureEnd = null;
+    refs.planCanvas.style.cursor = state.measurementMode ? "crosshair" : "default";
+    renderAll();
+  }
+
+  function setIsoZoom(nextValue) {
+    state.isoZoom = clamp(nextValue, 0.7, 2.2);
+    renderIsoZoomUi();
+    drawIsoView();
+  }
+
+  function getPlanZoomAnchorPoint() {
+    if (!refs.planCanvas.width || !refs.planCanvas.height) return null;
+    const selected = getSelectedItem();
+    if (!selected) {
+      return {
+        x: refs.planCanvas.width / 2,
+        y: refs.planCanvas.height / 2
+      };
+    }
+
+    return studioToPlan(selected.x, selected.y, getPlanMetrics(refs.planCanvas.width, refs.planCanvas.height));
+  }
+
+  function setPlanZoom(nextValue, anchorCanvasPoint) {
+    const clampedZoom = clamp(nextValue, 0.7, 2.4);
+    if (Math.abs(clampedZoom - state.planZoom) < 0.001) return;
+
+    const width = refs.planCanvas.width;
+    const height = refs.planCanvas.height;
+    const anchor = anchorCanvasPoint || getPlanZoomAnchorPoint();
+
+    if (anchor && width && height) {
+      const currentMetrics = getPlanMetrics(width, height);
+      const anchorStudio = planToStudio(anchor.x, anchor.y, currentMetrics);
+      state.planZoom = clampedZoom;
+      const nextBaseMetrics = getPlanBaseMetrics(width, height);
+      const nextScale = nextBaseMetrics.scale * state.planZoom;
+      const nextStageWidth = STUDIO.width * nextScale;
+      const nextStageHeight = STUDIO.depth * nextScale;
+      state.planPanX = anchor.x - width / 2 + nextStageWidth / 2 - anchorStudio.x * nextScale;
+      state.planPanY = anchor.y - height / 2 + nextStageHeight / 2 - anchorStudio.y * nextScale;
+      const clampedPan = getClampedPlanPan(width, height, state.planZoom, state.planPanX, state.planPanY);
+      state.planPanX = clampedPan.x;
+      state.planPanY = clampedPan.y;
+    } else {
+      state.planZoom = clampedZoom;
+      state.planPanX = 0;
+      state.planPanY = 0;
+    }
+
+    renderPlanZoomUi();
+    drawPlanView();
+  }
+
+  function resetPlanZoom() {
+    state.planZoom = 1;
+    state.planPanX = 0;
+    state.planPanY = 0;
+    renderPlanZoomUi();
+    drawPlanView();
+  }
+
+  function cancelCanvasInteraction() {
+    if (!state.interaction) return;
+    try {
+      refs.planCanvas.releasePointerCapture(state.interaction.pointerId);
+    } catch (error) {
+      // Pointer capture may already be released.
+    }
+    state.interaction = null;
+  }
+
+  function updateActivePointer(event, canvasPoint) {
+    if (!canvasPoint) return;
+    state.activePointers.set(event.pointerId, canvasPoint);
+  }
+
+  function clearActivePointer(pointerId) {
+    state.activePointers.delete(pointerId);
+    if (state.pinchGesture && state.pinchGesture.pointerIds.indexOf(pointerId) !== -1) {
+      state.pinchGesture = null;
+      refs.planCanvas.style.cursor = state.measurementMode ? "crosshair" : "default";
+    }
+  }
+
+  function startPinchGesture() {
+    const pointers = Array.from(state.activePointers.entries()).slice(0, 2);
+    if (pointers.length < 2) return false;
+
+    const first = pointers[0];
+    const second = pointers[1];
+    const dx = second[1].x - first[1].x;
+    const dy = second[1].y - first[1].y;
+    const distance = Math.max(24, Math.sqrt(dx * dx + dy * dy));
+
+    cancelCanvasInteraction();
+    if (state.measurementMode) {
+      state.measureStart = null;
+      state.measurePreview = null;
+      state.measureEnd = null;
+    }
+
+    state.pinchGesture = {
+      pointerIds: [first[0], second[0]],
+      startDistance: distance,
+      startZoom: state.planZoom
+    };
+    refs.planCanvas.style.cursor = "zoom-in";
+    return true;
   }
 
   const spawnPoints = [
@@ -3721,6 +4074,7 @@
         if (action === "reset") handleReset();
         if (action === "copy-image") void copyImage();
         if (action === "export-png") exportPng();
+        if (action === "export-pdf") exportPdf();
         if (action === "print") printPlan();
       });
     });
@@ -3763,11 +4117,68 @@
       renderPalette();
     });
 
+    if (refs.librarySearch) {
+      refs.librarySearch.addEventListener("input", function (event) {
+        state.paletteQuery = String(event.target.value || "").trim().toLowerCase();
+        renderPalette();
+      });
+    }
+
     refs.palettePanel.addEventListener("click", function (event) {
       const button = event.target.closest("[data-variant-id]");
       if (!button) return;
       addItem(button.getAttribute("data-variant-id"));
     });
+
+    if (refs.actionSavePreset) {
+      refs.actionSavePreset.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        saveCurrentPreset();
+      });
+    }
+
+    if (refs.isoZoomOut) {
+      refs.isoZoomOut.addEventListener("click", function () {
+        setIsoZoom(state.isoZoom - 0.15);
+      });
+    }
+
+    if (refs.planZoomOut) {
+      refs.planZoomOut.addEventListener("click", function () {
+        setPlanZoom(state.planZoom - 0.15);
+      });
+    }
+
+    if (refs.planZoomReset) {
+      refs.planZoomReset.addEventListener("click", function () {
+        resetPlanZoom();
+      });
+    }
+
+    if (refs.planZoomIn) {
+      refs.planZoomIn.addEventListener("click", function () {
+        setPlanZoom(state.planZoom + 0.15);
+      });
+    }
+
+    if (refs.isoZoomReset) {
+      refs.isoZoomReset.addEventListener("click", function () {
+        setIsoZoom(1);
+      });
+    }
+
+    if (refs.isoZoomIn) {
+      refs.isoZoomIn.addEventListener("click", function () {
+        setIsoZoom(state.isoZoom + 0.15);
+      });
+    }
+
+    if (refs.measureToggle) {
+      refs.measureToggle.addEventListener("click", function () {
+        toggleMeasurementMode();
+      });
+    }
 
     refs.selectionPanel.addEventListener("input", handleSelectionInput);
     refs.selectionPanel.addEventListener("click", handleSelectionClick);
@@ -3777,6 +4188,7 @@
     refs.planCanvas.addEventListener("pointerup", handlePointerUp);
     refs.planCanvas.addEventListener("pointercancel", handlePointerUp);
     refs.planCanvas.addEventListener("pointerleave", handlePointerLeave);
+    refs.planCanvas.addEventListener("wheel", handlePlanWheel, { passive: false });
 
     document.addEventListener("click", function () {
       closeMenus();
@@ -3813,38 +4225,67 @@
     }).join("");
   }
 
+  function matchesPaletteQuery(variantId, variant, groupCopy) {
+    if (!state.paletteQuery) return true;
+    const copy = getLocalizedVariantCopy(variantId, variant);
+    const terms = [
+      copy.type,
+      copy.short,
+      copy.size,
+      copy.height,
+      groupCopy.title,
+      groupCopy.description,
+      variant.family,
+      variant.description
+    ].join(" ").toLowerCase();
+    return terms.indexOf(state.paletteQuery) !== -1;
+  }
+
   function renderPalette() {
-    const category = PALETTE_CATEGORIES.find(function (entry) {
+    const activeCategory = PALETTE_CATEGORIES.find(function (entry) {
       return entry.id === state.activeCategoryId;
     }) || PALETTE_CATEGORIES[0];
+    const categories = state.paletteQuery ? PALETTE_CATEGORIES : [activeCategory];
 
-    refs.palettePanel.innerHTML = category.groups.map(function (group, groupIndex) {
-      const groupCopy = getLocalizedPaletteGroupCopy(category.id, groupIndex, group);
-      return `
-        <section class="palette-group">
-          <div class="palette-head">
-            <h3>${escapeHtml(groupCopy.title)}</h3>
-            <p>${escapeHtml(groupCopy.description)}</p>
-          </div>
-          <div class="variant-grid">
-            ${group.variants.map(function (variantId) {
-              const variant = ITEM_VARIANTS[variantId];
-              const copy = getLocalizedVariantCopy(variantId, variant);
-              return `
-                <button class="variant-btn" type="button" data-variant-id="${variantId}">
-                  ${getVariantPreviewMarkup(variantId, variant)}
-                  <span class="variant-copy">
-                    <strong>${escapeHtml(copy.short)}</strong>
-                    <span class="variant-meta">${escapeHtml(copy.size)}</span>
-                    <span class="variant-meta">${escapeHtml(copy.height)}</span>
-                  </span>
-                </button>
-              `;
-            }).join("")}
-          </div>
-        </section>
-      `;
-    }).join("");
+    const sections = categories.reduce(function (allSections, category) {
+      category.groups.forEach(function (group, groupIndex) {
+        const groupCopy = getLocalizedPaletteGroupCopy(category.id, groupIndex, group);
+        const visibleVariants = group.variants.filter(function (variantId) {
+          const variant = ITEM_VARIANTS[variantId];
+          return variant && matchesPaletteQuery(variantId, variant, groupCopy);
+        });
+
+        if (!visibleVariants.length) return;
+
+        allSections.push(`
+          <section class="palette-group">
+            <div class="palette-head">
+              <h3>${escapeHtml(groupCopy.title)}</h3>
+              <p>${escapeHtml(groupCopy.description)}</p>
+            </div>
+            <div class="variant-grid">
+              ${visibleVariants.map(function (variantId) {
+                const variant = ITEM_VARIANTS[variantId];
+                const copy = getLocalizedVariantCopy(variantId, variant);
+                return `
+                  <button class="variant-btn" type="button" data-variant-id="${variantId}">
+                    ${getVariantPreviewMarkup(variantId, variant)}
+                    <span class="variant-copy">
+                      <strong>${escapeHtml(copy.short)}</strong>
+                      <span class="variant-meta">${escapeHtml(copy.size)}</span>
+                      <span class="variant-meta">${escapeHtml(copy.height)}</span>
+                    </span>
+                  </button>
+                `;
+              }).join("")}
+            </div>
+          </section>
+        `);
+      });
+      return allSections;
+    }, []);
+
+    refs.palettePanel.innerHTML = sections.length ? sections.join("") : `<div class="palette-empty">${escapeHtml(getUiCopy("searchEmpty"))}</div>`;
   }
 
   function getVariantVisualKind(variantId, family) {
@@ -3902,9 +4343,124 @@
     if (family === "stand") return "stand";
     return "block";
   }
+
+  function isDirectionalVisualKind(kind) {
+    return [
+      "camera",
+      "softbox-octa",
+      "softbox-parabolic",
+      "softbox-rect",
+      "led-panel",
+      "striplight",
+      "tube",
+      "umbrella",
+      "spot-head",
+      "spot-projector",
+      "flag",
+      "flat-panel"
+    ].indexOf(kind) !== -1;
+  }
+
+  function isEmitterVisualKind(kind) {
+    return [
+      "softbox-octa",
+      "softbox-parabolic",
+      "softbox-rect",
+      "led-panel",
+      "striplight",
+      "tube",
+      "umbrella",
+      "lantern",
+      "ringlight",
+      "beauty-dish",
+      "spot-head",
+      "spot-projector"
+    ].indexOf(kind) !== -1;
+  }
+
+  function getDefaultPowerPercent(kind) {
+    if (kind === "tube") return 55;
+    if (kind === "led-panel" || kind === "ringlight") return 60;
+    if (kind === "umbrella" || kind === "lantern") return 68;
+    if (kind === "softbox-octa" || kind === "softbox-rect" || kind === "softbox-parabolic") return 72;
+    if (kind === "striplight") return 74;
+    if (kind === "beauty-dish") return 78;
+    if (kind === "spot-head") return 80;
+    if (kind === "spot-projector") return 84;
+    return 70;
+  }
+
+  function isLightEmitter(item) {
+    if (!item) return false;
+    return isEmitterVisualKind(getVariantVisualKind(item.variantId, item.family));
+  }
+
+  function clampPowerPercent(value) {
+    return clamp(value, 10, 100);
+  }
+
+  function formatPowerLabel(value) {
+    return `${Math.round(clampPowerPercent(value))}%`;
+  }
+
+  function formatFStopLabel(value) {
+    return `f/${Math.max(0.7, value).toFixed(1)}`;
+  }
+
+  function getNearestEmitter(sourceItem) {
+    const matches = state.items.filter(function (item) {
+      return item.id !== sourceItem.id && isLightEmitter(item);
+    });
+
+    if (!matches.length) return null;
+
+    return matches.reduce(function (closest, item) {
+      if (!closest) return item;
+      return distanceBetweenItems(sourceItem, item) < distanceBetweenItems(sourceItem, closest) ? item : closest;
+    }, null);
+  }
+
+  function getLightGuideNumber(item) {
+    const kind = getVariantVisualKind(item.variantId, item.family);
+    if (kind === "tube") return 6.3;
+    if (kind === "led-panel") return 7.8;
+    if (kind === "ringlight") return 8.6;
+    if (kind === "umbrella") return 10.8;
+    if (kind === "lantern") return 8.8;
+    if (kind === "softbox-octa" || kind === "softbox-rect") return 11.6;
+    if (kind === "softbox-parabolic") return 12.8;
+    if (kind === "striplight") return 12.2;
+    if (kind === "beauty-dish") return 15.2;
+    if (kind === "spot-head") return 16.4;
+    if (kind === "spot-projector") return 18.8;
+    return 11;
+  }
+
+  function getLightEstimation(lightItem, subjectItem) {
+    if (!isLightEmitter(lightItem) || !subjectItem) return null;
+    const distance = Math.max(0.35, distanceBetweenItems(lightItem, subjectItem));
+    const angle = getAngleToTarget(lightItem, subjectItem);
+    const aimFactor = Math.max(0.18, Math.cos(degreesToRadians(Math.min(angle, 89))));
+    const power = clampPowerPercent(typeof lightItem.power === "number" ? lightItem.power : getDefaultPowerPercent(getVariantVisualKind(lightItem.variantId, lightItem.family)));
+    const guideNumber = getLightGuideNumber(lightItem);
+    const fStop = (guideNumber * Math.sqrt(power / 100) * Math.sqrt(aimFactor)) / distance;
+    return {
+      distance: distance,
+      angle: angle,
+      power: power,
+      fStop: Math.max(0.7, fStop)
+    };
+  }
+
   function getVariantPreviewMarkup(variantId, variant) {
     const kind = getVariantVisualKind(variantId, variant.family);
     const title = escapeHtml(getLocalizedVariantTitle(variantId, variant));
+    const directionBadge = isDirectionalVisualKind(kind) ? `
+      <g transform="translate(84 44)">
+        <path d="M0 4 H18" stroke="#7ed7ff" stroke-width="2.8" stroke-linecap="round"></path>
+        <path d="M12 0 L20 4 L12 8" fill="none" stroke="#7ed7ff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"></path>
+      </g>
+    ` : "";
     const tripod = `
       <g stroke="#7b8899" stroke-width="2.4" stroke-linecap="round" opacity="0.92">
         <line x1="60" y1="36" x2="60" y2="53"></line>
@@ -4262,6 +4818,7 @@
       <span class="variant-preview" aria-hidden="true">
         <svg viewBox="0 0 120 60" class="variant-svg" role="img" aria-label="${title}">
           ${body}
+          ${directionBadge}
         </svg>
       </span>
     `;
@@ -4287,9 +4844,148 @@
     });
   }
 
+  function normalizeCustomPreset(input) {
+    const preset = input && typeof input === "object" ? input : {};
+    const items = Array.isArray(preset.items) ? preset.items : [];
+    return {
+      id: String(preset.id || ""),
+      name: String(preset.name || "").trim(),
+      floorId: String(preset.floorId || FLOOR_COLORS[0].id),
+      backdropId: String(preset.backdropId || BACKDROP_COLORS[3].id),
+      items: items.map(function (entry) {
+        return {
+          variantId: String(entry.variantId || ""),
+          x: typeof entry.x === "number" ? entry.x : 0,
+          y: typeof entry.y === "number" ? entry.y : 0,
+          rotation: typeof entry.rotation === "number" ? entry.rotation : 0,
+          label: typeof entry.label === "string" ? entry.label : "",
+          power: typeof entry.power === "number" ? clampPowerPercent(entry.power) : null
+        };
+      }).filter(function (entry) {
+        return entry.variantId && ITEM_VARIANTS[entry.variantId];
+      }),
+      isCustom: true
+    };
+  }
+
+  function loadCustomPresets() {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY_CUSTOM_PRESETS);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.map(normalizeCustomPreset).filter(function (preset) {
+        return preset.id && preset.name && preset.items.length;
+      });
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function persistCustomPresets() {
+    try {
+      window.localStorage.setItem(STORAGE_KEY_CUSTOM_PRESETS, JSON.stringify(state.customPresets.map(function (preset) {
+        return {
+          id: preset.id,
+          name: preset.name,
+          floorId: preset.floorId,
+          backdropId: preset.backdropId,
+          items: preset.items
+        };
+      })));
+    } catch (error) {
+      // Ignore storage access issues.
+    }
+  }
+
+  function slugifyPresetName(name) {
+    return String(name || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 48) || `preset-${Date.now()}`;
+  }
+
+  function buildDynamicPresetSummary(preset) {
+    const labels = [];
+    const seen = new Set();
+
+    preset.items.forEach(function (entry) {
+      const variant = ITEM_VARIANTS[entry.variantId];
+      if (!variant || variant.family === "subject") return;
+      const label = getLocalizedVariantTitle(entry.variantId, variant);
+      if (seen.has(label)) return;
+      seen.add(label);
+      labels.push(label);
+    });
+
+    const itemWord = preset.items.length === 1 ? t("status.itemSingular") : t("status.itemPlural");
+    const countLabel = `${preset.items.length} ${itemWord}`;
+    const visible = labels.slice(0, 3);
+    const suffix = labels.length > 3 ? ` +${labels.length - 3}` : "";
+    if (!visible.length) return countLabel;
+    return `${countLabel} · ${formatLocalizedList(visible)}${suffix}`.trim();
+  }
+
+  function serializeCurrentPreset(name) {
+    return normalizeCustomPreset({
+      id: `custom-${slugifyPresetName(name)}`,
+      name: name,
+      floorId: state.floorId,
+      backdropId: state.backdropId,
+      items: state.items.map(function (item) {
+        return {
+          variantId: item.variantId,
+          x: Number(item.x.toFixed(3)),
+          y: Number(item.y.toFixed(3)),
+          rotation: Number(item.rotation.toFixed(1)),
+          label: item.label,
+          power: typeof item.power === "number" ? item.power : null
+        };
+      })
+    });
+  }
+
+  function saveCurrentPreset() {
+    if (!state.items.length) {
+      window.alert(getUiCopy("savePresetEmpty"));
+      return;
+    }
+
+    const name = window.prompt(getUiCopy("savePresetPrompt"), "");
+    if (name === null) return;
+
+    const trimmed = String(name || "").trim();
+    if (!trimmed) return;
+
+    const preset = serializeCurrentPreset(trimmed);
+    const existingIndex = state.customPresets.findIndex(function (entry) {
+      return entry.id === preset.id;
+    });
+
+    if (existingIndex >= 0) state.customPresets.splice(existingIndex, 1, preset);
+    else state.customPresets.unshift(preset);
+
+    persistCustomPresets();
+    renderPresetMenu();
+    window.alert(getUiCopy("savePresetSaved", { name: trimmed }));
+  }
+
+  function getPresetCategories() {
+    if (!state.customPresets.length) return STUDIO_PRESET_CATEGORIES;
+    return [{
+      id: "custom",
+      label: getUiCopy("customPresets"),
+      description: getUiCopy("customPresetsDescription"),
+      presets: state.customPresets
+    }].concat(STUDIO_PRESET_CATEGORIES);
+  }
+
   function renderPresetMenu() {
     if (!refs.presetMenuList) return;
-    refs.presetMenuList.innerHTML = STUDIO_PRESET_CATEGORIES.map(function (category) {
+    refs.presetMenuList.innerHTML = getPresetCategories().map(function (category) {
       const categoryCopy = getLocalizedPresetCategory(category);
       return `
         <section class="preset-group">
@@ -4314,8 +5010,9 @@
   }
 
   function findPreset(presetId) {
-    for (let i = 0; i < STUDIO_PRESET_CATEGORIES.length; i += 1) {
-      const category = STUDIO_PRESET_CATEGORIES[i];
+    const categories = getPresetCategories();
+    for (let i = 0; i < categories.length; i += 1) {
+      const category = categories[i];
       const preset = category.presets.find(function (entry) {
         return entry.id === presetId;
       });
@@ -4329,6 +5026,8 @@
 
     const spawn = spawnPoints[state.items.length % spawnPoints.length];
     const config = options || {};
+    const kind = getVariantVisualKind(variantId, variant.family);
+    const emitter = isEmitterVisualKind(kind);
     return {
       id: `item-${state.nextId++}`,
       variantId: variantId,
@@ -4345,7 +5044,8 @@
       label: config.label || nextLabel(variant.typeLabel),
       x: clamp(typeof config.x === "number" ? config.x : spawn.x + randomOffset(), 0.75, STUDIO.width - 0.75),
       y: clamp(typeof config.y === "number" ? config.y : spawn.y + randomOffset(), 1.0, STUDIO.depth - 0.5),
-      rotation: normalizeDegrees(typeof config.rotation === "number" ? config.rotation : defaultRotation(variant.family))
+      rotation: normalizeDegrees(typeof config.rotation === "number" ? config.rotation : defaultRotation(variant.family)),
+      power: emitter ? clampPowerPercent(typeof config.power === "number" ? config.power : getDefaultPowerPercent(kind)) : null
     };
   }
 
@@ -4424,6 +5124,8 @@
       item[field] = clampItemPosition(item, field, value);
     } else if (field === "rotation") {
       item.rotation = normalizeDegrees(value);
+    } else if (field === "power" && isLightEmitter(item)) {
+      item.power = clampPowerPercent(value);
     }
 
     renderAll();
@@ -4433,6 +5135,121 @@
     const action = event.target.getAttribute("data-action");
     if (action !== "delete") return;
     deleteSelectedItem();
+  }
+
+  function distanceBetweenItems(a, b) {
+    if (!a || !b) return 0;
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return Math.sqrt((dx * dx) + (dy * dy));
+  }
+
+  function getNearestItemByFamily(sourceItem, family) {
+    const matches = state.items.filter(function (item) {
+      return item.id !== sourceItem.id && item.family === family;
+    });
+
+    if (!matches.length) return null;
+
+    return matches.reduce(function (closest, item) {
+      if (!closest) return item;
+      return distanceBetweenItems(sourceItem, item) < distanceBetweenItems(sourceItem, closest) ? item : closest;
+    }, null);
+  }
+
+  function formatDistanceLabel(distance) {
+    if (distance < 1) return `${Math.round(distance * 100)} cm`;
+    return `${distance.toFixed(distance < 10 ? 2 : 1)} m`;
+  }
+
+  function formatAngleLabel(angle) {
+    return `${Math.round(normalizeDegrees(angle))}°`;
+  }
+
+  function getAngleToTarget(sourceItem, targetItem) {
+    const bearing = normalizeDegrees(radiansToDegrees(Math.atan2(targetItem.y - sourceItem.y, targetItem.x - sourceItem.x)));
+    const diff = Math.abs(normalizeDegrees(bearing) - normalizeDegrees(sourceItem.rotation));
+    return diff > 180 ? 360 - diff : diff;
+  }
+
+  function getBackdropDistance(item) {
+    return Math.max(0, item.y - STUDIO.backdropDepth);
+  }
+
+  function getBackdropMeasureY(item) {
+    return item.y <= STUDIO.backdropDepth ? item.y : STUDIO.backdropDepth;
+  }
+
+  function buildSelectionMetrics(item, copy) {
+    const metrics = [{
+      label: getUiCopy("metricHeight"),
+      value: copy.height
+    }, {
+      label: getUiCopy("metricRotation"),
+      value: formatAngleLabel(item.rotation)
+    }];
+
+    if (item.family === "subject") {
+      const camera = getNearestItemByFamily(item, "camera");
+      const mainLight = getNearestEmitter(item);
+      metrics.push({
+        label: getUiCopy("metricBackdropDistance"),
+        value: formatDistanceLabel(getBackdropDistance(item))
+      });
+      if (camera) {
+        metrics.push({
+          label: getUiCopy("metricCameraDistance"),
+          value: formatDistanceLabel(distanceBetweenItems(item, camera))
+        });
+      }
+      if (mainLight) {
+        const lightEstimate = getLightEstimation(mainLight, item);
+        metrics.push({
+          label: getUiCopy("metricMainLightDistance"),
+          value: formatDistanceLabel(lightEstimate.distance)
+        });
+        metrics.push({
+          label: getUiCopy("metricMainLightPower"),
+          value: formatPowerLabel(lightEstimate.power)
+        });
+        metrics.push({
+          label: getUiCopy("metricEstimatedFStop"),
+          value: formatFStopLabel(lightEstimate.fStop)
+        });
+      }
+      return metrics;
+    }
+
+    const subject = getNearestItemByFamily(item, "subject");
+    if (!subject) return metrics;
+
+    if (isLightEmitter(item)) {
+      const lightEstimate = getLightEstimation(item, subject);
+      metrics.push({
+        label: getUiCopy("metricSubjectDistance"),
+        value: formatDistanceLabel(lightEstimate.distance)
+      });
+      metrics.push({
+        label: getUiCopy("metricLightAngle"),
+        value: formatAngleLabel(lightEstimate.angle)
+      });
+      metrics.push({
+        label: getUiCopy("metricMainLightPower"),
+        value: formatPowerLabel(lightEstimate.power)
+      });
+      metrics.push({
+        label: getUiCopy("metricEstimatedFStop"),
+        value: formatFStopLabel(lightEstimate.fStop)
+      });
+      return metrics;
+    }
+
+    metrics.push({
+      label: getUiCopy("metricSubjectDistance"),
+      value: formatDistanceLabel(distanceBetweenItems(item, subject))
+    });
+
+    return metrics;
   }
 
   function updateSelectionPanel() {
@@ -4445,6 +5262,24 @@
 
     const copy = getLocalizedVariantCopy(item.variantId, ITEM_VARIANTS[item.variantId]);
     const itemLabel = getLocalizedItemLabel(item);
+    const powerMarkup = isLightEmitter(item) ? `
+      <div class="selection-power">
+        <label>
+          <span>${escapeHtml(getUiCopy("power"))}</span>
+          <span class="power-readout">${escapeHtml(formatPowerLabel(item.power))}</span>
+        </label>
+        <input type="range" min="10" max="100" step="5" data-field="power" value="${item.power}">
+        <span class="inline-note">${escapeHtml(getUiCopy("powerHint"))}</span>
+      </div>
+    ` : "";
+    const metricMarkup = buildSelectionMetrics(item, copy).map(function (entry) {
+      return `
+        <div class="metric-chip">
+          <strong>${escapeHtml(entry.label)}</strong>
+          <span>${escapeHtml(entry.value)}</span>
+        </div>
+      `;
+    }).join("");
 
     refs.selectionPanel.className = "selection-panel";
     refs.selectionPanel.innerHTML = `
@@ -4461,6 +5296,8 @@
         <label>${escapeHtml(getUiCopy("y"))}<input type="number" step="0.1" data-field="y" value="${item.y.toFixed(2)}"></label>
         <label>${escapeHtml(t("selection.rotation"))}<input type="number" step="1" data-field="rotation" value="${item.rotation.toFixed(0)}"></label>
       </div>
+      ${powerMarkup}
+      <div class="selection-metrics">${metricMarkup}</div>
       <div class="selection-actions">
         <span class="inline-note">${escapeHtml(copy.size)}</span>
         <span class="inline-note">${escapeHtml(copy.height)}</span>
@@ -4482,6 +5319,9 @@
     updateColorSwatchState();
     updateSelectionPanel();
     updateStatus();
+    renderPlanZoomUi();
+    renderIsoZoomUi();
+    syncMeasurementToggle();
     syncMenus();
     drawPlanView();
     drawIsoView();
@@ -4543,10 +5383,43 @@
     }
   }
 
+  function handlePlanWheel(event) {
+    const anchor = getCanvasPointFromEvent(event);
+    if (!anchor) return;
+    const delta = event.deltaY < 0 ? 0.14 : -0.14;
+    if (!delta) return;
+    event.preventDefault();
+    closeMenus();
+    setPlanZoom(state.planZoom + delta, anchor);
+  }
+
   function handlePointerDown(event) {
     closeMenus();
-    const point = getPointerStudioPoint(event);
+    const canvasPoint = getCanvasPointFromEvent(event);
+    if (!canvasPoint) return;
+    updateActivePointer(event, canvasPoint);
+
+    if (state.activePointers.size >= 2 && startPinchGesture()) {
+      drawPlanView();
+      return;
+    }
+
+    const point = planToStudio(canvasPoint.x, canvasPoint.y, getPlanMetrics(refs.planCanvas.width, refs.planCanvas.height));
     if (!point) return;
+
+    if (state.measurementMode) {
+      const measurePoint = resolveMeasurePoint(point.x, point.y);
+      if (!state.measureStart || state.measureEnd) {
+        state.measureStart = measurePoint;
+        state.measurePreview = null;
+        state.measureEnd = null;
+      } else {
+        state.measureEnd = measurePoint;
+        state.measurePreview = null;
+      }
+      drawPlanView();
+      return;
+    }
 
     const selected = getSelectedItem();
     if (selected && isOnRotateHandle(point.x, point.y, selected)) {
@@ -4582,8 +5455,38 @@
   }
 
   function handlePointerMove(event) {
-    const point = getPointerStudioPoint(event);
+    const canvasPoint = getCanvasPointFromEvent(event);
+    if (!canvasPoint) return;
+    updateActivePointer(event, canvasPoint);
+
+    if (state.pinchGesture && state.pinchGesture.pointerIds.indexOf(event.pointerId) !== -1) {
+      const first = state.activePointers.get(state.pinchGesture.pointerIds[0]);
+      const second = state.activePointers.get(state.pinchGesture.pointerIds[1]);
+      if (first && second) {
+        const dx = second.x - first.x;
+        const dy = second.y - first.y;
+        const distance = Math.max(24, Math.sqrt(dx * dx + dy * dy));
+        const midpoint = {
+          x: (first.x + second.x) / 2,
+          y: (first.y + second.y) / 2
+        };
+        const nextZoom = state.pinchGesture.startZoom * (distance / state.pinchGesture.startDistance);
+        setPlanZoom(nextZoom, midpoint);
+      }
+      return;
+    }
+
+    const point = planToStudio(canvasPoint.x, canvasPoint.y, getPlanMetrics(refs.planCanvas.width, refs.planCanvas.height));
     if (!point) return;
+
+    if (state.measurementMode) {
+      if (state.measureStart && !state.measureEnd) {
+        state.measurePreview = resolveMeasurePoint(point.x, point.y);
+      }
+      refs.planCanvas.style.cursor = "crosshair";
+      drawPlanView();
+      return;
+    }
 
     if (state.interaction && state.interaction.pointerId === event.pointerId) {
       const item = findItem(state.interaction.itemId);
@@ -4614,6 +5517,9 @@
   }
 
   function handlePointerUp(event) {
+    clearActivePointer(event.pointerId);
+    if (state.pinchGesture) return;
+    if (state.measurementMode) return;
     if (state.interaction && state.interaction.pointerId === event.pointerId) {
       state.interaction = null;
       refs.planCanvas.releasePointerCapture(event.pointerId);
@@ -4622,7 +5528,16 @@
     }
   }
 
-  function handlePointerLeave() {
+  function handlePointerLeave(event) {
+    if (event) clearActivePointer(event.pointerId);
+    if (state.pinchGesture) return;
+    if (state.measurementMode) {
+      if (!state.measureEnd) state.measurePreview = null;
+      refs.planCanvas.style.cursor = "crosshair";
+      drawPlanView();
+      return;
+    }
+
     if (!state.interaction) {
       state.hoverHandle = false;
       state.hoverItemId = null;
@@ -4631,14 +5546,39 @@
     }
   }
 
-  function getPointerStudioPoint(event) {
+  function getCanvasPointFromEvent(event) {
     const rect = refs.planCanvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
     const ratioX = refs.planCanvas.width / rect.width;
     const ratioY = refs.planCanvas.height / rect.height;
-    const canvasX = (event.clientX - rect.left) * ratioX;
-    const canvasY = (event.clientY - rect.top) * ratioY;
+    return {
+      x: (event.clientX - rect.left) * ratioX,
+      y: (event.clientY - rect.top) * ratioY
+    };
+  }
+
+  function getPointerStudioPoint(event) {
+    const canvasPoint = getCanvasPointFromEvent(event);
+    if (!canvasPoint) return null;
     const metrics = getPlanMetrics(refs.planCanvas.width, refs.planCanvas.height);
-    return planToStudio(canvasX, canvasY, metrics);
+    return planToStudio(canvasPoint.x, canvasPoint.y, metrics);
+  }
+
+  function resolveMeasurePoint(studioX, studioY) {
+    const hit = hitTest(studioX, studioY);
+    if (hit) {
+      return {
+        x: hit.x,
+        y: hit.y,
+        label: getLocalizedItemLabel(hit)
+      };
+    }
+
+    return {
+      x: clamp(studioX, 0, STUDIO.width),
+      y: clamp(studioY, 0, STUDIO.depth),
+      label: ""
+    };
   }
 
   function hitTest(studioX, studioY) {
@@ -4729,10 +5669,25 @@
       drawPlanItem(ctx, item, metrics);
     });
 
+    const measurementGuides = state.measurementMode ? getMeasurementModeGuides() : [];
+    if (measurementGuides.length) {
+      drawMeasurementGuides(ctx, measurementGuides, metrics, {
+        stroke: "rgba(255, 190, 114, 0.72)",
+        border: "rgba(255, 190, 114, 0.3)",
+        fill: "rgba(16, 14, 18, 0.92)",
+        text: "rgba(255, 246, 229, 0.96)"
+      });
+    }
+
     const selected = getSelectedItem();
     if (selected) {
+      if (!state.measurementMode || !measurementGuides.length) {
+        drawSelectedMeasurementGuides(ctx, selected, metrics);
+      }
       drawSelectionOutline(ctx, selected, metrics);
     }
+
+    drawManualMeasurement(ctx, metrics);
   }
 
   function drawPlanBackdrop(ctx, metrics, color) {
@@ -4859,14 +5814,252 @@
     else if (item.family === "table") drawPlanTable(ctx, item, width, depth, metrics);
 
     ctx.restore();
+    drawPlanItemLabel(ctx, item, center, width, depth, metrics);
+  }
+
+  function drawPlanItemLabel(ctx, item, center, width, depth, metrics) {
+    const label = getLocalizedItemLabel(item);
+    const paddingX = 10 * metrics.unit;
+    const labelHeight = 22 * metrics.unit;
+    const stageLeft = metrics.left + 12 * metrics.unit;
+    const stageRight = metrics.left + STUDIO.width * metrics.scale - 12 * metrics.unit;
+    const stageTop = metrics.top + 12 * metrics.unit;
+    const stageBottom = metrics.top + STUDIO.depth * metrics.scale - 12 * metrics.unit;
+    const labelOffset = Math.max(width, depth) * 0.68;
 
     ctx.save();
+    ctx.font = `${Math.round(11 * metrics.unit)}px "Segoe UI", sans-serif`;
     ctx.textAlign = "center";
-    ctx.fillStyle = item.id === state.selectedId ? "rgba(255,255,255,0.94)" : "rgba(230,239,255,0.76)";
-    ctx.font = `${Math.round(12 * metrics.unit)}px "Segoe UI", sans-serif`;
-    ctx.fillText(getLocalizedItemLabel(item), center.x, center.y - depth * 0.8);
+    ctx.textBaseline = "middle";
+
+    const labelWidth = ctx.measureText(label).width + paddingX * 2;
+    const halfWidth = labelWidth / 2;
+    let labelX = clamp(center.x, stageLeft + halfWidth, stageRight - halfWidth);
+    let labelY = center.y - labelOffset;
+
+    if (labelY - labelHeight / 2 < stageTop) {
+      labelY = center.y + labelOffset;
+    }
+    if (labelY + labelHeight / 2 > stageBottom) {
+      labelY = stageBottom - labelHeight / 2;
+    }
+
+    ctx.fillStyle = item.id === state.selectedId ? "rgba(8, 12, 18, 0.96)" : "rgba(8, 12, 18, 0.9)";
+    roundRect(ctx, labelX - halfWidth, labelY - labelHeight / 2, labelWidth, labelHeight, 11 * metrics.unit);
+    ctx.fill();
+    ctx.strokeStyle = item.id === state.selectedId ? "rgba(140, 220, 255, 0.42)" : "rgba(255, 255, 255, 0.12)";
+    ctx.lineWidth = 1.2 * metrics.unit;
+    ctx.stroke();
+    ctx.fillStyle = "rgba(247, 241, 235, 0.96)";
+    ctx.fillText(label, labelX, labelY + 1 * metrics.unit);
     ctx.restore();
   }
+
+  function getSelectedMeasurementGuides(item) {
+    const guides = [];
+
+    if (item.family === "subject") {
+      guides.push({
+        from: { x: item.x, y: item.y },
+        to: { x: item.x, y: getBackdropMeasureY(item) },
+        label: formatDistanceLabel(getBackdropDistance(item))
+      });
+
+      const camera = getNearestItemByFamily(item, "camera");
+      if (camera) {
+        guides.push({
+          from: { x: item.x, y: item.y },
+          to: { x: camera.x, y: camera.y },
+          label: formatDistanceLabel(distanceBetweenItems(item, camera))
+        });
+      }
+
+      const mainLight = getNearestEmitter(item);
+      if (mainLight) {
+        const estimate = getLightEstimation(mainLight, item);
+        guides.push({
+          from: { x: item.x, y: item.y },
+          to: { x: mainLight.x, y: mainLight.y },
+          label: `${getUiCopy("guideMainLight")} ${formatDistanceLabel(estimate.distance)} · ${formatFStopLabel(estimate.fStop)}`
+        });
+      }
+
+      return guides;
+    }
+
+    const subject = getNearestItemByFamily(item, "subject");
+    if (!subject) return guides;
+
+    let label = formatDistanceLabel(distanceBetweenItems(item, subject));
+    if (isLightEmitter(item)) {
+      const estimate = getLightEstimation(item, subject);
+      label = `${formatDistanceLabel(estimate.distance)} · ${formatAngleLabel(estimate.angle)} · ${formatFStopLabel(estimate.fStop)}`;
+    }
+
+    guides.push({
+      from: { x: item.x, y: item.y },
+      to: { x: subject.x, y: subject.y },
+      label: label
+    });
+
+    return guides;
+  }
+
+  function getMeasurementModeSubject() {
+    const selected = getSelectedItem();
+    if (selected && selected.family === "subject") return selected;
+
+    const subjects = state.items.filter(function (item) {
+      return item.family === "subject";
+    });
+    if (!subjects.length) return null;
+    if (!selected) return subjects[0];
+
+    return subjects.reduce(function (closest, item) {
+      if (!closest) return item;
+      return distanceBetweenItems(selected, item) < distanceBetweenItems(selected, closest) ? item : closest;
+    }, null);
+  }
+
+  function getMeasurementModeGuides() {
+    const subject = getMeasurementModeSubject();
+    if (!subject) {
+      const selected = getSelectedItem();
+      return selected ? getSelectedMeasurementGuides(selected) : [];
+    }
+
+    const guides = [{
+      from: { x: subject.x, y: subject.y },
+      to: { x: subject.x, y: getBackdropMeasureY(subject) },
+      label: `${getUiCopy("metricBackdropDistance")} · ${formatDistanceLabel(getBackdropDistance(subject))}`,
+      distance: getBackdropDistance(subject),
+      labelT: 0.38
+    }];
+
+    state.items.forEach(function (item) {
+      if (item.id === subject.id) return;
+      const distance = distanceBetweenItems(subject, item);
+      guides.push({
+        from: { x: subject.x, y: subject.y },
+        to: { x: item.x, y: item.y },
+        label: `${getLocalizedItemLabel(item)} · ${formatDistanceLabel(distance)}`,
+        distance: distance,
+        labelT: 0.72
+      });
+    });
+
+    return guides.sort(function (a, b) {
+      return (b.distance || 0) - (a.distance || 0);
+    });
+  }
+
+  function drawMeasurementGuides(ctx, guides, metrics, palette) {
+    if (!guides.length) return;
+
+    const colors = Object.assign({
+      stroke: "rgba(143, 208, 255, 0.62)",
+      border: "rgba(143, 208, 255, 0.36)",
+      fill: "rgba(9, 16, 28, 0.84)",
+      text: "rgba(240, 248, 255, 0.92)"
+    }, palette || {});
+
+    ctx.save();
+    ctx.setLineDash([10 * metrics.unit, 8 * metrics.unit]);
+    ctx.lineWidth = 2 * metrics.unit;
+    ctx.strokeStyle = colors.stroke;
+
+    guides.forEach(function (guide) {
+      const from = studioToPlan(guide.from.x, guide.from.y, metrics);
+      const to = studioToPlan(guide.to.x, guide.to.y, metrics);
+      const labelT = typeof guide.labelT === "number" ? guide.labelT : 0.5;
+      const midX = from.x + (to.x - from.x) * labelT;
+      const midY = from.y + (to.y - from.y) * labelT;
+      const paddingX = 10 * metrics.unit;
+
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(to.x, to.y);
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+      ctx.font = `${Math.round(11 * metrics.unit)}px "Segoe UI", sans-serif`;
+      const labelWidth = ctx.measureText(guide.label).width + paddingX * 2;
+      const labelHeight = 22 * metrics.unit;
+      ctx.fillStyle = colors.fill;
+      roundRect(ctx, midX - labelWidth / 2, midY - labelHeight / 2, labelWidth, labelHeight, 10 * metrics.unit);
+      ctx.fill();
+      ctx.strokeStyle = colors.border;
+      ctx.lineWidth = 1.2 * metrics.unit;
+      ctx.stroke();
+      ctx.fillStyle = colors.text;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(guide.label, midX, midY + 1 * metrics.unit);
+      ctx.setLineDash([10 * metrics.unit, 8 * metrics.unit]);
+      ctx.strokeStyle = colors.stroke;
+      ctx.lineWidth = 2 * metrics.unit;
+    });
+
+    ctx.restore();
+  }
+
+  function drawSelectedMeasurementGuides(ctx, item, metrics) {
+    drawMeasurementGuides(ctx, getSelectedMeasurementGuides(item), metrics);
+  }
+
+  function drawManualMeasurement(ctx, metrics) {
+    if (!state.measureStart) return;
+    const endPoint = state.measureEnd || state.measurePreview;
+    if (!endPoint) return;
+
+    const start = studioToPlan(state.measureStart.x, state.measureStart.y, metrics);
+    const end = studioToPlan(endPoint.x, endPoint.y, metrics);
+    const midX = (start.x + end.x) / 2;
+    const midY = (start.y + end.y) / 2;
+    const distance = formatDistanceLabel(distanceBetweenItems(state.measureStart, endPoint));
+    const labelParts = [];
+
+    if (state.measureStart.label) labelParts.push(state.measureStart.label);
+    if (endPoint.label) labelParts.push(endPoint.label);
+
+    const label = labelParts.length ? `${labelParts.join(" <-> ")} · ${distance}` : distance;
+
+    ctx.save();
+    ctx.strokeStyle = "rgba(251, 191, 36, 0.92)";
+    ctx.setLineDash([12 * metrics.unit, 8 * metrics.unit]);
+    ctx.lineWidth = 2.2 * metrics.unit;
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(end.x, end.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    [start, end].forEach(function (point) {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 5 * metrics.unit, 0, Math.PI * 2);
+      ctx.fillStyle = "#fbbf24";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(12, 20, 34, 0.88)";
+      ctx.lineWidth = 1.6 * metrics.unit;
+      ctx.stroke();
+    });
+
+    ctx.font = `${Math.round(11 * metrics.unit)}px "Segoe UI", sans-serif`;
+    const labelWidth = ctx.measureText(label).width + 20 * metrics.unit;
+    const labelHeight = 24 * metrics.unit;
+    ctx.fillStyle = "rgba(14, 20, 30, 0.92)";
+    roundRect(ctx, midX - labelWidth / 2, midY - labelHeight / 2, labelWidth, labelHeight, 10 * metrics.unit);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(251, 191, 36, 0.38)";
+    ctx.lineWidth = 1.2 * metrics.unit;
+    ctx.stroke();
+    ctx.fillStyle = "#fff7e0";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(label, midX, midY + 1 * metrics.unit);
+    ctx.restore();
+  }
+
   function drawSelectionOutline(ctx, item, metrics) {
     const center = studioToPlan(item.x, item.y, metrics);
     const width = item.width * metrics.scale;
@@ -5709,8 +6902,9 @@
     const rightX = center.x - sideX * halfSpread;
     const rightY = center.y - sideY * halfSpread;
 
+    const beamColor = isLightEmitter(item) ? scaleColorAlpha(color, 0.55 + (clampPowerPercent(item.power) / 100) * 0.9) : color;
     const gradient = ctx.createLinearGradient(center.x, center.y, tipX, tipY);
-    gradient.addColorStop(0, color);
+    gradient.addColorStop(0, beamColor);
     gradient.addColorStop(1, "rgba(255,255,255,0)");
 
     ctx.fillStyle = gradient;
@@ -5761,6 +6955,9 @@
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     drawIsoStudio(ctx, metrics, floor.color, backdrop.color);
+    state.items.forEach(function (item) {
+      drawIsoLightSpread(ctx, item, metrics);
+    });
 
     state.items.slice().sort(function (a, b) {
       return (a.x + a.y) - (b.x + b.y);
@@ -5830,6 +7027,50 @@
     ctx.lineTo(wallBR.x, wallBR.y);
     ctx.lineTo(sweepRight.x, sweepRight.y);
     ctx.lineTo(sweepLeft.x, sweepLeft.y);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function withAlpha(color, alpha) {
+    const match = String(color || "").match(/^rgba\(([^)]+),\s*[\d.]+\)$/);
+    if (!match) return color;
+    return `rgba(${match[1]}, ${alpha})`;
+  }
+
+  function scaleColorAlpha(color, factor) {
+    const match = String(color || "").match(/^rgba\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([\d.]+)\s*\)$/);
+    if (!match) return color;
+    const alpha = clamp(parseFloat(match[4]) * factor, 0, 1);
+    return `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${alpha.toFixed(3)})`;
+  }
+
+  function drawIsoLightSpread(ctx, item, metrics) {
+    const beam = getPlanBeamConfig(item);
+    if (!beam) return;
+
+    const radians = degreesToRadians(item.rotation);
+    const beamLength = beam.lengthMeters * (item.family === "camera" ? 0.9 : 1);
+    const beamWidth = beam.widthMeters * 0.7;
+    const startX = clamp(item.x + Math.cos(radians) * 0.18, 0, STUDIO.width);
+    const startY = clamp(item.y + Math.sin(radians) * 0.18, 0, STUDIO.depth);
+    const endX = clamp(item.x + Math.cos(radians) * beamLength, 0, STUDIO.width);
+    const endY = clamp(item.y + Math.sin(radians) * beamLength, 0, STUDIO.depth);
+    const perpX = -Math.sin(radians);
+    const perpY = Math.cos(radians);
+    const start = isoProject(startX, startY, 0, metrics);
+    const endCenter = isoProject(endX, endY, 0, metrics);
+    const endLeft = isoProject(clamp(endX + perpX * beamWidth, 0, STUDIO.width), clamp(endY + perpY * beamWidth, 0, STUDIO.depth), 0, metrics);
+    const endRight = isoProject(clamp(endX - perpX * beamWidth, 0, STUDIO.width), clamp(endY - perpY * beamWidth, 0, STUDIO.depth), 0, metrics);
+
+    const powerFactor = isLightEmitter(item) ? 0.55 + (clampPowerPercent(item.power) / 100) * 0.9 : 1;
+    const fill = ctx.createLinearGradient(start.x, start.y, endCenter.x, endCenter.y);
+    fill.addColorStop(0, item.family === "camera" ? withAlpha(beam.color, 0.1) : scaleColorAlpha(beam.color, powerFactor));
+    fill.addColorStop(1, withAlpha(beam.color, 0.02));
+    ctx.fillStyle = fill;
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(endLeft.x, endLeft.y);
+    ctx.lineTo(endRight.x, endRight.y);
     ctx.closePath();
     ctx.fill();
   }
@@ -6675,6 +7916,24 @@
     link.click();
   }
 
+  function exportPdf() {
+    try {
+      const canvas = createStudioSnapshotCanvas(1800, 1180);
+      const bytes = buildPdfFromCanvas(canvas);
+      const blob = new Blob([bytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `lite-studio-${new Date().toISOString().slice(0, 10)}.pdf`;
+      link.click();
+      window.setTimeout(function () {
+        URL.revokeObjectURL(url);
+      }, 1200);
+    } catch (error) {
+      window.alert(getUiCopy("pdfFailed"));
+    }
+  }
+
   function printPlan() {
     window.print();
   }
@@ -6708,6 +7967,80 @@
 
     return canvas;
   }
+
+  function buildPdfFromCanvas(canvas) {
+    const jpegDataUrl = canvas.toDataURL("image/jpeg", 0.92);
+    return buildPdfFromJpegDataUrl(jpegDataUrl, canvas.width, canvas.height);
+  }
+
+  function buildPdfFromJpegDataUrl(dataUrl, imageWidth, imageHeight) {
+    const binary = atob(String(dataUrl).split(",")[1] || "");
+    const imageBytes = new Uint8Array(binary.length);
+    for (let index = 0; index < binary.length; index += 1) {
+      imageBytes[index] = binary.charCodeAt(index);
+    }
+
+    const landscape = imageWidth >= imageHeight;
+    const pageWidth = landscape ? 841.89 : 595.28;
+    const pageHeight = landscape ? 595.28 : 841.89;
+    const margin = 24;
+    const scale = Math.min((pageWidth - margin * 2) / imageWidth, (pageHeight - margin * 2) / imageHeight);
+    const drawWidth = imageWidth * scale;
+    const drawHeight = imageHeight * scale;
+    const drawX = (pageWidth - drawWidth) / 2;
+    const drawY = (pageHeight - drawHeight) / 2;
+    const content = `q\n${drawWidth.toFixed(2)} 0 0 ${drawHeight.toFixed(2)} ${drawX.toFixed(2)} ${drawY.toFixed(2)} cm\n/Im0 Do\nQ\n`;
+
+    const encoder = new TextEncoder();
+    const parts = [];
+    const offsets = [0];
+    let totalLength = 0;
+
+    function pushAscii(value) {
+      const bytes = encoder.encode(value);
+      parts.push(bytes);
+      totalLength += bytes.length;
+    }
+
+    function pushBytes(bytes) {
+      parts.push(bytes);
+      totalLength += bytes.length;
+    }
+
+    function addObject(objectId, dictionary, streamBytes) {
+      offsets[objectId] = totalLength;
+      pushAscii(`${objectId} 0 obj\n${dictionary}`);
+      if (streamBytes) {
+        pushAscii("stream\n");
+        pushBytes(streamBytes);
+        pushAscii("\nendstream\n");
+      }
+      pushAscii("endobj\n");
+    }
+
+    pushAscii("%PDF-1.4\n");
+    addObject(1, "<< /Type /Catalog /Pages 2 0 R >>\n", null);
+    addObject(2, "<< /Type /Pages /Count 1 /Kids [3 0 R] >>\n", null);
+    addObject(3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth.toFixed(2)} ${pageHeight.toFixed(2)}] /Resources << /ProcSet [/PDF /ImageC] /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\n`, null);
+    addObject(4, `<< /Type /XObject /Subtype /Image /Width ${imageWidth} /Height ${imageHeight} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imageBytes.length} >>\n`, imageBytes);
+    addObject(5, `<< /Length ${encoder.encode(content).length} >>\n`, encoder.encode(content));
+
+    const xrefOffset = totalLength;
+    pushAscii("xref\n0 6\n0000000000 65535 f \n");
+    for (let objectId = 1; objectId <= 5; objectId += 1) {
+      pushAscii(`${String(offsets[objectId]).padStart(10, "0")} 00000 n \n`);
+    }
+    pushAscii(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`);
+
+    const output = new Uint8Array(totalLength);
+    let cursor = 0;
+    parts.forEach(function (part) {
+      output.set(part, cursor);
+      cursor += part.length;
+    });
+    return output;
+  }
+
   function createExportCanvas(width, height, renderer) {
     const canvas = document.createElement("canvas");
     canvas.width = width;
@@ -6726,19 +8059,50 @@
     }
   }
 
-  function getPlanMetrics(width, height) {
+  function getPlanBaseMetrics(width, height) {
     const padding = Math.min(width, height) * 0.075;
     const scale = Math.min((width - padding * 2) / STUDIO.width, (height - padding * 2) / STUDIO.depth);
     return {
-      left: (width - STUDIO.width * scale) / 2,
-      top: (height - STUDIO.depth * scale) / 2,
+      padding: padding,
       scale: scale,
+      stageWidth: STUDIO.width * scale,
+      stageHeight: STUDIO.depth * scale
+    };
+  }
+
+  function getClampedPlanPan(width, height, zoom, panX, panY) {
+    const base = getPlanBaseMetrics(width, height);
+    const stageWidth = base.stageWidth * zoom;
+    const stageHeight = base.stageHeight * zoom;
+    const maxPanX = Math.max(0, (stageWidth - (width - base.padding * 2)) / 2);
+    const maxPanY = Math.max(0, (stageHeight - (height - base.padding * 2)) / 2);
+    return {
+      x: clamp(panX, -maxPanX, maxPanX),
+      y: clamp(panY, -maxPanY, maxPanY)
+    };
+  }
+
+  function getPlanMetrics(width, height) {
+    const base = getPlanBaseMetrics(width, height);
+    const scale = base.scale * state.planZoom;
+    const stageWidth = STUDIO.width * scale;
+    const stageHeight = STUDIO.depth * scale;
+    const pan = getClampedPlanPan(width, height, state.planZoom, state.planPanX, state.planPanY);
+    return {
+      left: width / 2 + pan.x - stageWidth / 2,
+      top: height / 2 + pan.y - stageHeight / 2,
+      scale: scale,
+      padding: base.padding,
+      panX: pan.x,
+      panY: pan.y,
+      stageWidth: stageWidth,
+      stageHeight: stageHeight,
       unit: Math.max(0.8, scale / 118)
     };
   }
 
   function getIsoMetrics(width, height) {
-    const scale = Math.min(width / (STUDIO.width + STUDIO.depth + 2.4), height / 7.4);
+    const scale = Math.min(width / (STUDIO.width + STUDIO.depth + 2.4), height / 7.4) * state.isoZoom;
     return {
       originX: width / 2,
       originY: height * 0.76,
