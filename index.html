@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#07111f">
-  <title>Plan de studio photo en ligne, mesures et export PDF | Lumiere Studio</title>
-  <meta name="description" content="Creez un plan de studio photo en ligne sur mobile ou desktop : sujets, lumieres, cameras, mesures automatiques, presets, zoom, export PNG ou PDF et impression du plan.">
+  <title>Plan de studio photo desktop, tablette et mobile | Lumiere Studio</title>
+  <meta name="description" content="Preparez un plan de studio photo sur desktop, tablette ou mobile avec bibliotheque repliable, vue plan/iso commutable, mesures automatiques, copie d image, export PNG ou PDF et presets.">
   <link rel="canonical" href="https://lumierestudio.archi-it.fr/">
   <link rel="alternate" hreflang="fr" href="https://lumierestudio.archi-it.fr/">
   <link rel="alternate" hreflang="en" href="https://lumierestudio.archi-it.fr/en/">
@@ -17,16 +17,16 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="Lumiere Studio">
-  <meta property="og:title" content="Lumiere Studio - Plan de studio photo en ligne, mesures et export PDF">
-  <meta property="og:description" content="Studio photo en ligne pour construire un plan de studio photo, afficher les mesures utiles, zoomer dans le plateau et exporter un lighting diagram propre.">
+  <meta property="og:title" content="Lumiere Studio - Plan de studio photo desktop, tablette et mobile">
+  <meta property="og:description" content="Une seule application web pour construire un set sur desktop, l ajuster sur tablette ou mobile, basculer entre plan et iso et partager un schema propre.">
   <meta property="og:url" content="https://lumierestudio.archi-it.fr/">
   <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta property="og:image:alt" content="Capture de l'application Lumiere Studio avec vue de dessus, mesures et apercu isometrique">
+  <meta property="og:image:alt" content="Capture de l application Lumiere Studio avec bibliotheque, vue principale commutable et mesures">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Lumiere Studio - Plan de studio photo en ligne, mesures et export PDF">
-  <meta name="twitter:description" content="Creez un plan de studio photo, mesurez les distances cle, zoomez dans le plateau et exportez un lighting diagram en PNG ou PDF.">
+  <meta name="twitter:title" content="Lumiere Studio - Plan de studio photo desktop, tablette et mobile">
+  <meta name="twitter:description" content="Bibliotheque repliable, plan/iso commutables, mesures utiles et sortie rapide en image, PNG ou PDF.">
   <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta name="twitter:image:alt" content="Capture de l'application Lumiere Studio avec vue de dessus, mesures et apercu isometrique">
+  <meta name="twitter:image:alt" content="Capture de l application Lumiere Studio avec bibliotheque, vue principale commutable et mesures">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@
   "operatingSystem": "Web",
   "url": "https://lumierestudio.archi-it.fr/",
   "image": "https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png",
-  "description": "Studio photo en ligne pour construire un plan de studio photo, afficher les mesures utiles, zoomer dans le plateau et exporter un lighting diagram propre.",
+  "description": "Une seule application web pour construire un set sur desktop, l ajuster sur tablette ou mobile, basculer entre plan et iso et partager un schema propre.",
   "inLanguage": "fr",
   "offers": {
     "@type": "Offer",
@@ -54,7 +54,7 @@
 <body>
   <div class="top-strip">
     <div class="site-shell top-strip-inner">
-      <div class="top-copy" id="topCopy">Cet outil vous aide ? Soutenez son evolution et aidez a faire grandir Lumiere Studio.</div>
+      <div class="top-copy" id="topCopy">La version actuelle fonctionne sur desktop, tablette et mobile. Si elle vous aide, soutenez son evolution.</div>
       <a class="top-kofi" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">
         <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Soutenir Lumiere Studio sur Ko-fi">
       </a>
@@ -74,18 +74,17 @@
           <a href="app.html">Application</a><a href="guide.html">Guide</a><a href="presets.html">Presets</a><a href="faq.html">FAQ</a>
         </nav>
         <nav class="language-switcher" aria-label="Choisir la langue de la page">
-    <span class="language-switcher-label">Langues</span>
     <div class="language-switcher-list">
-      <a class="language-chip active" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Francais" aria-current="page">
-      <span class="language-chip-code">FR</span>
-    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/en/" hreflang="en" lang="en" title="English">
-      <span class="language-chip-code">EN</span>
-    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Espanol">
-      <span class="language-chip-code">ES</span>
-    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/de/" hreflang="de" lang="de" title="Deutsch">
-      <span class="language-chip-code">DE</span>
-    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/ar/" hreflang="ar" lang="ar" title="العربية">
-      <span class="language-chip-code">AR</span>
+      <a class="language-chip active" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Francais" aria-label="Francais" aria-current="page">
+      <span class="language-chip-flag" aria-hidden="true">🇫🇷</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/en/" hreflang="en" lang="en" title="English" aria-label="English">
+      <span class="language-chip-flag" aria-hidden="true">🇺🇸</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Espanol" aria-label="Espanol">
+      <span class="language-chip-flag" aria-hidden="true">🇪🇸</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/de/" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">
+      <span class="language-chip-flag" aria-hidden="true">🇩🇪</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/ar/" hreflang="ar" lang="ar" title="العربية" aria-label="العربية">
+      <span class="language-chip-flag" aria-hidden="true">🇸🇦</span>
     </a>
     </div>
   </nav>
@@ -96,39 +95,39 @@
     <section class="hero">
       <div class="site-shell">
         <article class="hero-copy hero-panel">
-          <div class="hero-panel-main" id="heroCopyContent"><p class="eyebrow">Plan de studio photo en ligne</p><h1>Construisez votre plan de studio photo, verifiez les distances et partagez un setup propre avant le shoot.</h1><p>Lumiere Studio aide les photographes, assistants et petites equipes video a placer leurs lumieres, fonds, cameras et modificateurs, puis a valider le plateau sur mobile ou desktop.</p><div class="hero-actions"><a class="button-link primary" href="app.html">Ouvrir l'application</a><a class="button-link secondary" href="guide.html">Lire le guide</a></div><div class="hero-points"><div class="point-chip"><strong>Mobile + desktop</strong>Travaillez depuis le plateau avec une interface exploitable sur telephone comme sur ordinateur.</div><div class="point-chip"><strong>Mesures automatiques</strong>Affichez les distances sujet camera fond et sources en un clic avec le mode Mesure.</div><div class="point-chip"><strong>Zoom souris et pinch</strong>Zoomez dans la vue de dessus a la molette sur desktop ou au pinch sur mobile.</div><div class="point-chip"><strong>Presets perso + PDF</strong>Sauvegardez vos variantes et exportez un plan clair en PNG, PDF ou impression.</div></div></div>
-          <div class="hero-inline-media" id="heroVisualContent"><figure><img src="docs/screenshots/studio-portrait.png" alt="Exemple de plan de studio photo avec mesures et apercu isometrique dans Lumiere Studio"><figcaption class="hero-caption">La version actuelle permet de zoomer, mesurer les distances cle et exporter un plan propre en PNG ou PDF.</figcaption></figure></div>
+          <div class="hero-panel-main" id="heroCopyContent"><p class="eyebrow">Plan de studio photo desktop, tablette et mobile</p><h1>Construisez votre set sur desktop, ajustez-le sur tablette ou mobile, puis partagez un plan propre en quelques secondes.</h1><p>Lumiere Studio sert a preparer vite un plateau lisible : placer les elements, verifier les distances utiles, choisir la bonne vue et sortir un document clair pour l'equipe.</p><div class="hero-actions"><a class="button-link primary" href="app.html">Ouvrir l'application</a><a class="button-link secondary" href="guide.html">Lire le guide</a></div><div class="hero-points"><div class="point-chip"><strong>Une seule app</strong>La meme scene fonctionne sur desktop, tablette et mobile, sans version separee.</div><div class="point-chip"><strong>Bibliotheque repliable</strong>En format compact, ouvrez ou masquez la bibliotheque pour recuperer toute la zone utile.</div><div class="point-chip"><strong>Plan / Iso commutables</strong>Choisissez a tout moment quelle vue doit devenir la vue principale, puis zoomez a la molette ou au pinch.</div><div class="point-chip"><strong>Mesures + exports</strong>Affichez les distances cles, copiez l'image, exportez un PNG ou un PDF et gardez vos presets perso.</div></div></div>
+          <div class="hero-inline-media" id="heroVisualContent"><figure><img src="docs/screenshots/studio-portrait.png" alt="Exemple de plan de studio photo avec bibliotheque, vue principale commutable et mesures dans Lumiere Studio"><figcaption class="hero-caption">Vue principale commutable, bibliotheque repliable en format compact, mesures lisibles et sorties image rapides.</figcaption><div class="meta-list hero-media-meta"><span>Desktop dense</span><span>Tablette compacte</span><span>Mobile tactile</span><span>PNG / PDF</span></div></figure></div>
         </article>
       </div>
     </section>
     <section class="section section-tight">
       <div class="site-shell">
-        <div class="intro-panel" id="introPanelContent"><p class="eyebrow">Studio photo en ligne</p><h2>Un studio photo en ligne plus utile qu'un simple schema.</h2><p>Placez sujets, lumieres, cameras et modificateurs, activez Mesure pour afficher les distances sujet camera fond, puis sauvegardez votre variante.</p><p>Que vous cherchiez un studio photo en ligne, un plan de studio photo ou un lighting diagram imprimable, l'outil sert autant a la prepa qu'au terrain.</p><div class="keyword-list"><span class="keyword-chip">Plan de studio photo</span><span class="keyword-chip">Schema d'eclairage photo</span><span class="keyword-chip">Mesures studio</span><span class="keyword-chip">Export PDF</span></div></div>
+        <div class="intro-panel" id="introPanelContent"><p class="eyebrow">Un seul outil du brief au plateau</p><h2>Travaillez large sur ordinateur, puis gardez l'essentiel sous la main sur ecran tactile.</h2><p>Sur desktop, la bibliotheque et les reglages restent visibles pour construire vite. Sur tablette et mobile, l'interface se compacte, la bibliotheque peut se replier et le pinch permet de zoomer sans perdre la scene.</p><p>Vous gardez exactement le meme plan, les memes presets et les memes exports, quel que soit l'ecran utilise au moment du shooting.</p><div class="keyword-list"><span class="keyword-chip">Desktop dense</span><span class="keyword-chip">Tablette compacte</span><span class="keyword-chip">Mobile tactile</span><span class="keyword-chip">Bibliotheque repliable</span><span class="keyword-chip">Mesures auto</span></div></div>
       </div>
     </section>
     <section class="section">
       <div class="site-shell">
-        <div class="section-head" id="featuresHeadContent"><p class="eyebrow">En un coup d'oeil</p><h2>Un outil pense pour la pre production, le brief et l'usage terrain.</h2><p>L'application ne sert pas seulement a dessiner un plan : elle aide a valider les distances, garder un plateau lisible et produire un document partageable.</p></div>
-        <div class="card-grid" id="featureCardsContent"><article class="info-card"><h3>Sur le terrain</h3><p>La vue de dessus reste lisible sur desktop et mobile, avec zoom molette ou pinch, labels visibles et bibliotheque accessible.</p><div class="meta-list"><span>Mobile</span><span>Desktop</span><span>Zoom</span></div></article><article class="info-card"><h3>Preparation metier</h3><p>Le mode Mesure affiche les distances sujet camera fond et sources, avec puissance et lecture estimee pour mieux briefer l'equipe.</p><div class="meta-list"><span>Distances</span><span>Puissance</span><span>Lecture estimee</span></div></article><article class="info-card"><h3>Sortie et partage</h3><p>Chargez un preset, sauvegardez votre propre version puis exportez l'image, le PDF ou la vue imprimee pour l'equipe ou le client.</p><div class="meta-list"><span>Preset perso</span><span>PNG PDF</span><span>Impression</span></div></article></div>
+        <div class="section-head" id="featuresHeadContent"><p class="eyebrow">Ce que vous pouvez faire</p><h2>Construire le plan, verifier les distances et sortir un document propre depuis la meme interface.</h2><p>Les trois blocs ci-dessous resumment le coeur de l'app : adapter l'espace de travail a l'ecran, lire vite les informations utiles, puis partager le setup sans friction.</p></div>
+        <div class="card-grid" id="featureCardsContent"><article class="info-card"><h3>Surface de travail adaptable</h3><p>Desktop pour construire avec de la place, tablette et mobile pour manipuler l'essentiel sans perdre en lisibilite ni en vitesse.</p><div class="meta-list"><span>Desktop</span><span>Tablette</span><span>Mobile</span></div></article><article class="info-card"><h3>Lecture immediate du setup</h3><p>Le mode Mesure met en avant sujet, camera, fond et sources, pendant que les labels restent lisibles et que la vue principale peut passer de plan a iso.</p><div class="meta-list"><span>Mesures</span><span>Plan / Iso</span><span>Labels clairs</span></div></article><article class="info-card"><h3>Sortie prete pour le brief</h3><p>Copier l'image, telecharger un PNG, sortir un PDF et garder ses presets perso fait partie du flux de travail normal de l'app.</p><div class="meta-list"><span>Copier image</span><span>PNG / PDF</span><span>Presets perso</span></div></article></div>
       </div>
     </section>
     <section class="section">
       <div class="site-shell">
-        <div class="section-head" id="capturesHeadContent"><p class="eyebrow">Captures</p><h2>Trois exemples de setups avec l'interface actuelle.</h2><p>Les captures montrent la nouvelle interface, les labels lisibles, les outils de zoom et les mesures utiles au plateau.</p></div>
-        <div class="screenshot-grid" id="screenshotGridContent"><article class="shot-card hero-copy"><figure><img src="docs/screenshots/studio-portrait.png" alt="Preset portrait avec mesures du sujet vers la source, la camera et le fond dans Lumiere Studio"><figcaption>Preset portrait avec lecture claire des distances sujet source camera et fond.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="docs/screenshots/studio-boudoir.png" alt="Preset boudoir avec mobilier, fond colore et interface mise a jour dans Lumiere Studio"><figcaption>Preset boudoir avec mobilier, fond colore et interface mise a jour pour desktop et mobile.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="docs/screenshots/studio-video.png" alt="Preset interview avec camera, panneaux LED et distances utiles dans Lumiere Studio"><figcaption>Preset interview avec axe camera lisible, panneaux LED et mesures utiles pour le tournage.</figcaption></figure></article></div>
+        <div class="section-head" id="capturesHeadContent"><p class="eyebrow">Exemples de setups</p><h2>Trois types de scenes pour voir comment l'app s'adapte au portrait, au boudoir et a l'interview.</h2><p>Chaque capture montre un usage different : lecture des distances sur un portrait, gestion du mobilier sur un boudoir, et organisation camera + LED sur une interview.</p></div>
+        <div class="screenshot-grid" id="screenshotGridContent"><article class="shot-card hero-copy"><figure><img src="docs/screenshots/studio-portrait.png" alt="Preset portrait avec mesures cles et vue principale commutable dans Lumiere Studio"><figcaption>Preset portrait avec distances utiles, vue principale choisie selon le besoin et sortie propre pour le brief.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="docs/screenshots/studio-boudoir.png" alt="Preset boudoir avec mobilier, fond colore et interface actuelle de Lumiere Studio"><figcaption>Preset boudoir avec mobilier, fond colore et logique compacte coherente sur desktop comme sur tablette.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="docs/screenshots/studio-video.png" alt="Preset interview avec camera, panneaux LED et interface actuelle de Lumiere Studio"><figcaption>Preset interview avec axe camera lisible, panneaux LED, mesures rapides et export immediat pour l'equipe.</figcaption></figure></article></div>
       </div>
     </section>
     <section class="section">
-      <div class="site-shell article-grid" id="resourcesGridContent"><article class="article-card"><p class="eyebrow">Guide pratique</p><h2>Comment preparer un setup de studio photo</h2><p>Une methode rapide pour placer le sujet, la camera, la source cle puis verifier les distances au bon moment.</p><ul><li>Construire un plan lisible vite</li><li>Utiliser Mesure et le zoom sans perdre du temps</li></ul><p><a class="button-link secondary" href="guide.html">Lire le guide</a></p></article><article class="article-card"><p class="eyebrow">Banque de presets</p><h2>Des presets integres et des variantes que vous pouvez sauvegarder</h2><p>Les presets accelerent la preparation et vos versions personnalisees restent stockees dans le navigateur.</p><ul><li>Portrait, boudoir, corporate, produit et video</li><li>Preset de depart puis variante perso</li></ul><p><a class="button-link secondary" href="presets.html">Explorer les presets</a></p></article><article class="article-card"><p class="eyebrow">Questions frequentes</p><h2>Les reponses utiles avant le shooting</h2><p>Mobile, mesures, export PDF, langues et zoom : l'essentiel est resume ici.</p><ul><li>Verifier les distances utiles au plateau</li><li>Exporter un plan propre pour l'equipe</li></ul><p><a class="button-link secondary" href="faq.html">Ouvrir la FAQ</a></p></article></div>
+      <div class="site-shell article-grid" id="resourcesGridContent"><article class="article-card"><p class="eyebrow">Guide pratique</p><h2>Une methode simple pour poser sujet, camera et source cle sur un meme plan</h2><p>Le guide explique comment construire un setup lisible, verifier les bonnes distances et partager un plan que l'equipe peut relire vite.</p><ul><li>Construire un plan lisible vite</li><li>Passer du plan a l'iso sans repartir de zero</li></ul><p><a class="button-link secondary" href="guide.html">Lire le guide</a></p></article><article class="article-card"><p class="eyebrow">Banque de presets</p><h2>Des bases credibles pour demarrer plus vite, puis des variantes perso a conserver</h2><p>Chargez un preset de depart, adaptez-le a votre plateau, repliez la bibliotheque si besoin et sauvegardez votre propre version dans le navigateur.</p><ul><li>Portrait, boudoir, corporate, produit et video</li><li>Preset de depart puis variante perso</li></ul><p><a class="button-link secondary" href="presets.html">Explorer les presets</a></p></article><article class="article-card"><p class="eyebrow">Questions frequentes</p><h2>Les reponses utiles sur le mobile, les mesures, la bibliotheque et les exports</h2><p>Retrouvez l'essentiel sur le comportement tactile, le switch plan/iso, les mesures automatiques, les presets et les sorties image.</p><ul><li>Verifier les distances utiles au plateau</li><li>Copier une image propre ou telecharger un PNG</li></ul><p><a class="button-link secondary" href="faq.html">Ouvrir la FAQ</a></p></article></div>
     </section>
     <section class="section">
       <div class="site-shell">
-        <div class="cta-panel" id="ctaPanelContent"><p class="eyebrow">Pret a preparer votre prochain setup</p><h2>Ouvrez l'application, ajustez votre setup et exportez un plan propre.</h2><p>L'application fonctionne dans le navigateur sur mobile et desktop, prend en charge cinq langues et permet de sauvegarder vos presets perso.</p><div class="cta-actions"><a class="button-link primary" href="app.html">Lancer Lumiere Studio</a><a class="button-link secondary" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">Soutenir le projet</a></div></div>
+        <div class="cta-panel" id="ctaPanelContent"><p class="eyebrow">Passez a l'application</p><h2>Chargez un preset, ajustez votre scene puis exportez le plan qui servira au brief ou au montage.</h2><p>Desktop, tablette ou mobile : la meme app conserve vos presets, vos distances et vos sorties image sans changer de logique en cours de route.</p><div class="cta-actions"><a class="button-link primary" href="app.html">Lancer Lumiere Studio</a><a class="button-link secondary" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">Soutenir le projet</a></div></div>
       </div>
     </section>
     <section class="section">
       <div class="site-shell">
-        <div class="section-head" id="seoPagesHeadContent"><p class="eyebrow">Pages SEO</p><h2>Trois pages ciblees pour des recherches tres concretes.</h2><p>Ces pages repondent a une intention claire puis envoient directement vers l'application avec le bon preset charge.</p></div>
+        <div class="section-head" id="seoPagesHeadContent"><p class="eyebrow">Exemples de pages utiles</p><h2>Trois cas concrets qui expliquent un setup et ouvrent directement le preset associe.</h2><p>Chaque page ci-dessous sert a la fois de contenu explicatif et de raccourci vers l'application avec une base deja chargee.</p></div>
         <div class="card-grid" id="seoPagesCardsContent"><article class="info-card"><h3>Schema d'eclairage portrait</h3><p>Une base portrait studio avec key light a 45 degres, mesures utiles et export propre en PDF.</p><div class="quick-links"><a href="schema-eclairage-portrait.html">Lire la page</a><a href="app.html?preset=portrait-soft-45">Ouvrir le preset</a></div></article><article class="info-card"><h3>Plan de studio boudoir</h3><p>Mobilier, ambiance, fond, distance au fond et circulation pour preparer une seance boudoir studio.</p><div class="quick-links"><a href="plan-studio-boudoir.html">Lire la page</a><a href="app.html?preset=boudoir-parabolic">Ouvrir le preset</a></div></article><article class="info-card"><h3>Lighting diagram interview</h3><p>Un setup video studio clair avec distance camera sujet, panneaux LED et export rapide pour le brief.</p><div class="quick-links"><a href="lighting-diagram-interview.html">Lire la page</a><a href="app.html?preset=interview-led">Ouvrir le preset</a></div></article></div>
       </div>
     </section>
@@ -159,7 +158,7 @@
     </nav>
   </div>
     <div class="site-shell footer-inner">
-      <div id="footerCopy">Lumiere Studio · plan de studio photo, mesures, lighting diagram et presets studio.</div>
+      <div id="footerCopy">Lumiere Studio · plan de studio photo desktop, tablette et mobile avec vue plan/iso commutable, mesures et exports.</div>
       <div class="footer-links" id="footerLinks">
         <a href="app.html">Application</a><a href="guide.html">Guide</a><a href="presets.html">Presets</a><a href="faq.html">FAQ</a>
       </div>

@@ -4,27 +4,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lumiere Studio App | Plan de studio photo, mesures et export PDF</title>
+  <title>Lumiere Studio App | Plan de studio photo pour PC et tablette</title>
   <meta name="description"
-    content="Ouvrez l application Lumiere Studio pour preparer un set photo sur mobile ou desktop, mesurer les distances cle, zoomer dans le plan, sauvegarder vos presets et exporter en PNG ou PDF.">
+    content="Ouvrez l application Lumiere Studio pour preparer un set photo sur PC ou tablette, basculer entre plan et vue isometrique, mesurer les distances cle, copier l image et telecharger en PNG ou PDF.">
   <meta name="theme-color" content="#120f16">
   <link rel="canonical" href="https://lumierestudio.archi-it.fr/app.html">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="Lumiere Studio">
-  <meta property="og:title" content="Lumiere Studio App | Plan de studio photo, mesures et export PDF">
+  <meta property="og:title" content="Lumiere Studio App | Plan de studio photo pour PC et tablette">
   <meta property="og:description"
-    content="Application web pour placer lumieres, cameras et sujets, afficher les mesures automatiques, zoomer dans le plan et exporter un setup propre en PNG ou PDF.">
+    content="Application web pour placer lumieres, cameras et sujets, basculer entre plan et vue isometrique, afficher les mesures automatiques et sortir un visuel propre en PNG ou PDF.">
   <meta property="og:url" content="https://lumierestudio.archi-it.fr/app.html">
   <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta property="og:image:alt" content="Capture de l application Lumiere Studio avec mesures, zoom et vue isometrique">
+  <meta property="og:image:alt" content="Capture de l application Lumiere Studio avec plan principal, vue isometrique secondaire et mesures">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Lumiere Studio App | Plan de studio photo, mesures et export PDF">
+  <meta name="twitter:title" content="Lumiere Studio App | Plan de studio photo pour PC et tablette">
   <meta name="twitter:description"
-    content="Preparez un set photo sur mobile ou desktop, mesurez les distances sujet camera fond, sauvegardez vos presets et exportez en PNG ou PDF.">
+    content="Preparez un set photo sur PC ou tablette, basculez entre plan et vue iso, copiez l image et exportez en PNG ou PDF.">
   <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta name="twitter:image:alt" content="Capture de l application Lumiere Studio avec mesures, zoom et vue isometrique">
+  <meta name="twitter:image:alt" content="Capture de l application Lumiere Studio avec plan principal, vue isometrique secondaire et mesures">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -35,14 +35,14 @@
       "operatingSystem": "Web",
       "url": "https://lumierestudio.archi-it.fr/app.html",
       "image": "https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png",
-      "description": "Application web pour preparer un plan de studio photo sur mobile ou desktop, afficher les mesures utiles, zoomer dans le plan et exporter en PNG ou PDF.",
+      "description": "Application web pour preparer un plan de studio photo sur PC ou tablette, passer du plan a la vue isometrique, afficher les mesures utiles et sortir un visuel propre en PNG ou PDF.",
       "featureList": [
-        "Vue de dessus du studio avec zoom souris et pinch",
-        "Mini vue isometrique integree",
+        "Vue plan et vue isometrique commutables",
+        "Zoom souris sur PC et controles adaptes a la tablette",
         "Mesures automatiques sujet camera fond et sources",
         "Recherche dans la bibliotheque d elements",
         "Presets integres et presets personnalises",
-        "Export PNG, PDF et impression"
+        "Copie d image, export PNG, PDF et impression"
       ],
       "inLanguage": ["fr", "en", "es", "de", "ar"],
       "offers": {
@@ -160,13 +160,8 @@
 
     <div class="workspace">
       <aside class="library-panel">
-        <div class="panel-top">
-          <div>
-            <p class="panel-eyebrow" id="libraryEyebrow">Bibliotheque</p>
-            <h2 id="libraryTitle">Elements et tailles</h2>
-          </div>
-          <p class="panel-copy" id="libraryCopy">Ajoutez vos elements, mesurez automatiquement les distances, zoomez
-            dans le plan et exportez votre set en PNG ou PDF.</p>
+        <div class="panel-top panel-top-compact">
+          <p class="panel-eyebrow" id="libraryEyebrow">Bibliotheque</p>
         </div>
 
         <label class="search-field" for="librarySearch">
@@ -177,46 +172,41 @@
 
         <div class="category-tabs" id="categoryTabs"></div>
 
-        <div class="selection-panel empty" id="selectionPanel">
-          Selectionnez un element dans le plan pour ajuster sa position, sa rotation ou le supprimer.
-        </div>
+        <div class="selection-panel empty is-hidden" id="selectionPanel"></div>
 
         <div class="palette-panel" id="palettePanel"></div>
       </aside>
 
       <main class="stage-panel">
         <div class="stage-topbar">
-          <div>
-            <p class="panel-eyebrow" id="planEyebrow">Plan principal</p>
-            <h2 id="planTitle">Vue de dessus</h2>
+          <div class="stage-view-switch" id="stageViewSwitch" aria-label="Changer de vue">
+            <button class="stage-view-toggle active" id="viewPlanToggle" type="button" data-stage-view-toggle="plan"
+              aria-pressed="true">Plan</button>
+            <button class="stage-view-toggle" id="viewIsoToggle" type="button" data-stage-view-toggle="iso"
+              aria-pressed="false">Iso</button>
           </div>
-          <div class="stage-hints">
-            <span class="hint-pill passive" id="hintDrag">Glisser = deplacer</span>
-            <span class="hint-pill accent passive" id="hintRotate">Poignee orange = rotation</span>
-            <div class="stage-zoom-tools" aria-label="Zoom plan">
+          <div class="stage-toolbar">
+            <div class="stage-zoom-tools is-active" id="planZoomTools" data-zoom-controls="plan" aria-label="Zoom plan">
               <button class="stage-zoom-tool" id="planZoomOut" type="button" aria-label="Zoom out">-</button>
               <button class="stage-zoom-tool stage-zoom-value" id="planZoomReset" type="button">100%</button>
               <button class="stage-zoom-tool" id="planZoomIn" type="button" aria-label="Zoom in">+</button>
             </div>
+            <div class="stage-zoom-tools" id="isoZoomTools" data-zoom-controls="iso" aria-label="Zoom isometrique">
+              <button class="stage-zoom-tool" id="isoZoomOut" type="button" aria-label="Zoom out">-</button>
+              <button class="stage-zoom-tool stage-zoom-value" id="isoZoomReset" type="button">100%</button>
+              <button class="stage-zoom-tool" id="isoZoomIn" type="button" aria-label="Zoom in">+</button>
+            </div>
+            <button class="hint-pill stage-tool library-toggle" id="libraryToggle" type="button" aria-expanded="true"
+              aria-controls="libraryPanel">Bibliotheque</button>
             <button class="hint-pill stage-tool" id="measureToggle" type="button" aria-pressed="false">Mesure</button>
           </div>
         </div>
 
-        <div class="stage-canvas-wrap">
-          <canvas id="planCanvas" aria-label="Vue de dessus du studio photo"></canvas>
-
-          <section class="iso-overlay">
-            <div class="iso-head">
-              <div>
-                <p class="panel-eyebrow" id="previewEyebrow">Apercu</p>
-                <h3 id="previewTitle">Vue isometrique</h3>
-              </div>
-              <div class="iso-tools" aria-label="Zoom isometrique">
-                <button class="iso-tool" id="isoZoomOut" type="button" aria-label="Zoom out">-</button>
-                <button class="iso-tool iso-value" id="isoZoomReset" type="button">100%</button>
-                <button class="iso-tool" id="isoZoomIn" type="button" aria-label="Zoom in">+</button>
-              </div>
-            </div>
+        <div class="stage-canvas-wrap" id="stageCanvasWrap" data-main-view="plan">
+          <section class="stage-view stage-view-plan is-main" id="planViewPane" data-stage-view-pane="plan">
+            <canvas id="planCanvas" aria-label="Plan du studio photo"></canvas>
+          </section>
+          <section class="stage-view stage-view-iso is-secondary" id="isoViewPane" data-stage-view-pane="iso">
             <canvas id="isoCanvas" aria-label="Vue isometrique du studio photo"></canvas>
           </section>
         </div>

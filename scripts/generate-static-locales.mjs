@@ -16,11 +16,11 @@ const PUBLIC_PAGE_LINKS = {
 };
 
 const LANGUAGES = {
-  fr: { dir: "ltr", locale: "fr_FR", folder: "", code: "FR", label: "Francais" },
-  en: { dir: "ltr", locale: "en_US", folder: "en", code: "EN", label: "English" },
-  es: { dir: "ltr", locale: "es_ES", folder: "es", code: "ES", label: "Espanol" },
-  de: { dir: "ltr", locale: "de_DE", folder: "de", code: "DE", label: "Deutsch" },
-  ar: { dir: "rtl", locale: "ar_SA", folder: "ar", code: "AR", label: "العربية" }
+  fr: { dir: "ltr", locale: "fr_FR", folder: "", code: "FR", flag: "🇫🇷", label: "Francais" },
+  en: { dir: "ltr", locale: "en_US", folder: "en", code: "EN", flag: "🇺🇸", label: "English" },
+  es: { dir: "ltr", locale: "es_ES", folder: "es", code: "ES", flag: "🇪🇸", label: "Espanol" },
+  de: { dir: "ltr", locale: "de_DE", folder: "de", code: "DE", flag: "🇩🇪", label: "Deutsch" },
+  ar: { dir: "rtl", locale: "ar_SA", folder: "ar", code: "AR", flag: "🇸🇦", label: "العربية" }
 };
 
 const LANGUAGE_UI_COPY = {
@@ -160,13 +160,12 @@ function renderLanguageSwitcher(fileName, languageId) {
     const stateAttributes = isActive ? ' aria-current="page"' : "";
     const activeClass = isActive ? " active" : "";
 
-    return `<a class="language-chip${activeClass}" href="${absoluteUrl(targetLanguageId, fileName)}" hreflang="${targetLanguageId}" lang="${targetLanguageId}" title="${escapeHtml(language.label)}"${stateAttributes}>
-      <span class="language-chip-code">${escapeHtml(language.code)}</span>
+    return `<a class="language-chip${activeClass}" href="${absoluteUrl(targetLanguageId, fileName)}" hreflang="${targetLanguageId}" lang="${targetLanguageId}" title="${escapeHtml(language.label)}" aria-label="${escapeHtml(language.label)}"${stateAttributes}>
+      <span class="language-chip-flag" aria-hidden="true">${language.flag}</span>
     </a>`;
   }).join("");
 
   return `<nav class="language-switcher" aria-label="${escapeHtml(uiCopy.switcherAria)}">
-    <span class="language-switcher-label">${escapeHtml(uiCopy.selector)}</span>
     <div class="language-switcher-list">
       ${items}
     </div>

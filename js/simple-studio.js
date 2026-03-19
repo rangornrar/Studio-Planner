@@ -19,8 +19,8 @@
   const LOCALES = {
     fr: {
       dir: "ltr",
-      documentTitle: "Lumiere Studio App | Plan de studio photo, mesures et export PDF",
-      metaDescription: "Ouvrez l application Lumiere Studio pour preparer un set photo sur mobile ou desktop, mesurer les distances cle, zoomer dans le plan, sauvegarder vos presets et exporter en PNG ou PDF.",
+      documentTitle: "Lumiere Studio App | Plan de studio photo pour PC et tablette",
+      metaDescription: "Ouvrez l application Lumiere Studio pour preparer un set photo sur PC ou tablette, basculer entre plan et vue isometrique, mesurer les distances cle, copier l image et telecharger en PNG ou PDF.",
       supportAriaLabel: "Support Ko-fi",
       supportText: "Cet outil vous aide ? Soutenez son evolution.",
       supportButton: "Soutenir sur Ko-fi",
@@ -53,10 +53,16 @@
         title: "Vue de dessus",
         hintDrag: "Glisser = deplacer",
         hintRotate: "Poignee orange = rotation",
+        toggleLibrary: "Bibliotheque",
         hintMeasure: "Mesure",
+        viewSwitchAria: "Changer la vue principale",
+        viewPlan: "Plan",
+        viewIso: "Iso",
+        openPlan: "Afficher le plan en grand",
+        openIso: "Afficher la vue isometrique en grand",
         previewEyebrow: "Apercu",
         previewTitle: "Vue isometrique",
-        planAriaLabel: "Vue de dessus du studio photo",
+        planAriaLabel: "Plan du studio photo",
         isoAriaLabel: "Vue isometrique du studio photo"
       },
       selection: {
@@ -80,8 +86,8 @@
     },
     en: {
       dir: "ltr",
-      documentTitle: "Lumiere Studio App | Photo set planner with measurements and PDF export",
-      metaDescription: "Open the Lumiere Studio app to plan a photo set on mobile or desktop, review key distances, zoom the plan, save custom presets, and export PNG or PDF.",
+      documentTitle: "Lumiere Studio App | Photo set planner for desktop and tablet",
+      metaDescription: "Open the Lumiere Studio app to plan a photo set on desktop or tablet, switch between plan and isometric view, review key distances, copy the image, and download PNG or PDF.",
       supportAriaLabel: "Support Ko-fi",
       supportText: "Helpful tool? Support its evolution.",
       supportButton: "Support on Ko-fi",
@@ -114,10 +120,16 @@
         title: "Top view",
         hintDrag: "Drag = move",
         hintRotate: "Orange handle = rotate",
+        toggleLibrary: "Library",
         hintMeasure: "Measure",
+        viewSwitchAria: "Change the main view",
+        viewPlan: "Plan",
+        viewIso: "Iso",
+        openPlan: "Show the plan as the main view",
+        openIso: "Show the isometric view as the main view",
         previewEyebrow: "Preview",
         previewTitle: "Isometric view",
-        planAriaLabel: "Top view of the photo studio",
+        planAriaLabel: "Studio plan view",
         isoAriaLabel: "Isometric view of the photo studio"
       },
       selection: {
@@ -186,8 +198,8 @@
     },
     es: {
       dir: "ltr",
-      documentTitle: "Lumiere Studio App | Planificador de sets fotograficos con medidas y exportacion PDF",
-      metaDescription: "Abre la aplicacion Lumiere Studio para planificar un set fotografico en movil o escritorio, medir distancias utiles, acercar el plano, guardar presets propios y exportar en PNG o PDF.",
+      documentTitle: "Lumiere Studio App | Planificador para escritorio y tableta",
+      metaDescription: "Abre la aplicacion Lumiere Studio para preparar un set fotografico en escritorio o tableta, cambiar entre plano y vista isometrica, medir distancias utiles, copiar la imagen y descargar en PNG o PDF.",
       supportAriaLabel: "Soporte Ko-fi",
       supportText: "¿Esta herramienta te ayuda? Apoya su evolución.",
       supportButton: "Apoyar en Ko-fi",
@@ -220,10 +232,16 @@
         title: "Vista superior",
         hintDrag: "Arrastrar = mover",
         hintRotate: "Asa naranja = rotacion",
+        toggleLibrary: "Biblioteca",
         hintMeasure: "Medir",
+        viewSwitchAria: "Cambiar la vista principal",
+        viewPlan: "Plano",
+        viewIso: "Iso",
+        openPlan: "Mostrar el plano en grande",
+        openIso: "Mostrar la vista isometrica en grande",
         previewEyebrow: "Vista previa",
         previewTitle: "Vista isometrica",
-        planAriaLabel: "Vista superior del estudio fotografico",
+        planAriaLabel: "Plano del estudio fotografico",
         isoAriaLabel: "Vista isometrica del estudio fotografico"
       },
       selection: {
@@ -292,8 +310,8 @@
     },
     de: {
       dir: "ltr",
-      documentTitle: "Lumiere Studio App | Planer fur Foto-Sets mit Messwerten und PDF-Export",
-      metaDescription: "Offne die Lumiere Studio App, plane ein Foto-Set auf Mobilgerat oder Desktop, miss wichtige Abstanden, zoome im Plan, speichere eigene Presets und exportiere PNG oder PDF.",
+      documentTitle: "Lumiere Studio App | Planer fur Desktop und Tablet",
+      metaDescription: "Offne die Lumiere Studio App, plane ein Foto-Set auf Desktop oder Tablet, wechsle zwischen Plan und isometrischer Ansicht, miss wichtige Abstanden, kopiere das Bild und lade PNG oder PDF herunter.",
       supportAriaLabel: "Ko-fi-Unterstutzung",
       supportText: "Hilft dir dieses Tool? Unterstutze seine Weiterentwicklung.",
       supportButton: "Auf Ko-fi unterstutzen",
@@ -326,10 +344,16 @@
         title: "Draufsicht",
         hintDrag: "Ziehen = bewegen",
         hintRotate: "Oranger Griff = drehen",
+        toggleLibrary: "Bibliothek",
         hintMeasure: "Messen",
+        viewSwitchAria: "Hauptansicht wechseln",
+        viewPlan: "Plan",
+        viewIso: "Iso",
+        openPlan: "Plan gross anzeigen",
+        openIso: "Isometrische Ansicht gross anzeigen",
         previewEyebrow: "Vorschau",
         previewTitle: "Isometrische Ansicht",
-        planAriaLabel: "Draufsicht des Fotostudios",
+        planAriaLabel: "Plan des Fotostudios",
         isoAriaLabel: "Isometrische Ansicht des Fotostudios"
       },
       selection: {
@@ -398,8 +422,8 @@
     },
     ar: {
       dir: "rtl",
-      documentTitle: "Lumiere Studio App | مخطط استوديو تصوير مع قياسات وتصدير PDF",
-      metaDescription: "افتح تطبيق Lumiere Studio لتخطيط إعداد استوديو تصوير على الجوال أو الكمبيوتر، وقياس المسافات المهمة، وتكبير المخطط، وحفظ إعداداتك الخاصة، وتصدير PNG أو PDF.",
+      documentTitle: "Lumiere Studio App | مخطط للاستوديو على الكمبيوتر والتابلت",
+      metaDescription: "افتح تطبيق Lumiere Studio لتحضير إعداد استوديو تصوير على الكمبيوتر أو التابلت، والتنقل بين المخطط والمنظور الأيزومتري، وقياس المسافات المهمة، ونسخ الصورة، وتنزيل PNG أو PDF.",
       supportAriaLabel: "دعم Ko-fi",
       supportText: "هل هذه الأداة مفيدة لك؟ ادعم تطويرها.",
       supportButton: "ادعم عبر Ko-fi",
@@ -432,10 +456,16 @@
         title: "منظر علوي",
         hintDrag: "سحب = تحريك",
         hintRotate: "المقبض البرتقالي = تدوير",
+        toggleLibrary: "المكتبة",
         hintMeasure: "قياس",
+        viewSwitchAria: "تبديل العرض الرئيسي",
+        viewPlan: "الخطة",
+        viewIso: "أيزو",
+        openPlan: "اعرض الخطة بالحجم الرئيسي",
+        openIso: "اعرض المنظور الأيزومتري بالحجم الرئيسي",
         previewEyebrow: "معاينة",
         previewTitle: "منظور أيزومتري",
-        planAriaLabel: "منظر علوي لاستوديو التصوير",
+        planAriaLabel: "مخطط استوديو التصوير",
         isoAriaLabel: "منظور أيزومتري لاستوديو التصوير"
       },
       selection: {
@@ -2418,9 +2448,19 @@
     selectionPanel: document.getElementById("selectionPanel"),
     studioBadge: document.getElementById("studioBadge"),
     countBadge: document.getElementById("countBadge"),
+    workspace: document.querySelector(".workspace"),
+    libraryPanel: document.querySelector(".library-panel"),
+    stageCanvasWrap: document.getElementById("stageCanvasWrap"),
+    planViewPane: document.getElementById("planViewPane"),
+    isoViewPane: document.getElementById("isoViewPane"),
     planCanvas: document.getElementById("planCanvas"),
     isoCanvas: document.getElementById("isoCanvas"),
+    viewPlanToggle: document.getElementById("viewPlanToggle"),
+    viewIsoToggle: document.getElementById("viewIsoToggle"),
+    libraryToggle: document.getElementById("libraryToggle"),
     measureToggle: document.getElementById("measureToggle"),
+    planZoomTools: document.getElementById("planZoomTools"),
+    isoZoomTools: document.getElementById("isoZoomTools"),
     planZoomOut: document.getElementById("planZoomOut"),
     planZoomReset: document.getElementById("planZoomReset"),
     planZoomIn: document.getElementById("planZoomIn"),
@@ -2454,11 +2494,15 @@
     measurePreview: null,
     measureEnd: null,
     openMenu: null,
+    primaryView: "plan",
+    libraryCollapsed: false,
     planZoom: 1,
     planPanX: 0,
     planPanY: 0,
     activePointers: new Map(),
     pinchGesture: null,
+    isoActivePointers: new Map(),
+    isoPinchGesture: null,
     isoZoom: 1,
     nextId: 1
   };
@@ -3821,12 +3865,16 @@
     const floorMenuLabel = document.getElementById("floorMenuLabel");
     const backdropMenuLabel = document.getElementById("backdropMenuLabel");
     const libraryEyebrow = document.getElementById("libraryEyebrow");
+    const stageViewSwitch = document.getElementById("stageViewSwitch");
+    const viewPlanToggle = document.getElementById("viewPlanToggle");
+    const viewIsoToggle = document.getElementById("viewIsoToggle");
     const libraryTitle = document.getElementById("libraryTitle");
     const libraryCopy = document.getElementById("libraryCopy");
     const planEyebrow = document.getElementById("planEyebrow");
     const planTitle = document.getElementById("planTitle");
     const hintDrag = document.getElementById("hintDrag");
     const hintRotate = document.getElementById("hintRotate");
+    const libraryToggle = document.getElementById("libraryToggle");
     const measureToggle = document.getElementById("measureToggle");
     const previewEyebrow = document.getElementById("previewEyebrow");
     const previewTitle = document.getElementById("previewTitle");
@@ -3848,12 +3896,16 @@
     if (floorMenuLabel) floorMenuLabel.textContent = t("colors.floor");
     if (backdropMenuLabel) backdropMenuLabel.textContent = t("colors.backdrop");
     if (libraryEyebrow) libraryEyebrow.textContent = t("library.eyebrow");
+    if (stageViewSwitch) stageViewSwitch.setAttribute("aria-label", t("stage.viewSwitchAria"));
+    if (viewPlanToggle) viewPlanToggle.textContent = t("stage.viewPlan");
+    if (viewIsoToggle) viewIsoToggle.textContent = t("stage.viewIso");
     if (libraryTitle) libraryTitle.textContent = t("library.title");
     if (libraryCopy) libraryCopy.textContent = t("library.copy");
     if (planEyebrow) planEyebrow.textContent = t("stage.eyebrow");
     if (planTitle) planTitle.textContent = t("stage.title");
     if (hintDrag) hintDrag.textContent = t("stage.hintDrag");
     if (hintRotate) hintRotate.textContent = t("stage.hintRotate");
+    if (libraryToggle) libraryToggle.textContent = t("stage.toggleLibrary");
     if (measureToggle) measureToggle.textContent = t("stage.hintMeasure");
     if (previewEyebrow) previewEyebrow.textContent = t("stage.previewEyebrow");
     if (previewTitle) previewTitle.textContent = t("stage.previewTitle");
@@ -3910,13 +3962,106 @@
     if (refs.isoZoomIn) refs.isoZoomIn.disabled = state.isoZoom >= 2.19;
   }
 
+  function getSecondaryView() {
+    return state.primaryView === "plan" ? "iso" : "plan";
+  }
+
+  function isCompactLibraryViewport() {
+    return window.matchMedia("(max-width: 1180px)").matches;
+  }
+
+  function syncCompactLibraryUi() {
+    const compact = isCompactLibraryViewport();
+    const expanded = !compact || !state.libraryCollapsed;
+
+    if (refs.workspace) refs.workspace.classList.toggle("is-library-collapsed", compact && !expanded);
+    if (refs.libraryPanel) {
+      refs.libraryPanel.classList.toggle("is-collapsed", compact && !expanded);
+      refs.libraryPanel.setAttribute("aria-hidden", expanded ? "false" : "true");
+    }
+    if (refs.libraryToggle) {
+      refs.libraryToggle.hidden = !compact;
+      refs.libraryToggle.classList.toggle("active", compact && expanded);
+      refs.libraryToggle.setAttribute("aria-pressed", compact && expanded ? "true" : "false");
+      refs.libraryToggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+    }
+  }
+
+  function syncStageViewUi() {
+    const isPlanMain = state.primaryView !== "iso";
+
+    if (refs.stageCanvasWrap) refs.stageCanvasWrap.setAttribute("data-main-view", isPlanMain ? "plan" : "iso");
+    if (refs.planViewPane) {
+      refs.planViewPane.classList.toggle("is-main", isPlanMain);
+      refs.planViewPane.classList.toggle("is-secondary", !isPlanMain);
+      refs.planViewPane.setAttribute("tabindex", isPlanMain ? "-1" : "0");
+      refs.planViewPane.setAttribute("role", isPlanMain ? "presentation" : "button");
+      refs.planViewPane.setAttribute("aria-label", isPlanMain ? t("stage.planAriaLabel") : t("stage.openPlan"));
+    }
+    if (refs.isoViewPane) {
+      refs.isoViewPane.classList.toggle("is-main", !isPlanMain);
+      refs.isoViewPane.classList.toggle("is-secondary", isPlanMain);
+      refs.isoViewPane.setAttribute("tabindex", isPlanMain ? "0" : "-1");
+      refs.isoViewPane.setAttribute("role", isPlanMain ? "button" : "presentation");
+      refs.isoViewPane.setAttribute("aria-label", isPlanMain ? t("stage.openIso") : t("stage.isoAriaLabel"));
+    }
+
+    if (refs.viewPlanToggle) {
+      refs.viewPlanToggle.classList.toggle("active", isPlanMain);
+      refs.viewPlanToggle.setAttribute("aria-pressed", isPlanMain ? "true" : "false");
+    }
+    if (refs.viewIsoToggle) {
+      refs.viewIsoToggle.classList.toggle("active", !isPlanMain);
+      refs.viewIsoToggle.setAttribute("aria-pressed", !isPlanMain ? "true" : "false");
+    }
+
+    if (refs.planZoomTools) refs.planZoomTools.classList.toggle("is-active", isPlanMain);
+    if (refs.isoZoomTools) refs.isoZoomTools.classList.toggle("is-active", !isPlanMain);
+    if (refs.planCanvas) refs.planCanvas.style.pointerEvents = isPlanMain ? "auto" : "none";
+    if (refs.isoCanvas) refs.isoCanvas.style.pointerEvents = isPlanMain ? "none" : "auto";
+    if (refs.planCanvas && !isPlanMain) refs.planCanvas.style.cursor = "default";
+  }
+
+  function setPrimaryView(viewId) {
+    const nextView = viewId === "iso" ? "iso" : "plan";
+    if (state.primaryView === nextView) return;
+
+    state.activePointers.clear();
+    state.pinchGesture = null;
+    state.isoActivePointers.clear();
+    state.isoPinchGesture = null;
+
+    if (nextView === "iso") {
+      cancelCanvasInteraction();
+      state.measurementMode = false;
+      state.measureStart = null;
+      state.measurePreview = null;
+      state.measureEnd = null;
+      if (refs.planCanvas) refs.planCanvas.style.cursor = "default";
+    }
+
+    if (refs.isoCanvas) refs.isoCanvas.style.cursor = "default";
+    state.primaryView = nextView;
+    renderAll();
+  }
+
   function syncMeasurementToggle() {
     if (!refs.measureToggle) return;
     refs.measureToggle.classList.toggle("active", state.measurementMode);
     refs.measureToggle.setAttribute("aria-pressed", state.measurementMode ? "true" : "false");
   }
 
+  function toggleLibraryPanel() {
+    if (!isCompactLibraryViewport()) return;
+    state.libraryCollapsed = !state.libraryCollapsed;
+    closeMenus();
+    renderAll();
+  }
+
   function toggleMeasurementMode() {
+    if (state.primaryView !== "plan") {
+      state.primaryView = "plan";
+    }
     state.measurementMode = !state.measurementMode;
     state.measureStart = null;
     state.measurePreview = null;
@@ -4032,6 +4177,38 @@
     return true;
   }
 
+  function updateIsoActivePointer(event, canvasPoint) {
+    if (!canvasPoint) return;
+    state.isoActivePointers.set(event.pointerId, canvasPoint);
+  }
+
+  function clearIsoActivePointer(pointerId) {
+    state.isoActivePointers.delete(pointerId);
+    if (state.isoPinchGesture && state.isoPinchGesture.pointerIds.indexOf(pointerId) !== -1) {
+      state.isoPinchGesture = null;
+      refs.isoCanvas.style.cursor = "default";
+    }
+  }
+
+  function startIsoPinchGesture() {
+    const pointers = Array.from(state.isoActivePointers.entries()).slice(0, 2);
+    if (pointers.length < 2) return false;
+
+    const first = pointers[0];
+    const second = pointers[1];
+    const dx = second[1].x - first[1].x;
+    const dy = second[1].y - first[1].y;
+    const distance = Math.max(24, Math.sqrt(dx * dx + dy * dy));
+
+    state.isoPinchGesture = {
+      pointerIds: [first[0], second[0]],
+      startDistance: distance,
+      startZoom: state.isoZoom
+    };
+    refs.isoCanvas.style.cursor = "zoom-in";
+    return true;
+  }
+
   const spawnPoints = [
     { x: 4, y: 3, rotation: 270 },
     { x: 2.2, y: 2.15, rotation: 35 },
@@ -4052,10 +4229,60 @@
     }
   }
 
+  function bindPress(button, handler) {
+    if (!button) return;
+
+    let touchGesture = null;
+    let suppressClick = false;
+
+    button.addEventListener("pointerdown", function (event) {
+      if (event.pointerType === "mouse") return;
+      touchGesture = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        moved: false
+      };
+    });
+
+    button.addEventListener("pointermove", function (event) {
+      if (!touchGesture || event.pointerId !== touchGesture.pointerId) return;
+      if (Math.hypot(event.clientX - touchGesture.startX, event.clientY - touchGesture.startY) > 10) {
+        touchGesture.moved = true;
+      }
+    });
+
+    button.addEventListener("pointerup", function (event) {
+      if (!touchGesture || event.pointerId !== touchGesture.pointerId) return;
+      const shouldHandle = !touchGesture.moved;
+      touchGesture = null;
+      if (!shouldHandle) return;
+      suppressClick = true;
+      event.preventDefault();
+      event.stopPropagation();
+      handler(event);
+    });
+
+    button.addEventListener("pointercancel", function () {
+      touchGesture = null;
+      suppressClick = false;
+    });
+
+    button.addEventListener("click", function (event) {
+      if (suppressClick) {
+        suppressClick = false;
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      handler(event);
+    });
+  }
+
   function bindEvents() {
     refs.menuTriggers.forEach(function (trigger) {
-      trigger.addEventListener("click", function (event) {
-        event.stopPropagation();
+      bindPress(trigger, function (event) {
+        if (event) event.stopPropagation();
         const id = trigger.getAttribute("data-menu-trigger");
         toggleMenu(id);
       });
@@ -4131,12 +4358,29 @@
     });
 
     if (refs.actionSavePreset) {
-      refs.actionSavePreset.addEventListener("click", function (event) {
+      bindPress(refs.actionSavePreset, function (event) {
         event.preventDefault();
         event.stopPropagation();
         saveCurrentPreset();
       });
     }
+
+    [refs.viewPlanToggle, refs.viewIsoToggle].forEach(function (button) {
+      if (!button) return;
+      bindPress(button, function () {
+        const viewId = button.getAttribute("data-stage-view-toggle");
+        setPrimaryView(viewId);
+      });
+    });
+
+    [refs.planViewPane, refs.isoViewPane].forEach(function (pane) {
+      if (!pane) return;
+      pane.addEventListener("click", function () {
+        if (pane.classList.contains("is-main")) return;
+        setPrimaryView(pane.getAttribute("data-stage-view-pane"));
+      });
+      pane.addEventListener("keydown", handleStageViewPaneKeydown);
+    });
 
     if (refs.isoZoomOut) {
       refs.isoZoomOut.addEventListener("click", function () {
@@ -4175,8 +4419,14 @@
     }
 
     if (refs.measureToggle) {
-      refs.measureToggle.addEventListener("click", function () {
+      bindPress(refs.measureToggle, function () {
         toggleMeasurementMode();
+      });
+    }
+
+    if (refs.libraryToggle) {
+      bindPress(refs.libraryToggle, function () {
+        toggleLibraryPanel();
       });
     }
 
@@ -4189,6 +4439,12 @@
     refs.planCanvas.addEventListener("pointercancel", handlePointerUp);
     refs.planCanvas.addEventListener("pointerleave", handlePointerLeave);
     refs.planCanvas.addEventListener("wheel", handlePlanWheel, { passive: false });
+    refs.isoCanvas.addEventListener("pointerdown", handleIsoPointerDown);
+    refs.isoCanvas.addEventListener("pointermove", handleIsoPointerMove);
+    refs.isoCanvas.addEventListener("pointerup", handleIsoPointerUp);
+    refs.isoCanvas.addEventListener("pointercancel", handleIsoPointerUp);
+    refs.isoCanvas.addEventListener("pointerleave", handleIsoPointerLeave);
+    refs.isoCanvas.addEventListener("wheel", handleIsoWheel, { passive: false });
 
     document.addEventListener("click", function () {
       closeMenus();
@@ -5255,8 +5511,8 @@
   function updateSelectionPanel() {
     const item = getSelectedItem();
     if (!item) {
-      refs.selectionPanel.className = "selection-panel empty";
-      refs.selectionPanel.textContent = t("selection.empty");
+      refs.selectionPanel.className = "selection-panel empty is-hidden";
+      refs.selectionPanel.innerHTML = "";
       return;
     }
 
@@ -5290,7 +5546,6 @@
         </div>
         <button class="delete-btn" type="button" data-action="delete">${escapeHtml(t("selection.delete"))}</button>
       </div>
-      <p class="selection-note">${escapeHtml(t("selection.note"))}</p>
       <div class="selection-grid">
         <label>${escapeHtml(getUiCopy("x"))}<input type="number" step="0.1" data-field="x" value="${item.x.toFixed(2)}"></label>
         <label>${escapeHtml(getUiCopy("y"))}<input type="number" step="0.1" data-field="y" value="${item.y.toFixed(2)}"></label>
@@ -5314,6 +5569,8 @@
   }
 
   function renderAll() {
+    syncCompactLibraryUi();
+    syncStageViewUi();
     resizeCanvas(refs.planCanvas);
     resizeCanvas(refs.isoCanvas);
     updateColorSwatchState();
@@ -5384,7 +5641,7 @@
   }
 
   function handlePlanWheel(event) {
-    const anchor = getCanvasPointFromEvent(event);
+    const anchor = getCanvasPointFromEvent(event, refs.planCanvas);
     if (!anchor) return;
     const delta = event.deltaY < 0 ? 0.14 : -0.14;
     if (!delta) return;
@@ -5393,9 +5650,65 @@
     setPlanZoom(state.planZoom + delta, anchor);
   }
 
+  function handleIsoWheel(event) {
+    if (state.primaryView !== "iso") return;
+    const delta = event.deltaY < 0 ? 0.14 : -0.14;
+    if (!delta) return;
+    event.preventDefault();
+    closeMenus();
+    setIsoZoom(state.isoZoom + delta);
+  }
+
+  function handleIsoPointerDown(event) {
+    if (state.primaryView !== "iso") return;
+    closeMenus();
+    const canvasPoint = getCanvasPointFromEvent(event, refs.isoCanvas);
+    if (!canvasPoint) return;
+    updateIsoActivePointer(event, canvasPoint);
+
+    if (state.isoActivePointers.size >= 2 && startIsoPinchGesture()) {
+      drawIsoView();
+    }
+  }
+
+  function handleIsoPointerMove(event) {
+    if (state.primaryView !== "iso") return;
+    const canvasPoint = getCanvasPointFromEvent(event, refs.isoCanvas);
+    if (!canvasPoint) return;
+    updateIsoActivePointer(event, canvasPoint);
+
+    if (state.isoPinchGesture && state.isoPinchGesture.pointerIds.indexOf(event.pointerId) !== -1) {
+      const first = state.isoActivePointers.get(state.isoPinchGesture.pointerIds[0]);
+      const second = state.isoActivePointers.get(state.isoPinchGesture.pointerIds[1]);
+      if (first && second) {
+        const dx = second.x - first.x;
+        const dy = second.y - first.y;
+        const distance = Math.max(24, Math.sqrt(dx * dx + dy * dy));
+        const nextZoom = state.isoPinchGesture.startZoom * (distance / state.isoPinchGesture.startDistance);
+        setIsoZoom(nextZoom);
+      }
+    }
+  }
+
+  function handleIsoPointerUp(event) {
+    clearIsoActivePointer(event.pointerId);
+  }
+
+  function handleIsoPointerLeave(event) {
+    if (event) clearIsoActivePointer(event.pointerId);
+  }
+
+  function handleStageViewPaneKeydown(event) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const pane = event.currentTarget;
+    if (!pane || pane.classList.contains("is-main")) return;
+    event.preventDefault();
+    setPrimaryView(pane.getAttribute("data-stage-view-pane"));
+  }
+
   function handlePointerDown(event) {
     closeMenus();
-    const canvasPoint = getCanvasPointFromEvent(event);
+    const canvasPoint = getCanvasPointFromEvent(event, refs.planCanvas);
     if (!canvasPoint) return;
     updateActivePointer(event, canvasPoint);
 
@@ -5455,7 +5768,7 @@
   }
 
   function handlePointerMove(event) {
-    const canvasPoint = getCanvasPointFromEvent(event);
+    const canvasPoint = getCanvasPointFromEvent(event, refs.planCanvas);
     if (!canvasPoint) return;
     updateActivePointer(event, canvasPoint);
 
@@ -5546,11 +5859,13 @@
     }
   }
 
-  function getCanvasPointFromEvent(event) {
-    const rect = refs.planCanvas.getBoundingClientRect();
+  function getCanvasPointFromEvent(event, canvas) {
+    const targetCanvas = canvas || refs.planCanvas;
+    if (!targetCanvas) return null;
+    const rect = targetCanvas.getBoundingClientRect();
     if (!rect.width || !rect.height) return null;
-    const ratioX = refs.planCanvas.width / rect.width;
-    const ratioY = refs.planCanvas.height / rect.height;
+    const ratioX = targetCanvas.width / rect.width;
+    const ratioY = targetCanvas.height / rect.height;
     return {
       x: (event.clientX - rect.left) * ratioX,
       y: (event.clientY - rect.top) * ratioY
@@ -5558,7 +5873,7 @@
   }
 
   function getPointerStudioPoint(event) {
-    const canvasPoint = getCanvasPointFromEvent(event);
+    const canvasPoint = getCanvasPointFromEvent(event, refs.planCanvas);
     if (!canvasPoint) return null;
     const metrics = getPlanMetrics(refs.planCanvas.width, refs.planCanvas.height);
     return planToStudio(canvasPoint.x, canvasPoint.y, metrics);
@@ -5688,6 +6003,7 @@
     }
 
     drawManualMeasurement(ctx, metrics);
+    drawPlanItemLabels(ctx, metrics);
   }
 
   function drawPlanBackdrop(ctx, metrics, color) {
@@ -5814,7 +6130,15 @@
     else if (item.family === "table") drawPlanTable(ctx, item, width, depth, metrics);
 
     ctx.restore();
-    drawPlanItemLabel(ctx, item, center, width, depth, metrics);
+  }
+
+  function drawPlanItemLabels(ctx, metrics) {
+    state.items.forEach(function (item) {
+      const center = studioToPlan(item.x, item.y, metrics);
+      const width = item.width * metrics.scale;
+      const depth = item.depth * metrics.scale;
+      drawPlanItemLabel(ctx, item, center, width, depth, metrics);
+    });
   }
 
   function drawPlanItemLabel(ctx, item, center, width, depth, metrics) {
@@ -7938,31 +8262,41 @@
     window.print();
   }
 
+  function drawStageView(viewId, ctx, width, height) {
+    if (viewId === "iso") {
+      drawIsoView(ctx, width, height);
+      return;
+    }
+    drawPlanView(ctx, width, height);
+  }
+
   function createStudioSnapshotCanvas(width, height) {
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext("2d");
 
-    drawPlanView(ctx, width, height);
+    const mainView = state.primaryView === "iso" ? "iso" : "plan";
+    const secondaryView = getSecondaryView();
+    drawStageView(mainView, ctx, width, height);
 
-    const isoWidth = Math.round(width * 0.28);
-    const isoHeight = Math.round(height * 0.28);
-    const isoCanvas = document.createElement("canvas");
-    isoCanvas.width = isoWidth;
-    isoCanvas.height = isoHeight;
-    drawIsoView(isoCanvas.getContext("2d"), isoWidth, isoHeight);
+    const insetWidth = Math.round(width * 0.28);
+    const insetHeight = Math.round(height * 0.28);
+    const insetCanvas = document.createElement("canvas");
+    insetCanvas.width = insetWidth;
+    insetCanvas.height = insetHeight;
+    drawStageView(secondaryView, insetCanvas.getContext("2d"), insetWidth, insetHeight);
 
-    const cardX = width - isoWidth - Math.round(width * 0.05);
+    const cardX = width - insetWidth - Math.round(width * 0.05);
     const cardY = Math.round(height * 0.06);
     const padding = Math.round(width * 0.012);
     const radius = Math.round(width * 0.012);
 
     ctx.save();
     ctx.fillStyle = "rgba(9, 16, 28, 0.88)";
-    roundRect(ctx, cardX - padding, cardY - padding, isoWidth + padding * 2, isoHeight + padding * 2, radius);
+    roundRect(ctx, cardX - padding, cardY - padding, insetWidth + padding * 2, insetHeight + padding * 2, radius);
     ctx.fill();
-    ctx.drawImage(isoCanvas, cardX, cardY);
+    ctx.drawImage(insetCanvas, cardX, cardY);
     ctx.restore();
 
     return canvas;
@@ -8103,9 +8437,10 @@
 
   function getIsoMetrics(width, height) {
     const scale = Math.min(width / (STUDIO.width + STUDIO.depth + 2.4), height / 7.4) * state.isoZoom;
+    const originYFactor = state.primaryView === "iso" ? 0.72 : 0.74;
     return {
       originX: width / 2,
-      originY: height * 0.76,
+      originY: height * originYFactor,
       scaleX: scale,
       scaleY: scale * 0.48,
       scaleZ: scale * 0.95,
