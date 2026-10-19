@@ -51,7 +51,8 @@ Aucune installation n'est necessaire.
 - `app.html` : application de plan de studio photo.
 - `css/simple-studio.css` : design, responsive, mise en page et styles d'impression.
 - `css/site.css` : styles de la landing et des pages editoriales.
-- `js/simple-studio.js` : logique du studio, rendu canvas, langues, presets, mesures et interactions.
+- `js/simple-studio.js` : logique du studio, rendu canvas, presets, mesures et interactions.
+- `js/studio-locales.js` : constantes de localisation de l’application.
 - `js/site-i18n.js` et `js/site-copy-*.js` : contenus et localisation des pages publiques.
 - `guide.html`, `presets.html`, `faq.html` : pages d'explication et d'accompagnement.
 - `schema-eclairage-portrait.html`, `plan-studio-boudoir.html`, `lighting-diagram-interview.html` : pages ciblees SEO reliees a l'application.
@@ -81,3 +82,8 @@ index.html?preset=portrait-soft-45&lang=fr
 Si cet outil vous est utile, vous pouvez soutenir son evolution ici :
 
 [Ko-fi](https://ko-fi.com/D1D21VSKW5)
+
+
+## Architecture et validation
+
+Voir [les choix de découpage et les contrôles disponibles](docs/ARCHITECTURE.md).
