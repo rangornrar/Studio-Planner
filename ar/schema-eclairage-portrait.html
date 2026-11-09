@@ -16,14 +16,14 @@
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta property="og:type" content="article">
   <meta property="og:locale" content="ar_SA">
-  <meta property="og:site_name" content="Lumiere Studio">
-  <meta property="og:title" content="مخطط إضاءة بورتريه | Lumiere Studio">
+  <meta property="og:site_name" content="LITE Studio">
+  <meta property="og:title" content="مخطط إضاءة بورتريه | LITE Studio">
   <meta property="og:description" content="طريقة بسيطة لبناء مخطط إضاءة بورتريه وتحويله إلى مخطط استوديو تصوير واضح.">
   <meta property="og:url" content="https://lumierestudio.archi-it.fr/ar/schema-eclairage-portrait.html">
   <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
   <meta property="og:image:alt" content="كيف تحضّر مخطط إضاءة بورتريه داخل الاستوديو: الضوء الرئيسي والـ fill والانعكاس والمسافات ومخطط قابل للطباعة.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="مخطط إضاءة بورتريه | Lumiere Studio">
+  <meta name="twitter:title" content="مخطط إضاءة بورتريه | LITE Studio">
   <meta name="twitter:description" content="قاعدة بورتريه استوديو سهلة التطبيق والطباعة.">
   <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
   <meta name="twitter:image:alt" content="كيف تحضّر مخطط إضاءة بورتريه داخل الاستوديو: الضوء الرئيسي والـ fill والانعكاس والمسافات ومخطط قابل للطباعة.">
@@ -31,6 +31,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/site-nav.js" defer></script>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -42,11 +43,11 @@
   "inLanguage": "ar",
   "author": {
     "@type": "Organization",
-    "name": "Lumiere Studio"
+    "name": "LITE Studio"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "Lumiere Studio"
+    "name": "LITE Studio"
   }
 }
   </script>
@@ -56,7 +57,7 @@
     <div class="site-shell top-strip-inner">
       <div class="top-copy" id="topCopy">دليل عملي لبناء مخطط إضاءة بورتريه واضح قبل جلسة التصوير.</div>
       <a class="top-kofi" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">
-        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="ادعم Lumiere Studio عبر Ko-fi">
+        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="ادعم LITE Studio عبر Ko-fi">
       </a>
     </div>
   </div>
@@ -65,11 +66,20 @@
       <a class="brand" href="index.html">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-copy">
-          <strong>Lumiere Studio</strong>
+          <strong>LITE Studio</strong>
           <span id="brandTagline">إضاءة بورتريه</span>
         </span>
       </a>
-      <div class="site-nav-tools">
+      <a class="site-primary-cta" href="../app.html?lang=ar">التطبيق</a>
+      <button class="site-menu-toggle" type="button" aria-label="القائمة" aria-controls="siteNavTools" aria-expanded="false">
+        <span>القائمة</span>
+      </button>
+      <button class="site-nav-backdrop" type="button" aria-label="إغلاق القائمة" hidden></button>
+      <div class="site-nav-tools" id="siteNavTools">
+        <div class="site-drawer-head">
+          <strong>LITE Studio</strong>
+          <button class="site-menu-close" type="button" aria-label="إغلاق القائمة">إغلاق القائمة</button>
+        </div>
         <nav class="nav-links" id="siteNavLinks" aria-label="التنقل الرئيسي">
           <a href="index.html">الرئيسية</a><a href="../app.html?lang=ar">التطبيق</a><a href="guide.html">الدليل</a><a href="presets.html">الإعدادات</a><a href="faq.html">الأسئلة الشائعة</a>
         </nav>
@@ -96,7 +106,7 @@
       <div class="site-shell">
         <article class="hero-copy hero-panel">
           <div class="hero-panel-main" id="heroCopyContent"><p class="eyebrow">مخطط إضاءة بورتريه</p><h1>كيف تحضّر إعداد إضاءة بورتريه نظيفاً وبسيطاً وسهل التنفيذ للفريق.</h1><p>مخطط إضاءة البورتريه الجيد لا يقتصر على فكرة ضوء جميلة فقط. بل يجب أن يوضح أيضاً مكان الضوء الرئيسي والـ fill والكاميرا والموضوع وأدوات التحكم حتى يستطيع الفريق تنفيذ البلاتوه بثقة.</p><div class="hero-actions"><a class="button-link primary" href="../app.html?preset=portrait-soft-45&lang=ar">افتح إعداد البورتريه</a><a class="button-link secondary" href="guide.html">اقرأ الدليل الكامل</a></div><div class="hero-points"><div class="point-chip"><strong>الضوء الرئيسي</strong>استخدم مصدراً كبيراً عند زاوية 45 درجة للحصول على نتيجة ناعمة ومتعددة الاستخدامات.</div><div class="point-chip"><strong>الـ fill والتباين</strong>أضف عاكساً أو negative fill بحسب العمق الذي تريده.</div><div class="point-chip"><strong>مخطط الاستوديو</strong>أظهر المسافات والمحاور لتفادي التخمين أثناء التركيب.</div><div class="point-chip"><strong>الطباعة</strong>شارك المنظور العلوي كمخطط إضاءة عملي.</div></div></div>
-          <div class="hero-inline-media" id="heroVisualContent"><figure><img src="../docs/screenshots/studio-portrait.png" alt="مخطط إضاءة بورتريه تم تحضيره في Lumiere Studio"><figcaption class="hero-caption">مثال لإعداد بورتريه مع المصدر الرئيسي والكاميرا وأدوات التحكم في الضوء ظاهرة بوضوح في المخطط.</figcaption></figure></div>
+          <div class="hero-inline-media" id="heroVisualContent"><figure><img src="../docs/screenshots/studio-portrait.png" alt="مخطط إضاءة بورتريه تم تحضيره في LITE Studio"><figcaption class="hero-caption">مثال لإعداد بورتريه مع المصدر الرئيسي والكاميرا وأدوات التحكم في الضوء ظاهرة بوضوح في المخطط.</figcaption></figure></div>
         </article>
       </div>
     </section>
@@ -133,7 +143,7 @@
     </nav>
   </div>
     <div class="site-shell footer-inner">
-      <div id="footerCopy">Lumiere Studio · مخطط إضاءة بورتريه ومخطط استوديو تصوير.</div>
+      <div id="footerCopy">LITE Studio · مخطط إضاءة بورتريه ومخطط استوديو تصوير.</div>
       <div class="footer-links" id="footerLinks">
         <a href="index.html">الرئيسية</a><a href="../app.html?lang=ar">التطبيق</a><a href="presets.html">الإعدادات</a><a href="faq.html">الأسئلة الشائعة</a>
       </div>

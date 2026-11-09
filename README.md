@@ -26,6 +26,8 @@ Elle aide a construire rapidement un set, mesurer les distances utiles du platea
 
 - Interface responsive utilisable sur mobile et desktop.
 - Vue de dessus avec zoom, molette sur desktop, pinch-to-zoom sur mobile et apercu isometrique zoombable.
+- Elements dessines en 3D a leurs vraies dimensions, identiques dans la bibliotheque, la vue plan et la vue iso.
+- Labo photo : simulation de l'effet de l'ISO, de l'ouverture et de la focale sur une photo (bruit, exposition, profondeur de champ, cadrage).
 - Bibliotheque d'elements avec recherche par type, taille ou famille.
 - Mesures automatiques entre sujet, camera, fond et sources, plus un mode de mesure manuel.
 - Reglages d'element et informations metier : hauteur, orientation, puissance source et lecture estimee a ISO 100.
@@ -35,9 +37,11 @@ Elle aide a construire rapidement un set, mesurer les distances utiles du platea
 
 ## Demarrage rapide
 
-Aucune installation n'est necessaire.
+Aucune installation n'est necessaire pour le plan : ouvrez [app.html](app.html) dans un navigateur moderne, ou [index.html](index.html) pour la landing.
 
-1. Ouvrez [app.html](app.html) dans un navigateur moderne pour lancer l'application, ou [index.html](index.html) pour la landing.
+Le Labo photo utilise des modules JavaScript, que les navigateurs refusent de charger depuis un fichier ouvert par double-clic. Pour l'utiliser en local, lancez `npm run serve` (Node.js 18 ou plus) puis ouvrez http://127.0.0.1:4177/app.html.
+
+1. Ouvrez l'application.
 2. Ajoutez des elements depuis la bibliotheque.
 3. Deplacez-les dans le plan et tournez-les avec la poignee orange.
 4. Utilisez la molette sur desktop ou le pinch sur mobile pour zoomer dans la vue de dessus.
@@ -52,6 +56,12 @@ Aucune installation n'est necessaire.
 - `css/simple-studio.css` : design, responsive, mise en page et styles d'impression.
 - `css/site.css` : styles de la landing et des pages editoriales.
 - `js/simple-studio.js` : logique du studio, rendu canvas, presets, mesures et interactions.
+- `js/studio-models.js` : modeles 3D des elements (dimensions reelles) et leur rendu en vignette, plan et iso.
+- `js/photo-lab-*.mjs` et `css/photo-lab.css` : Labo photo (donnees optiques, calculs, scene, interface).
+- `js/site-nav.js` : menu de navigation mobile des pages publiques.
+- `scripts/generate-static-locales.mjs` : generation des pages publiques traduites (`npm run build:locales`).
+- `scripts/serve-static.mjs` : petit serveur local (`npm run serve`).
+- `tests/` : tests unitaires (`npm test`) et controle visuel automatique (`npm run test:visual`).
 - `js/studio-locales.js` : constantes de localisation de l’application.
 - `js/site-i18n.js` et `js/site-copy-*.js` : contenus et localisation des pages publiques.
 - `guide.html`, `presets.html`, `faq.html` : pages d'explication et d'accompagnement.

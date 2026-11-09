@@ -1,0 +1,1275 @@
+/* Labo photo (simulation ISO / ouverture / focale).
+   Styles repris de la version en ligne du 3 novembre 2026 ; charges apres simple-studio.css. */
+
+:root {
+  --bg-deep: #0a0a0c;
+  --bg-main: #121216;
+  --bg-sub: #1a1a20;
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --panel-border-glow: rgba(140, 220, 255, 0.15);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 32px 64px -12px rgba(0, 0, 0, 0.6);
+  --radius-full: 9999px;
+  --touch-target: 44px;
+  --control-compact: 44px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.photo-lab-controls-toggle {
+  display: none;
+}
+
+.photo-lab-controls-toggle {
+  min-height: var(--touch-target);
+  padding: 0 18px;
+  border-radius: var(--radius-full);
+  color: var(--bg-deep);
+  background: var(--accent);
+  box-shadow: var(--shadow-lg);
+  font-weight: 800;
+  z-index: 720;
+}
+
+@media (max-width: 1024px) {
+  .page[data-app-mode="photo-lab"] {
+    padding-bottom: calc(var(--touch-target) + 24px + env(safe-area-inset-bottom));
+  }
+
+  .photo-lab-controls-toggle {
+    position: fixed;
+    left: 50%;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .photo-lab-shell .photo-lab-controls {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    z-index: 700;
+    width: min(100% - 16px, 760px);
+    max-height: min(72svh, 640px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translate(-50%, calc(100% + 28px));
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.24s ease, opacity 0.2s ease;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .photo-lab-shell.is-controls-open .photo-lab-controls {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .photo-lab-shell.is-controls-open .photo-lab-controls-toggle {
+    bottom: calc(min(72svh, 640px) + 18px);
+    color: var(--text-main);
+    background: var(--bg-deep);
+    border: 1px solid var(--panel-border);
+  }
+}
+
+@media (max-width: 767px) {
+  .app-mode-switch {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    justify-content: flex-start;
+    scrollbar-width: none;
+  }
+
+  .app-mode-switch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+  }
+
+  .app-mode-switch::-webkit-scrollbar {
+    display: none;
+  }
+
+  .app-mode-button {
+    min-height: var(--touch-target);
+  }
+}
+
+.app-mode-switch {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-full);
+  background: var(--bg-sub);
+  border: 1px solid var(--panel-border);
+}
+
+.app-mode-button {
+  min-height: var(--control-compact);
+  padding: 0 14px;
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.app-mode-button:hover,
+.app-mode-button:focus-visible {
+  color: var(--text-main);
+  outline: 0;
+}
+
+.app-mode-button.active {
+  color: #141006;
+  background: var(--accent-warm);
+  box-shadow: 0 12px 22px rgba(251, 191, 36, 0.16);
+}
+
+.page[data-app-mode="photo-lab"] [data-app-mode-target="planner"],
+.page:not([data-app-mode="photo-lab"]) [data-app-mode-target="photo-lab"] {
+  color: var(--text-muted);
+  background: transparent;
+  box-shadow: none;
+}
+
+.page[data-app-mode="photo-lab"] [data-app-mode-target="photo-lab"],
+.page:not([data-app-mode="photo-lab"]) [data-app-mode-target="planner"] {
+  color: #141006;
+  background: var(--accent-warm);
+  box-shadow: 0 12px 22px rgba(251, 191, 36, 0.16);
+}
+
+.photo-lab-shell {
+  min-height: 0;
+  display: none;
+  grid-template-columns: minmax(0, 1fr) minmax(310px, 390px);
+  gap: 16px;
+}
+
+.page[data-app-mode="photo-lab"] .workspace {
+  display: none;
+}
+
+.page[data-app-mode="photo-lab"] .photo-lab-shell {
+  display: grid;
+}
+
+.photo-lab-stage,
+.photo-lab-controls {
+  min-height: 0;
+  border-radius: var(--radius-xl);
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+
+.photo-lab-stage {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 16px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0)),
+    #0d0d10;
+}
+
+.photo-lab-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.photo-lab-eyebrow {
+  margin: 0 0 6px;
+  color: var(--accent-warm);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.photo-lab-topline h2 {
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: clamp(22px, 3vw, 38px);
+  line-height: 1;
+  color: var(--text-main);
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.photo-lab-compare-controls,
+.photo-lab-segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.photo-lab-chip {
+  min-height: var(--control-compact);
+  padding: 0 12px;
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  background: var(--bg-sub);
+  border: 1px solid var(--panel-border);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.photo-lab-chip:hover,
+.photo-lab-chip:focus-visible {
+  color: var(--text-main);
+  border-color: var(--panel-border-glow);
+  outline: 0;
+}
+
+.photo-lab-chip.active {
+  color: #101013;
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.photo-lab-canvas-frame {
+  position: relative;
+  min-height: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #09090b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.photo-lab-canvas-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.42);
+}
+
+.photo-lab-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: var(--text-muted);
+  background: rgba(10, 10, 12, 0.82);
+  font-weight: 700;
+}
+
+.photo-lab-loading[hidden] {
+  display: none;
+}
+
+.photo-lab-compare {
+  display: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.photo-lab-shell[data-compare-mode="split"] .photo-lab-canvas-frame {
+  display: none;
+}
+
+.photo-lab-shell[data-compare-mode="split"] .photo-lab-compare {
+  display: grid;
+  min-height: 0;
+}
+
+.photo-lab-compare figure {
+  min-height: 0;
+  margin: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #09090b;
+}
+
+.photo-lab-compare canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 330px;
+}
+
+.photo-lab-compare figcaption {
+  padding: 10px 12px;
+  color: var(--text-muted);
+  background: rgba(18, 18, 22, 0.92);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.photo-lab-reading {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--panel-border);
+}
+
+.photo-lab-reading p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+  font-size: 14px;
+}
+
+.photo-lab-warning {
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  color: var(--text-main) !important;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.24);
+}
+
+.photo-lab-warning[data-level="overexposed"],
+.photo-lab-warning[data-level="underexposed"] {
+  background: rgba(251, 191, 36, 0.12);
+  border-color: rgba(251, 191, 36, 0.28);
+}
+
+.photo-lab-metrics {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.photo-lab-metric {
+  min-width: 0;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.photo-lab-metric span,
+.photo-lab-control-head small {
+  display: block;
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.photo-lab-metric strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-main);
+  font-size: 16px;
+}
+
+.photo-lab-controls {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: auto;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+    var(--bg-main);
+}
+
+.photo-lab-control-group {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-sub);
+  border: 1px solid var(--panel-border);
+}
+
+.photo-lab-control-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.photo-lab-control-head span {
+  color: var(--text-main);
+  font-weight: 900;
+}
+
+.photo-lab-control-head small {
+  max-width: 150px;
+  text-align: right;
+  line-height: 1.3;
+}
+
+.photo-lab-dial-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.photo-lab-dial-grid.focal {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.photo-lab-dial-option {
+  min-height: var(--touch-target);
+  padding: 0 8px;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 46%),
+    #101014;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.photo-lab-dial-option:hover:not(:disabled),
+.photo-lab-dial-option:focus-visible {
+  color: var(--text-main);
+  border-color: var(--accent-warm);
+  outline: 0;
+}
+
+.photo-lab-dial-option.active {
+  color: #15100a;
+  background: var(--accent-warm);
+  border-color: transparent;
+}
+
+.photo-lab-dial-option:disabled {
+  opacity: 0.34;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1180px) {
+  .photo-lab-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .photo-lab-controls {
+    max-height: 34vh;
+  }
+
+  .photo-lab-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .page[data-app-mode="photo-lab"] {
+    width: 100%;
+    height: auto;
+    min-height: 100svh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .page[data-app-mode="photo-lab"] .support-strip {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    overflow: hidden;
+  }
+
+  .page[data-app-mode="photo-lab"] .support-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .page[data-app-mode="photo-lab"] .support-btn {
+    display: inline-flex;
+    justify-content: center;
+    flex: 0 0 auto;
+    max-width: 40vw;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .page[data-app-mode="photo-lab"] .appbar {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .page[data-app-mode="photo-lab"] .menu-bar,
+  .page[data-app-mode="photo-lab"] .app-mode-switch,
+  .page[data-app-mode="photo-lab"] .appbar-status {
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+  }
+
+  .page[data-app-mode="photo-lab"] .menu-bar::-webkit-scrollbar,
+  .page[data-app-mode="photo-lab"] .app-mode-switch::-webkit-scrollbar,
+  .page[data-app-mode="photo-lab"] .appbar-status::-webkit-scrollbar {
+    display: none;
+  }
+
+  .page[data-app-mode="photo-lab"] .appbar {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+
+  .photo-lab-shell {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .photo-lab-stage,
+  .photo-lab-controls {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+  }
+
+  .photo-lab-stage {
+    padding: 10px;
+  }
+
+  .photo-lab-topline {
+    display: grid;
+    min-width: 0;
+  }
+
+  .photo-lab-topline h2 {
+    max-width: 100%;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.08;
+  }
+
+  .photo-lab-topline h2 span {
+    display: block;
+  }
+
+  .photo-lab-compare-controls,
+  .photo-lab-segmented,
+  .photo-lab-reading,
+  .photo-lab-warning,
+  .photo-lab-metric,
+  .photo-lab-control-group,
+  .photo-lab-control-head {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .photo-lab-reading p,
+  .photo-lab-warning,
+  .photo-lab-metric strong {
+    overflow-wrap: anywhere;
+  }
+
+  .photo-lab-compare {
+    grid-template-columns: 1fr;
+  }
+
+  .photo-lab-compare canvas {
+    min-height: 230px;
+  }
+
+  .photo-lab-metrics,
+  .photo-lab-dial-grid,
+  .photo-lab-dial-grid.focal {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .photo-lab-controls {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+.page[data-app-mode="photo-lab"] {
+  background:
+    radial-gradient(circle at 22% 10%, rgba(255, 246, 220, 0.06), transparent 26%),
+    linear-gradient(135deg, #050506, #11100e 54%, #070707);
+}
+
+.page[data-app-mode="photo-lab"] .photo-lab-shell {
+  grid-template-columns: minmax(0, 1fr) clamp(300px, 26vw, 360px);
+  gap: 10px;
+}
+
+.photo-lab-stage {
+  position: relative;
+  border-radius: 14px;
+  border-color: rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.045), transparent 28%),
+    linear-gradient(180deg, #171717, #080808 58%, #0e0d0b);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 -32px 70px rgba(0, 0, 0, 0.42),
+    0 26px 70px rgba(0, 0, 0, 0.56);
+}
+
+.photo-lab-stage::before,
+.photo-lab-controls::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.06), transparent 30%);
+  background-size: 5px 5px, auto;
+  opacity: 0.34;
+  mix-blend-mode: screen;
+}
+
+.photo-lab-topline {
+  position: relative;
+  z-index: 2;
+  align-items: center;
+  padding: 0 2px 2px;
+}
+
+.photo-lab-eyebrow {
+  color: #d9b66a;
+  letter-spacing: 0.22em;
+}
+
+.photo-lab-topline h2 {
+  max-width: 780px;
+  font-size: clamp(24px, 2.5vw, 34px);
+  font-weight: 800;
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.55);
+}
+
+.photo-lab-canvas-frame {
+  isolation: isolate;
+  border-radius: 10px;
+  border: 9px solid #090909;
+  outline: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    radial-gradient(circle at 50% 55%, rgba(40, 43, 47, 0.82), #050505 72%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.09),
+    inset 0 0 42px rgba(0, 0, 0, 0.72),
+    0 12px 28px rgba(0, 0, 0, 0.48);
+}
+
+.photo-lab-canvas-frame::before {
+  content: "";
+  position: absolute;
+  inset: 11px;
+  z-index: 3;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.32),
+    inset 0 0 58px rgba(0, 0, 0, 0.36);
+}
+
+.photo-lab-canvas-frame::after {
+  z-index: 4;
+  background:
+    linear-gradient(90deg, transparent 33.1%, rgba(255, 255, 255, 0.16) 33.2%, transparent 33.45%, transparent 66.1%, rgba(255, 255, 255, 0.16) 66.2%, transparent 66.45%),
+    linear-gradient(0deg, transparent 33.1%, rgba(255, 255, 255, 0.14) 33.2%, transparent 33.45%, transparent 66.1%, rgba(255, 255, 255, 0.14) 66.2%, transparent 66.45%),
+    radial-gradient(circle at 50% 50%, transparent 58%, rgba(0, 0, 0, 0.5));
+  box-shadow: inset 0 0 110px rgba(0, 0, 0, 0.58);
+  opacity: 0.55;
+}
+
+.photo-lab-viewfinder-hud {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 20px;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(236, 241, 232, 0.92);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
+.photo-lab-viewfinder-hud span {
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.photo-lab-reading {
+  grid-template-columns: minmax(0, 1.5fr) minmax(190px, 0.85fr);
+  align-items: stretch;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
+    #111110;
+}
+
+.photo-lab-reading p:first-child {
+  grid-row: span 2;
+}
+
+.photo-lab-warning {
+  border-radius: 6px;
+}
+
+.photo-lab-metrics {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-column: 1 / -1;
+}
+
+.photo-lab-metric {
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+    #080808;
+}
+
+.photo-lab-controls {
+  position: relative;
+  border-radius: 14px;
+  padding: 14px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045), transparent 16%, rgba(0, 0, 0, 0.18) 58%),
+    linear-gradient(180deg, #191918, #090909);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 -24px 52px rgba(0, 0, 0, 0.5),
+    0 24px 70px rgba(0, 0, 0, 0.52);
+}
+
+.photo-lab-camera-deck {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 86px;
+  padding: 10px;
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent),
+    #0c0c0b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.5);
+}
+
+.photo-lab-camera-deck p,
+.photo-lab-camera-deck span {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.photo-lab-camera-deck strong {
+  display: block;
+  margin: 3px 0 5px;
+  color: var(--text-main);
+  font-size: 14px;
+  line-height: 1.15;
+}
+
+.photo-lab-lens-visual {
+  position: relative;
+  height: 56px;
+  border-radius: 8px 18px 18px 8px;
+  background:
+    repeating-linear-gradient(90deg, #0a0a0a 0 4px, #1f1f1e 4px 7px),
+    linear-gradient(180deg, #2a2a28, #090909);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 -12px 22px rgba(0, 0, 0, 0.7),
+    8px 0 16px rgba(0, 0, 0, 0.44);
+}
+
+.photo-lab-lens-visual::before,
+.photo-lab-lens-visual::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #272723, #070707);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.photo-lab-lens-visual::before {
+  left: 8px;
+  width: 18px;
+}
+
+.photo-lab-lens-visual::after {
+  right: 5px;
+  width: 22px;
+}
+
+.photo-lab-lens-glass {
+  position: absolute;
+  right: 10px;
+  top: 13px;
+  width: 28px;
+  height: 28px;
+  z-index: 2;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 28%, rgba(177, 220, 205, 0.72), transparent 18%),
+    radial-gradient(circle at 55% 60%, rgba(20, 92, 84, 0.7), #020504 66%);
+  box-shadow:
+    inset 0 0 0 2px rgba(0, 0, 0, 0.62),
+    inset 0 0 16px rgba(89, 199, 179, 0.22);
+}
+
+.photo-lab-control-group {
+  position: relative;
+  z-index: 1;
+  border-radius: 9px;
+  padding: 12px 0 14px;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.photo-lab-control-head {
+  padding: 0 2px;
+}
+
+.photo-lab-control-head span {
+  letter-spacing: 0;
+}
+
+.photo-lab-chip,
+.app-mode-button {
+  border-radius: 999px;
+}
+
+.photo-lab-dial-option {
+  border-radius: 7px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0)),
+    #0b0b0d;
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 -10px 16px rgba(0, 0, 0, 0.34);
+}
+
+.photo-lab-dial-option.active {
+  color: #090704;
+  background:
+    linear-gradient(180deg, #ffd46a, #d79617);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.52),
+    0 8px 18px rgba(216, 151, 23, 0.18);
+}
+
+.photo-lab-mechanical-dial {
+  position: relative;
+  width: min(100%, 292px);
+  aspect-ratio: 1;
+  margin: 2px auto 0;
+  display: block;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 28%, rgba(255, 255, 255, 0.18), transparent 10%),
+    radial-gradient(circle at 50% 52%, #141414 0 34%, transparent 35%),
+    repeating-conic-gradient(from -8deg, #0a0a0a 0 3deg, #242421 3deg 5deg, #10100f 5deg 8deg),
+    radial-gradient(circle at 50% 52%, #34342f, #121211 68%, #030303 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.11),
+    inset 0 -22px 48px rgba(0, 0, 0, 0.64),
+    0 14px 32px rgba(0, 0, 0, 0.48);
+}
+
+.photo-lab-mechanical-dial::before {
+  content: "";
+  position: absolute;
+  inset: 31%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.2), transparent 18%),
+    radial-gradient(circle at 52% 58%, #101010, #020202 70%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 0 0 8px rgba(255, 255, 255, 0.025),
+    inset 0 -12px 28px rgba(0, 0, 0, 0.78);
+}
+
+.photo-lab-mechanical-dial::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 42%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f2bd4d, rgba(242, 189, 77, 0.1));
+  box-shadow: 0 0 16px rgba(242, 189, 77, 0.26);
+  transform-origin: 50% 4px;
+  transform: translate(-50%, -4px) rotate(var(--selected-angle, -132deg));
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.photo-lab-mechanical-dial .photo-lab-dial-option {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 82px;
+  min-height: var(--touch-target);
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  transform:
+    translate(-50%, -50%)
+    rotate(var(--dial-angle))
+    translateY(-116px)
+    rotate(calc(var(--dial-angle) * -1));
+}
+
+.photo-lab-lens-ring {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 126px;
+  padding: 28px 14px 18px;
+  border-radius: 10px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055), transparent 13%, rgba(255, 255, 255, 0.035) 55%, transparent 74%),
+    repeating-linear-gradient(90deg, #060606 0 5px, #181817 5px 8px, #090909 8px 13px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 -20px 40px rgba(0, 0, 0, 0.52);
+}
+
+.photo-lab-lens-ring::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 2px;
+  height: 18px;
+  border-radius: 999px;
+  background: #d8b16b;
+  box-shadow: 0 0 12px rgba(216, 177, 107, 0.34);
+}
+
+.photo-lab-lens-ring::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+}
+
+.photo-lab-lens-ring .photo-lab-dial-option {
+  position: relative;
+  z-index: 1;
+  min-width: 64px;
+  min-height: var(--touch-target);
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0)),
+    rgba(0, 0, 0, 0.54);
+}
+
+.photo-lab-lens-ring .photo-lab-dial-option.active {
+  color: #090704;
+  background:
+    linear-gradient(180deg, #ffd46a, #d79617);
+  border-color: rgba(255, 214, 106, 0.62);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.5),
+    0 10px 22px rgba(216, 151, 23, 0.2);
+  transform: translateY(-2px);
+}
+
+.photo-lab-lens-ring--focal {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent 16%, rgba(255, 255, 255, 0.035) 60%, transparent 80%),
+    repeating-linear-gradient(90deg, #050505 0 7px, #20201e 7px 10px, #090909 10px 16px);
+}
+
+@media (max-width: 1180px) {
+  .page[data-app-mode="photo-lab"] {
+    height: auto;
+    min-height: 100svh;
+    overflow-y: auto;
+  }
+
+  .page[data-app-mode="photo-lab"] .photo-lab-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .photo-lab-stage {
+    grid-template-rows: auto minmax(520px, auto) auto;
+  }
+
+  .photo-lab-canvas-frame {
+    min-height: 520px;
+  }
+
+  .photo-lab-controls {
+    max-height: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .photo-lab-camera-deck {
+    grid-column: 1 / -1;
+  }
+
+  .photo-lab-mechanical-dial {
+    width: 100%;
+    aspect-ratio: auto;
+    margin: 0;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    border-radius: 10px;
+  }
+
+  .photo-lab-mechanical-dial::before,
+  .photo-lab-mechanical-dial::after {
+    display: none;
+  }
+
+  .photo-lab-mechanical-dial .photo-lab-dial-option {
+    position: relative;
+    inset: auto;
+    left: auto;
+    top: auto;
+    width: auto;
+    min-height: var(--touch-target);
+    transform: none;
+  }
+
+  .photo-lab-reading {
+    grid-template-columns: 1fr;
+  }
+
+  .photo-lab-reading p:first-child {
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .page[data-app-mode="photo-lab"] .photo-lab-shell,
+  .photo-lab-shell {
+    width: 100%;
+    padding: 8px;
+  }
+
+  .photo-lab-topline {
+    gap: 12px;
+  }
+
+  .photo-lab-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+  }
+
+  .photo-lab-canvas-frame {
+    border-width: 6px;
+  }
+
+  .photo-lab-viewfinder-hud {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    font-size: 9px;
+  }
+
+  .photo-lab-controls {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .photo-lab-mechanical-dial {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .photo-lab-mechanical-dial .photo-lab-dial-option {
+    width: auto;
+    min-height: var(--touch-target);
+    transform: none;
+  }
+
+  .photo-lab-camera-deck {
+    grid-template-columns: 86px minmax(0, 1fr);
+  }
+
+  .photo-lab-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .photo-lab-lens-ring .photo-lab-dial-option {
+    min-height: var(--touch-target);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-mode-button,
+  .photo-lab-chip,
+  .photo-lab-dial-option {
+    transition: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .photo-lab-canvas-frame {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .page[data-app-mode="photo-lab"] .photo-lab-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .page[data-app-mode="photo-lab"] .photo-lab-stage {
+    min-height: 0;
+  }
+
+  .page[data-app-mode="photo-lab"] .photo-lab-controls-toggle {
+    position: fixed;
+    left: 50%;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .page[data-app-mode="photo-lab"] .photo-lab-controls {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    z-index: 700;
+    width: min(100% - 16px, 760px);
+    max-height: min(72svh, 640px);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translate(-50%, calc(100% + 28px));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .page[data-app-mode="photo-lab"] .photo-lab-shell.is-controls-open .photo-lab-controls {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .page[data-app-mode="photo-lab"] .photo-lab-shell.is-controls-open .photo-lab-controls-toggle {
+    bottom: calc(min(72svh, 640px) + 18px);
+    color: var(--text-main);
+    background: var(--bg-deep);
+    border: 1px solid var(--panel-border);
+  }
+}
+
+@media (max-width: 767px) {
+  .page[data-app-mode="photo-lab"] .photo-lab-controls {
+    width: min(100% - 14px, 460px);
+    max-height: min(76svh, 620px);
+    grid-template-columns: 1fr;
+  }
+
+  .page[data-app-mode="photo-lab"] .photo-lab-shell.is-controls-open .photo-lab-controls-toggle {
+    bottom: calc(min(76svh, 620px) + 16px);
+  }
+}
+
+/* Integration a l'en-tete compact du planificateur : sur mobile, le selecteur
+   Plan / Labo photo passe sur sa propre ligne sous les menus. */
+@media (max-width: 700px) {
+  .appbar {
+    flex-wrap: wrap;
+  }
+
+  .app-mode-switch {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .app-mode-button {
+    min-height: 44px;
+  }
+}
+
+/* Hauteur de l'apercu du Labo (regles consolidees de la version en ligne). */
+#photoLabCanvas {
+  display: block;
+  width: 100%;
+  height: 560px;
+  min-height: 0;
+  filter: saturate(0.98) contrast(1.02);
+}
+
+@media (max-width: 1180px) {
+  #photoLabCanvas {
+    height: 520px;
+  }
+}
+
+@media (max-width: 767px) {
+  #photoLabCanvas {
+    height: clamp(310px, 52svh, 420px);
+  }
+}
+
+@media (max-width: 767px) and (max-height: 640px) {
+  #photoLabCanvas {
+    height: 300px;
+  }
+}

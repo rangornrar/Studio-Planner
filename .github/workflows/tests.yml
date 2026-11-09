@@ -12,6 +12,7 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: '22'
-      - run: node --check js/simple-studio.js
-      - run: node --check js/studio-locales.js
-      - run: node --test tests/*.test.cjs
+      # Syntaxe de tous les scripts de l'application et du Labo photo
+      - run: npm run lint
+      # Tests unitaires : traductions et moteur du Labo photo
+      - run: npm test

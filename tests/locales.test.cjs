@@ -29,8 +29,9 @@ test('UI messages are present in each language', () => {
 
 test('application loads locale data before its controller', () => {
   const html = fs.readFileSync(path.join(root, 'app.html'), 'utf8');
-  const locale = html.indexOf('src="js/studio-locales.js"');
-  const app = html.indexOf('src="js/simple-studio.js"');
+  // Le parametre de version (?v=...) est accepte apres le nom du fichier.
+  const locale = html.search(/src="js\/studio-locales\.js(\?v=[^"]*)?"/);
+  const app = html.search(/src="js\/simple-studio\.js(\?v=[^"]*)?"/);
   assert.ok(locale >= 0 && app > locale);
   assert.ok(Object.isFrozen(data));
 });

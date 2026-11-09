@@ -15,6 +15,8 @@ const PUBLIC_PAGE_LINKS = {
   interviewLighting: "lighting-diagram-interview.html"
 };
 
+const PRIMARY_NAV_KEYS = ["home", "app", "guide", "presets", "faq"];
+
 const LANGUAGES = {
   fr: { dir: "ltr", locale: "fr_FR", folder: "", code: "FR", flag: "🇫🇷", label: "Francais" },
   en: { dir: "ltr", locale: "en_US", folder: "en", code: "EN", flag: "🇺🇸", label: "English" },
@@ -26,30 +28,40 @@ const LANGUAGES = {
 const LANGUAGE_UI_COPY = {
   fr: {
     selector: "Langues",
+    menuLabel: "Menu",
+    closeMenuLabel: "Fermer le menu",
     switcherAria: "Choisir la langue de la page",
     versionsTitle: "Versions",
     versionsText: "Cette page est disponible dans les langues suivantes."
   },
   en: {
     selector: "Languages",
+    menuLabel: "Menu",
+    closeMenuLabel: "Close menu",
     switcherAria: "Choose the page language",
     versionsTitle: "Versions",
     versionsText: "This page is available in the following languages."
   },
   es: {
     selector: "Idiomas",
+    menuLabel: "Menu",
+    closeMenuLabel: "Cerrar menu",
     switcherAria: "Elegir el idioma de la pagina",
     versionsTitle: "Versiones",
     versionsText: "Esta pagina esta disponible en los siguientes idiomas."
   },
   de: {
     selector: "Sprachen",
+    menuLabel: "Menu",
+    closeMenuLabel: "Menu schliessen",
     switcherAria: "Seitensprache auswahlen",
     versionsTitle: "Versionen",
     versionsText: "Diese Seite ist in den folgenden Sprachen verfugbar."
   },
   ar: {
     selector: "اللغات",
+    menuLabel: "القائمة",
+    closeMenuLabel: "إغلاق القائمة",
     switcherAria: "اختر لغة الصفحة",
     versionsTitle: "النسخ",
     versionsText: "هذه الصفحة متوفرة باللغات التالية."
@@ -141,9 +153,16 @@ function rewriteInlineHtml(html, languageId) {
   });
 }
 
-function renderNav(copy, page, languageId) {
-  return page.navItems.map(function (key) {
-    return `<a href="${localizedHref(languageId, key, relativePrefix(languageId))}">${escapeHtml(copy.common.links[key])}</a>`;
+function renderNav(copy, page, languageId, currentKey) {
+  const keys = PRIMARY_NAV_KEYS.filter(function (key) {
+    return page.navItems.includes(key) || key === currentKey;
+  });
+
+  return keys.map(function (key) {
+    const isActive = key === currentKey;
+    const activeClass = isActive ? ' class="active"' : "";
+    const currentAttribute = isActive ? ' aria-current="page"' : "";
+    return `<a${activeClass} href="${localizedHref(languageId, key, relativePrefix(languageId))}"${currentAttribute}>${escapeHtml(copy.common.links[key])}</a>`;
   }).join("");
 }
 
@@ -205,7 +224,7 @@ function renderAlternateLinks(fileName) {
 }
 
 function normalizeHeadline(value) {
-  return String(value || "").replace(/\s+\|\s+Lumiere Studio$/, "").trim();
+  return String(value || "").replace(/\s+\|\s+LITE Studio$/, "").trim();
 }
 
 function extractFaqEntries(page) {
@@ -237,7 +256,7 @@ function buildStructuredData(config, page, languageId) {
     return {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      name: "Lumiere Studio",
+      name: "LITE Studio",
       applicationCategory: "PhotographyApplication",
       applicationSubCategory: "Photo Studio Planner",
       operatingSystem: "Web",
@@ -284,11 +303,11 @@ function buildStructuredData(config, page, languageId) {
     inLanguage: languageId,
     author: {
       "@type": "Organization",
-      name: "Lumiere Studio"
+      name: "LITE Studio"
     },
     publisher: {
       "@type": "Organization",
-      name: "Lumiere Studio"
+      name: "LITE Studio"
     }
   };
 }
@@ -318,7 +337,7 @@ function renderHead(copy, page, config, languageId) {
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta property="og:type" content="${config.ogType}">
   <meta property="og:locale" content="${locale}">
-  <meta property="og:site_name" content="Lumiere Studio">
+  <meta property="og:site_name" content="LITE Studio">
   <meta property="og:title" content="${escapeHtml(ogTitle)}">
   <meta property="og:description" content="${escapeHtml(ogDescription)}">
   <meta property="og:url" content="${canonical}">
@@ -333,6 +352,7 @@ function renderHead(copy, page, config, languageId) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="${cssHref}">
+  <script src="${relativePrefix(languageId)}js/site-nav.js" defer></script>
   <script type="application/ld+json">
 ${structuredData}
   </script>
@@ -351,18 +371,32 @@ function renderTopStrip(copy, page) {
 }
 
 function renderHeader(copy, page, languageId, fileName) {
+  const currentKey = Object.entries(PUBLIC_PAGE_LINKS).find(function ([, value]) {
+    return value === fileName;
+  })?.[0] || "home";
+  const uiCopy = LANGUAGE_UI_COPY[languageId];
+
   return `<header class="site-nav">
     <div class="site-shell site-nav-inner">
       <a class="brand" href="index.html">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-copy">
-          <strong>Lumiere Studio</strong>
+          <strong>LITE Studio</strong>
           <span id="brandTagline">${escapeHtml(page.brandTagline)}</span>
         </span>
       </a>
-      <div class="site-nav-tools">
+      <a class="site-primary-cta" href="${localizedHref(languageId, "app", relativePrefix(languageId))}">${escapeHtml(copy.common.links.app)}</a>
+      <button class="site-menu-toggle" type="button" aria-label="${escapeHtml(uiCopy.menuLabel)}" aria-controls="siteNavTools" aria-expanded="false">
+        <span>${escapeHtml(uiCopy.menuLabel)}</span>
+      </button>
+      <button class="site-nav-backdrop" type="button" aria-label="${escapeHtml(uiCopy.closeMenuLabel)}" hidden></button>
+      <div class="site-nav-tools" id="siteNavTools">
+        <div class="site-drawer-head">
+          <strong>LITE Studio</strong>
+          <button class="site-menu-close" type="button" aria-label="${escapeHtml(uiCopy.closeMenuLabel)}">${escapeHtml(uiCopy.closeMenuLabel)}</button>
+        </div>
         <nav class="nav-links" id="siteNavLinks" aria-label="${escapeHtml(copy.common.navAriaLabel)}">
-          ${renderNav(copy, page, languageId)}
+          ${renderNav(copy, page, languageId, currentKey)}
         </nav>
         ${renderLanguageSwitcher(fileName, languageId)}
       </div>

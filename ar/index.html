@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#07111f">
-  <title>مخطط استوديو للكمبيوتر والتابلت والموبايل | Lumiere Studio</title>
+  <title>مخطط استوديو للكمبيوتر والتابلت والموبايل | LITE Studio</title>
   <meta name="description" content="حضّر مخطط استوديو تصوير على الكمبيوتر أو التابلت أو الموبايل مع مكتبة قابلة للطي، وإمكانية التبديل بين المخطط والمنظور الأيزومتري، والقياسات التلقائية، ونسخ الصورة، وتصدير PNG أو PDF، والإعدادات الجاهزة.">
   <link rel="canonical" href="https://lumierestudio.archi-it.fr/ar/">
   <link rel="alternate" hreflang="fr" href="https://lumierestudio.archi-it.fr/">
@@ -16,26 +16,27 @@
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ar_SA">
-  <meta property="og:site_name" content="Lumiere Studio">
-  <meta property="og:title" content="Lumiere Studio - مخطط استوديو للكمبيوتر والتابلت والموبايل">
+  <meta property="og:site_name" content="LITE Studio">
+  <meta property="og:title" content="LITE Studio - مخطط استوديو للكمبيوتر والتابلت والموبايل">
   <meta property="og:description" content="تطبيق ويب واحد لبناء المشهد على الكمبيوتر، وتعديله على التابلت أو الموبايل، والتنقل بين المخطط والمنظور الأيزومتري، ومشاركة مخطط نظيف.">
   <meta property="og:url" content="https://lumierestudio.archi-it.fr/ar/">
   <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta property="og:image:alt" content="لقطة شاشة من Lumiere Studio مع المكتبة وعرض رئيسي قابل للتبديل وقياسات ظاهرة">
+  <meta property="og:image:alt" content="لقطة شاشة من LITE Studio مع المكتبة وعرض رئيسي قابل للتبديل وقياسات ظاهرة">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Lumiere Studio - مخطط استوديو للكمبيوتر والتابلت والموبايل">
+  <meta name="twitter:title" content="LITE Studio - مخطط استوديو للكمبيوتر والتابلت والموبايل">
   <meta name="twitter:description" content="مكتبة قابلة للطي، ومخطط وأيزومتري قابلان للتبديل، وقياسات مفيدة، ومخرج سريع كصورة أو PNG أو PDF.">
   <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta name="twitter:image:alt" content="لقطة شاشة من Lumiere Studio مع المكتبة وعرض رئيسي قابل للتبديل وقياسات ظاهرة">
+  <meta name="twitter:image:alt" content="لقطة شاشة من LITE Studio مع المكتبة وعرض رئيسي قابل للتبديل وقياسات ظاهرة">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/site-nav.js" defer></script>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Lumiere Studio",
+  "name": "LITE Studio",
   "applicationCategory": "PhotographyApplication",
   "applicationSubCategory": "Photo Studio Planner",
   "operatingSystem": "Web",
@@ -56,7 +57,7 @@
     <div class="site-shell top-strip-inner">
       <div class="top-copy" id="topCopy">النسخة الحالية تعمل على الكمبيوتر والتابلت والموبايل. إذا كانت مفيدة لك فادعم تطويرها.</div>
       <a class="top-kofi" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">
-        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="ادعم Lumiere Studio عبر Ko-fi">
+        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="ادعم LITE Studio عبر Ko-fi">
       </a>
     </div>
   </div>
@@ -65,13 +66,22 @@
       <a class="brand" href="index.html">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-copy">
-          <strong>Lumiere Studio</strong>
+          <strong>LITE Studio</strong>
           <span id="brandTagline">مخطط استوديو تصوير</span>
         </span>
       </a>
-      <div class="site-nav-tools">
+      <a class="site-primary-cta" href="../app.html?lang=ar">التطبيق</a>
+      <button class="site-menu-toggle" type="button" aria-label="القائمة" aria-controls="siteNavTools" aria-expanded="false">
+        <span>القائمة</span>
+      </button>
+      <button class="site-nav-backdrop" type="button" aria-label="إغلاق القائمة" hidden></button>
+      <div class="site-nav-tools" id="siteNavTools">
+        <div class="site-drawer-head">
+          <strong>LITE Studio</strong>
+          <button class="site-menu-close" type="button" aria-label="إغلاق القائمة">إغلاق القائمة</button>
+        </div>
         <nav class="nav-links" id="siteNavLinks" aria-label="التنقل الرئيسي">
-          <a href="../app.html?lang=ar">التطبيق</a><a href="guide.html">الدليل</a><a href="presets.html">الإعدادات</a><a href="faq.html">الأسئلة الشائعة</a>
+          <a class="active" href="index.html" aria-current="page">الرئيسية</a><a href="../app.html?lang=ar">التطبيق</a><a href="guide.html">الدليل</a><a href="presets.html">الإعدادات</a><a href="faq.html">الأسئلة الشائعة</a>
         </nav>
         <nav class="language-switcher" aria-label="اختر لغة الصفحة">
     <div class="language-switcher-list">
@@ -95,8 +105,8 @@
     <section class="hero">
       <div class="site-shell">
         <article class="hero-copy hero-panel">
-          <div class="hero-panel-main" id="heroCopyContent"><p class="eyebrow">مخطط استوديو للكمبيوتر والتابلت والموبايل</p><h1>ابنِ المشهد على الكمبيوتر، وعدّله على التابلت أو الموبايل، ثم شارك مخططاً نظيفاً خلال ثوان.</h1><p>أصبح Lumiere Studio يتبع إيقاع التحضير الحقيقي: مكتبة كاملة عندما تتوفر المساحة، وأدوات مضغوطة على البلاتوه، مع نفس المشهد ونفس القياسات ونفس المخارج دائماً.</p><div class="hero-actions"><a class="button-link primary" href="../app.html?lang=ar">افتح التطبيق</a><a class="button-link secondary" href="guide.html">اقرأ الدليل</a></div><div class="hero-points"><div class="point-chip"><strong>تطبيق واحد</strong>المشهد نفسه يعمل على الكمبيوتر والتابلت والموبايل من دون تقسيم المنتج إلى نسخ متعددة.</div><div class="point-chip"><strong>مكتبة قابلة للطي</strong>في الشاشات الصغيرة يمكنك إظهار المكتبة أو إخفاءها لاستعادة كامل مساحة العمل.</div><div class="point-chip"><strong>المخطط / الأيزومتري قابلان للتبديل</strong>اختر العرض الذي يجب أن يكون رئيسياً ثم قرّب بعجلة الفأرة أو بحركة pinch.</div><div class="point-chip"><strong>قياسات + مخارج</strong>راجع المسافات المهمة، وانسخ الصورة، وصدّر PNG أو PDF، واحتفظ بإعداداتك الخاصة.</div></div></div>
-          <div class="hero-inline-media" id="heroVisualContent"><figure><img src="../docs/screenshots/studio-portrait.png" alt="مثال على مخطط استوديو مع مكتبة وعرض رئيسي قابل للتبديل وقياسات في Lumiere Studio"><figcaption class="hero-caption">عرض رئيسي قابل للتبديل، ومكتبة قابلة للطي في الواجهات المدمجة، وقياسات واضحة، ومخرج صورة سريع.</figcaption><div class="meta-list hero-media-meta"><span>كمبيوتر واسع</span><span>تابلت مدمج</span><span>موبايل لمسي</span><span>PNG / PDF</span></div></figure></div>
+          <div class="hero-panel-main" id="heroCopyContent"><p class="eyebrow">مخطط استوديو للكمبيوتر والتابلت والموبايل</p><h1>ابنِ المشهد على الكمبيوتر، وعدّله على التابلت أو الموبايل، ثم شارك مخططاً نظيفاً خلال ثوان.</h1><p>أصبح LITE Studio يتبع إيقاع التحضير الحقيقي: مكتبة كاملة عندما تتوفر المساحة، وأدوات مضغوطة على البلاتوه، مع نفس المشهد ونفس القياسات ونفس المخارج دائماً.</p><div class="hero-actions"><a class="button-link primary" href="../app.html?lang=ar">افتح التطبيق</a><a class="button-link secondary" href="guide.html">اقرأ الدليل</a></div><div class="hero-points"><div class="point-chip"><strong>تطبيق واحد</strong>المشهد نفسه يعمل على الكمبيوتر والتابلت والموبايل من دون تقسيم المنتج إلى نسخ متعددة.</div><div class="point-chip"><strong>مكتبة قابلة للطي</strong>في الشاشات الصغيرة يمكنك إظهار المكتبة أو إخفاءها لاستعادة كامل مساحة العمل.</div><div class="point-chip"><strong>المخطط / الأيزومتري قابلان للتبديل</strong>اختر العرض الذي يجب أن يكون رئيسياً ثم قرّب بعجلة الفأرة أو بحركة pinch.</div><div class="point-chip"><strong>قياسات + مخارج</strong>راجع المسافات المهمة، وانسخ الصورة، وصدّر PNG أو PDF، واحتفظ بإعداداتك الخاصة.</div></div></div>
+          <div class="hero-inline-media" id="heroVisualContent"><figure><img src="../docs/screenshots/studio-portrait.png" alt="مثال على مخطط استوديو مع مكتبة وعرض رئيسي قابل للتبديل وقياسات في LITE Studio"><figcaption class="hero-caption">عرض رئيسي قابل للتبديل، ومكتبة قابلة للطي في الواجهات المدمجة، وقياسات واضحة، ومخرج صورة سريع.</figcaption><div class="meta-list hero-media-meta"><span>كمبيوتر واسع</span><span>تابلت مدمج</span><span>موبايل لمسي</span><span>PNG / PDF</span></div></figure></div>
         </article>
       </div>
     </section>
@@ -114,7 +124,7 @@
     <section class="section">
       <div class="site-shell">
         <div class="section-head" id="capturesHeadContent"><p class="eyebrow">اللقطات</p><h2>التطبيق الحالي كما يعمل فعلاً اليوم على الكمبيوتر والتابلت والموبايل.</h2><p>تُظهر اللقطات النسخة الحقيقية: عرض رئيسي قابل للتبديل، وقياسات واضحة، وتسميات متباينة، وواجهة أكثر تماسكاً عندما تضيق المساحة.</p></div>
-        <div class="screenshot-grid" id="screenshotGridContent"><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-portrait.png" alt="إعداد بورتريه مع قياسات مهمة وعرض رئيسي قابل للتبديل في Lumiere Studio"><figcaption>إعداد بورتريه مع المسافات التي تهم فعلاً، والعرض الرئيسي المناسب لكل لحظة، ومخرج نظيف للـ brief.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-boudoir.png" alt="إعداد بودوار مع أثاث وخلفية ملونة وواجهة Lumiere Studio الحالية"><figcaption>إعداد بودوار مع أثاث وخلفية ملونة ومنطق مدمج يبقى متماسكاً على الكمبيوتر والتابلت.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-video.png" alt="إعداد مقابلة مع كاميرا وألواح LED وواجهة Lumiere Studio الحالية"><figcaption>إعداد مقابلة بمحور كاميرا واضح وألواح LED وقياسات سريعة وتصدير فوري للفريق.</figcaption></figure></article></div>
+        <div class="screenshot-grid" id="screenshotGridContent"><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-portrait.png" alt="إعداد بورتريه مع قياسات مهمة وعرض رئيسي قابل للتبديل في LITE Studio"><figcaption>إعداد بورتريه مع المسافات التي تهم فعلاً، والعرض الرئيسي المناسب لكل لحظة، ومخرج نظيف للـ brief.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-boudoir.png" alt="إعداد بودوار مع أثاث وخلفية ملونة وواجهة LITE Studio الحالية"><figcaption>إعداد بودوار مع أثاث وخلفية ملونة ومنطق مدمج يبقى متماسكاً على الكمبيوتر والتابلت.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-video.png" alt="إعداد مقابلة مع كاميرا وألواح LED وواجهة LITE Studio الحالية"><figcaption>إعداد مقابلة بمحور كاميرا واضح وألواح LED وقياسات سريعة وتصدير فوري للفريق.</figcaption></figure></article></div>
       </div>
     </section>
     <section class="section">
@@ -122,7 +132,7 @@
     </section>
     <section class="section">
       <div class="site-shell">
-        <div class="cta-panel" id="ctaPanelContent"><p class="eyebrow">جاهز لتجربة النسخة الحالية</p><h2>حمّل إعداداً جاهزاً، واطوِ المكتبة عند الحاجة، ودَع العرض المناسب يقود المشهد.</h2><p>سواء كنت على الكمبيوتر أو التابلت أو الموبايل، يحتفظ التطبيق نفسه بإعداداتك وقياساتك ومخارج صورتك من دون تغيير سير العمل في منتصف الطريق.</p><div class="cta-actions"><a class="button-link primary" href="../app.html?lang=ar">شغّل Lumiere Studio</a><a class="button-link secondary" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">ادعم المشروع</a></div></div>
+        <div class="cta-panel" id="ctaPanelContent"><p class="eyebrow">جاهز لتجربة النسخة الحالية</p><h2>حمّل إعداداً جاهزاً، واطوِ المكتبة عند الحاجة، ودَع العرض المناسب يقود المشهد.</h2><p>سواء كنت على الكمبيوتر أو التابلت أو الموبايل، يحتفظ التطبيق نفسه بإعداداتك وقياساتك ومخارج صورتك من دون تغيير سير العمل في منتصف الطريق.</p><div class="cta-actions"><a class="button-link primary" href="../app.html?lang=ar">شغّل LITE Studio</a><a class="button-link secondary" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">ادعم المشروع</a></div></div>
       </div>
     </section>
     <section class="section">
@@ -158,7 +168,7 @@
     </nav>
   </div>
     <div class="site-shell footer-inner">
-      <div id="footerCopy">Lumiere Studio · مخطط استوديو للكمبيوتر والتابلت والموبايل مع مخطط/أيزومتري قابلين للتبديل وقياسات ومخارج.</div>
+      <div id="footerCopy">LITE Studio · مخطط استوديو للكمبيوتر والتابلت والموبايل مع مخطط/أيزومتري قابلين للتبديل وقياسات ومخارج.</div>
       <div class="footer-links" id="footerLinks">
         <a href="../app.html?lang=ar">التطبيق</a><a href="guide.html">الدليل</a><a href="presets.html">الإعدادات</a><a href="faq.html">الأسئلة الشائعة</a>
       </div>

@@ -1,4 +1,5 @@
 (function () {
+  const StudioModels = window.LiteStudioModels;
   const { LANGUAGE_OPTIONS, LOCALES, LOCALE_CODES, TYPE_LABEL_TRANSLATIONS, SHORT_LABEL_KEYS, SHORT_LABEL_TRANSLATIONS, PRESET_TOKEN_TRANSLATIONS, UI_COPY, COLOR_NOUN_TRANSLATIONS, COLOR_MODIFIER_TRANSLATIONS } = window.LiteStudioLocales;
   const STUDIO = {
     width: 8,
@@ -7,8 +8,12 @@
     backdropHeight: 2.8
   };
 
+  const PLAN_CORNER_RADIUS = 8;
+  let planLabelQueue = [];
+  const NUMERIC_TOKEN = /(f\/)?\d+(?:[.,]\d+)?(?:\s?[x×]\s?\d+(?:[.,]\d+)?)*(?:\s?(?:cm|mm|m|°|%))?/g;
   const STORAGE_KEY_LANGUAGE = "lite-studio-language";
   const STORAGE_KEY_CUSTOM_PRESETS = "lite-studio-custom-presets";
+  const STORAGE_KEY_INSET_COLLAPSED = "lite-studio-inset-collapsed";
 
 
   const FLOOR_COLORS = [
@@ -1930,11 +1935,15 @@
     stageCanvasWrap: document.getElementById("stageCanvasWrap"),
     planViewPane: document.getElementById("planViewPane"),
     isoViewPane: document.getElementById("isoViewPane"),
+    insetToggle: document.getElementById("insetToggle"),
+    insetToggleLabel: document.getElementById("insetToggleLabel"),
     planCanvas: document.getElementById("planCanvas"),
     isoCanvas: document.getElementById("isoCanvas"),
     viewPlanToggle: document.getElementById("viewPlanToggle"),
     viewIsoToggle: document.getElementById("viewIsoToggle"),
     libraryToggle: document.getElementById("libraryToggle"),
+    libraryClose: document.getElementById("libraryClose"),
+    libraryBackdrop: document.getElementById("libraryBackdrop"),
     measureToggle: document.getElementById("measureToggle"),
     planZoomTools: document.getElementById("planZoomTools"),
     isoZoomTools: document.getElementById("isoZoomTools"),
@@ -1972,7 +1981,7 @@
     measureEnd: null,
     openMenu: null,
     primaryView: "plan",
-    libraryCollapsed: false,
+    libraryCollapsed: window.matchMedia("(max-width: 700px)").matches, // mobile : bibliotheque fermee au depart
     planZoom: 1,
     planPanX: 0,
     planPanY: 0,
@@ -1981,8 +1990,35 @@
     isoActivePointers: new Map(),
     isoPinchGesture: null,
     isoZoom: 1,
+    insetPreference: loadInsetPreference(),
+    insetCollapsed: false,
+    planRegion: null,
     nextId: 1
   };
+
+  // Choix explicite de l'utilisateur pour la vignette : true (repliee), false (depliee)
+  // ou null (automatique : repliee seulement si elle masquerait le plan).
+  function loadInsetPreference() {
+    try {
+      const stored = window.localStorage.getItem(STORAGE_KEY_INSET_COLLAPSED);
+      if (stored === "1") return true;
+      if (stored === "0") return false;
+    } catch (error) {
+      // Stockage indisponible : mode automatique.
+    }
+    return null;
+  }
+
+  function setInsetCollapsed(collapsed) {
+    state.insetPreference = Boolean(collapsed);
+    state.insetCollapsed = state.insetPreference;
+    try {
+      window.localStorage.setItem(STORAGE_KEY_INSET_COLLAPSED, state.insetPreference ? "1" : "0");
+    } catch (error) {
+      // Stockage indisponible : le choix vaut pour la session.
+    }
+    renderAll();
+  }
 
   function detectInitialLanguage() {
     try {
@@ -2347,6 +2383,11 @@
     if (hintDrag) hintDrag.textContent = t("stage.hintDrag");
     if (hintRotate) hintRotate.textContent = t("stage.hintRotate");
     if (libraryToggle) libraryToggle.textContent = t("stage.toggleLibrary");
+    const libraryClose = document.getElementById("libraryClose");
+    if (libraryClose) {
+      libraryClose.textContent = t("stage.closeLibrary");
+      libraryClose.setAttribute("aria-label", `${t("stage.closeLibrary")} : ${t("stage.toggleLibrary")}`);
+    }
     if (measureToggle) measureToggle.textContent = t("stage.hintMeasure");
     if (previewEyebrow) previewEyebrow.textContent = t("stage.previewEyebrow");
     if (previewTitle) previewTitle.textContent = t("stage.previewTitle");
@@ -2411,14 +2452,33 @@
     return window.matchMedia("(max-width: 1180px)").matches;
   }
 
+  function closeLibraryPanel() {
+    if (!isCompactLibraryViewport() || state.libraryCollapsed) return;
+    state.libraryCollapsed = true;
+    renderAll();
+    if (refs.libraryToggle && !refs.libraryToggle.hidden) refs.libraryToggle.focus();
+  }
+
   function syncCompactLibraryUi() {
     const compact = isCompactLibraryViewport();
     const expanded = !compact || !state.libraryCollapsed;
 
-    if (refs.workspace) refs.workspace.classList.toggle("is-library-collapsed", compact && !expanded);
+    if (refs.workspace) {
+      refs.workspace.classList.toggle("is-library-collapsed", compact && !expanded);
+      refs.workspace.classList.toggle("is-library-open", compact && expanded);
+    }
     if (refs.libraryPanel) {
       refs.libraryPanel.classList.toggle("is-collapsed", compact && !expanded);
+      refs.libraryPanel.classList.toggle("is-active", compact && expanded);
       refs.libraryPanel.setAttribute("aria-hidden", expanded ? "false" : "true");
+      // Sur mobile, la bibliotheque ouverte est un panneau modal par-dessus le plan.
+      const isSheet = window.matchMedia("(max-width: 700px)").matches;
+      refs.libraryPanel.setAttribute("aria-modal", isSheet && expanded ? "true" : "false");
+      if (isSheet) refs.libraryPanel.setAttribute("role", "dialog");
+      else refs.libraryPanel.removeAttribute("role");
+    }
+    if (refs.libraryBackdrop) {
+      refs.libraryBackdrop.hidden = !(compact && expanded && window.matchMedia("(max-width: 700px)").matches);
     }
     if (refs.libraryToggle) {
       refs.libraryToggle.hidden = !compact;
@@ -2431,7 +2491,18 @@
   function syncStageViewUi() {
     const isPlanMain = state.primaryView !== "iso";
 
-    if (refs.stageCanvasWrap) refs.stageCanvasWrap.setAttribute("data-main-view", isPlanMain ? "plan" : "iso");
+    if (refs.stageCanvasWrap) {
+      refs.stageCanvasWrap.setAttribute("data-main-view", isPlanMain ? "plan" : "iso");
+      refs.stageCanvasWrap.classList.toggle("is-inset-collapsed", state.insetCollapsed);
+    }
+    if (refs.insetToggle) {
+      const showLabel = isPlanMain ? t("stage.insetShowIso") : t("stage.insetShowPlan");
+      const toggleLabel = state.insetCollapsed ? showLabel : t("stage.insetHide");
+      refs.insetToggle.setAttribute("aria-pressed", state.insetCollapsed ? "true" : "false");
+      refs.insetToggle.setAttribute("aria-label", toggleLabel);
+      refs.insetToggle.setAttribute("title", toggleLabel);
+      if (refs.insetToggleLabel) refs.insetToggleLabel.textContent = showLabel;
+    }
     if (refs.planViewPane) {
       refs.planViewPane.classList.toggle("is-main", isPlanMain);
       refs.planViewPane.classList.toggle("is-secondary", !isPlanMain);
@@ -2521,9 +2592,10 @@
     if (!refs.planCanvas.width || !refs.planCanvas.height) return null;
     const selected = getSelectedItem();
     if (!selected) {
+      const base = getPlanBaseMetrics(refs.planCanvas.width, refs.planCanvas.height);
       return {
-        x: refs.planCanvas.width / 2,
-        y: refs.planCanvas.height / 2
+        x: base.centerX,
+        y: base.centerY
       };
     }
 
@@ -2546,8 +2618,8 @@
       const nextScale = nextBaseMetrics.scale * state.planZoom;
       const nextStageWidth = STUDIO.width * nextScale;
       const nextStageHeight = STUDIO.depth * nextScale;
-      state.planPanX = anchor.x - width / 2 + nextStageWidth / 2 - anchorStudio.x * nextScale;
-      state.planPanY = anchor.y - height / 2 + nextStageHeight / 2 - anchorStudio.y * nextScale;
+      state.planPanX = anchor.x - nextBaseMetrics.centerX + nextStageWidth / 2 - anchorStudio.x * nextScale;
+      state.planPanY = anchor.y - nextBaseMetrics.centerY + nextStageHeight / 2 - anchorStudio.y * nextScale;
       const clampedPan = getClampedPlanPan(width, height, state.planZoom, state.planPanX, state.planPanY);
       state.planPanX = clampedPan.x;
       state.planPanY = clampedPan.y;
@@ -2659,7 +2731,66 @@
     { x: 4, y: 4.8, rotation: 270 }
   ];
 
+  // Emprise au sol (largeur selon l'orientation, profondeur sur le cote) tiree des
+  // modeles 3D : selection, collisions et distances suivent la forme reelle.
+  function applyModelFootprints() {
+    Object.keys(ITEM_VARIANTS).forEach(function (variantId) {
+      const variant = ITEM_VARIANTS[variantId];
+      const model = getVariantModel(variantId, variant);
+      variant.width = Math.max(0.12, Number(model.width.toFixed(2)));
+      variant.depth = Math.max(0.12, Number(model.depth.toFixed(2)));
+    });
+  }
+
+  function getVariantModel(variantId, variant) {
+    return StudioModels.buildModel(getVariantVisualKind(variantId, variant.family), variantId, variant);
+  }
+
+  // Assise sur laquelle se trouve un sujet (a moins de 45 cm de son centre).
+  function findSeatUnder(subject, items) {
+    let best = null;
+    items.forEach(function (other) {
+      const seatZ = StudioModels.seatHeights[other.variantId];
+      if (!seatZ || other === subject) return;
+      const distance = Math.hypot(other.x - subject.x, other.y - subject.y);
+      if (distance <= 0.45 && (!best || distance < best.distance)) {
+        best = { item: other, seatZ: seatZ, distance: distance };
+      }
+    });
+    return best;
+  }
+
+  function getItemModelInstances(items) {
+    return items.map(function (item) {
+      const variant = ITEM_VARIANTS[item.variantId] || item;
+      if (item.family === "subject") {
+        const seat = findSeatUnder(item, items);
+        if (seat) {
+          // Sujet assis : place sur l'assise et tourne vers sa face avant.
+          const front = StudioModels.seatFront[seat.item.variantId];
+          const rotation = typeof front === "number"
+            ? degreesToRadians(seat.item.rotation) + front - Math.PI
+            : degreesToRadians(item.rotation);
+          const back = typeof front === "number" ? 0.08 : 0;
+          return {
+            model: StudioModels.buildModel(getVariantVisualKind(item.variantId, item.family), item.variantId, variant, { seatZ: seat.seatZ }),
+            x: seat.item.x - Math.cos(rotation) * -back,
+            y: seat.item.y - Math.sin(rotation) * -back,
+            rotation: rotation
+          };
+        }
+      }
+      return {
+        model: getVariantModel(item.variantId, variant),
+        x: item.x,
+        y: item.y,
+        rotation: degreesToRadians(item.rotation)
+      };
+    });
+  }
+
   function init() {
+    applyModelFootprints();
     renderColorSwatches(refs.floorMenuSwatches, FLOOR_COLORS, "floor");
     renderColorSwatches(refs.backdropMenuSwatches, BACKDROP_COLORS, "backdrop");
     bindEvents();
@@ -2667,6 +2798,12 @@
 
     if (launchOptions.preset) {
       loadPreset(launchOptions.preset);
+    }
+
+    // Les etiquettes du canvas utilisent la police de l'interface : on redessine
+    // une fois les polices chargees pour que leur largeur soit mesuree correctement.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(renderAll);
     }
   }
 
@@ -2796,6 +2933,11 @@
       const button = event.target.closest("[data-variant-id]");
       if (!button) return;
       addItem(button.getAttribute("data-variant-id"));
+      // Sur ecran compact, on referme la bibliotheque pour montrer l'element ajoute.
+      if (isCompactLibraryViewport()) {
+        state.libraryCollapsed = true;
+        renderAll();
+      }
     });
 
     if (refs.actionSavePreset) {
@@ -2871,6 +3013,18 @@
       });
     }
 
+    if (refs.libraryClose) {
+      bindPress(refs.libraryClose, function () {
+        closeLibraryPanel();
+      });
+    }
+
+    if (refs.libraryBackdrop) {
+      refs.libraryBackdrop.addEventListener("click", function () {
+        closeLibraryPanel();
+      });
+    }
+
     refs.selectionPanel.addEventListener("input", handleSelectionInput);
     refs.selectionPanel.addEventListener("click", handleSelectionClick);
 
@@ -2891,7 +3045,20 @@
       closeMenus();
     });
 
+    if (refs.insetToggle) {
+      refs.insetToggle.addEventListener("click", function (event) {
+        event.stopPropagation();
+        setInsetCollapsed(!state.insetCollapsed);
+      });
+    }
+
     window.addEventListener("resize", renderAll);
+    window.addEventListener("beforeprint", function () {
+      // A l'impression la vignette est masquee : le plan reprend toute la surface.
+      state.planRegion = null;
+      drawPlanView();
+    });
+    window.addEventListener("afterprint", renderAll);
     window.addEventListener("keydown", handleKeydown);
   }
   function toggleMenu(id) {
@@ -2907,8 +3074,41 @@
 
   function syncMenus() {
     refs.menus.forEach(function (menu) {
-      menu.classList.toggle("open", menu.getAttribute("data-menu") === state.openMenu);
+      const isOpen = menu.getAttribute("data-menu") === state.openMenu;
+      menu.classList.toggle("open", isOpen);
+      const panel = menu.querySelector(".menu-panel");
+      if (!panel) return;
+      if (isOpen) {
+        fitMenuPanelToViewport(panel);
+      } else {
+        panel.style.removeProperty("transform");
+        panel.style.removeProperty("max-height");
+      }
     });
+  }
+
+  // Garde un menu deroulant entierement visible : decalage horizontal si le panneau
+  // depasse l'ecran, hauteur bornee au bas de la fenetre (le contenu defile).
+  function fitMenuPanelToViewport(panel) {
+    const margin = 12;
+    panel.style.removeProperty("transform");
+    panel.style.removeProperty("max-height");
+    const rect = panel.getBoundingClientRect();
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = window.innerHeight;
+    let shift = 0;
+    if (rect.right > viewportWidth - margin) {
+      shift = viewportWidth - margin - rect.right;
+    }
+    if (rect.left + shift < margin) {
+      shift = margin - rect.left;
+    }
+    if (shift) panel.style.transform = `translateX(${Math.round(shift)}px)`;
+    const available = Math.floor(viewportHeight - rect.top - margin);
+    if (available > 120 && rect.height > available) {
+      panel.style.maxHeight = `${available}px`;
+      panel.style.overflowY = "auto";
+    }
   }
 
   function renderCategoryTabs() {
@@ -2969,8 +3169,8 @@
                     ${getVariantPreviewMarkup(variantId, variant)}
                     <span class="variant-copy">
                       <strong>${escapeHtml(copy.short)}</strong>
-                      <span class="variant-meta">${escapeHtml(copy.size)}</span>
-                      <span class="variant-meta">${escapeHtml(copy.height)}</span>
+                      <span class="variant-meta">${escapeHtml(isolateNumbers(copy.size))}</span>
+                      <span class="variant-meta">${escapeHtml(isolateNumbers(copy.height))}</span>
                     </span>
                   </button>
                 `;
@@ -3039,23 +3239,6 @@
     if (family === "table") return "table";
     if (family === "stand") return "stand";
     return "block";
-  }
-
-  function isDirectionalVisualKind(kind) {
-    return [
-      "camera",
-      "softbox-octa",
-      "softbox-parabolic",
-      "softbox-rect",
-      "led-panel",
-      "striplight",
-      "tube",
-      "umbrella",
-      "spot-head",
-      "spot-projector",
-      "flag",
-      "flat-panel"
-    ].indexOf(kind) !== -1;
   }
 
   function isEmitterVisualKind(kind) {
@@ -3150,376 +3333,17 @@
   }
 
   function getVariantPreviewMarkup(variantId, variant) {
-    const kind = getVariantVisualKind(variantId, variant.family);
     const title = escapeHtml(getLocalizedVariantTitle(variantId, variant));
-    const directionBadge = isDirectionalVisualKind(kind) ? `
-      <g transform="translate(84 44)">
-        <path d="M0 4 H18" stroke="#7ed7ff" stroke-width="2.8" stroke-linecap="round"></path>
-        <path d="M12 0 L20 4 L12 8" fill="none" stroke="#7ed7ff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"></path>
-      </g>
-    ` : "";
-    const tripod = `
-      <g stroke="#7b8899" stroke-width="2.4" stroke-linecap="round" opacity="0.92">
-        <line x1="60" y1="36" x2="60" y2="53"></line>
-        <line x1="60" y1="53" x2="48" y2="58"></line>
-        <line x1="60" y1="53" x2="72" y2="58"></line>
-        <line x1="60" y1="53" x2="60" y2="59"></line>
-      </g>
-    `;
-    const cStandBase = `
-      <g stroke="#7b8899" stroke-width="2.4" stroke-linecap="round" opacity="0.94">
-        <line x1="60" y1="34" x2="60" y2="53"></line>
-        <line x1="60" y1="53" x2="76" y2="57"></line>
-        <line x1="60" y1="53" x2="47" y2="58"></line>
-        <line x1="60" y1="53" x2="56" y2="40"></line>
-      </g>
-    `;
-    const rollingBase = `
-      <g stroke="#7b8899" stroke-width="2.4" stroke-linecap="round" opacity="0.94">
-        <line x1="60" y1="33" x2="60" y2="49"></line>
-        <line x1="60" y1="49" x2="45" y2="54"></line>
-        <line x1="60" y1="49" x2="75" y2="54"></line>
-        <line x1="60" y1="49" x2="60" y2="57"></line>
-      </g>
-      <circle cx="45" cy="54" r="3.2" fill="#6f7b88"></circle>
-      <circle cx="75" cy="54" r="3.2" fill="#6f7b88"></circle>
-      <circle cx="60" cy="57" r="3.2" fill="#6f7b88"></circle>
-    `;
-    let body = "";
-
-    if (kind === "softbox-octa") {
-      body = `
-        <polygon points="60,8 79,13 89,27 79,41 60,46 41,41 31,27 41,13" fill="#f7fbff" stroke="#1a2330" stroke-width="3"></polygon>
-        <polygon points="60,13 75,17 83,27 75,37 60,41 45,37 37,27 45,17" fill="rgba(255,255,255,0.16)" stroke="#dfe9f7" stroke-width="1.2" opacity="0.72"></polygon>
-        <line x1="60" y1="46" x2="60" y2="38" stroke="#1d2632" stroke-width="2.4"></line>
-        ${tripod}
-      `;
-    } else if (kind === "softbox-parabolic") {
-      body = `
-        <polygon points="60,6 80,11 91,27 80,43 60,48 40,43 29,27 40,11" fill="#f8fbff" stroke="#16202c" stroke-width="3"></polygon>
-        <polygon points="60,12 75,16 83,27 75,38 60,42 45,38 37,27 45,16" fill="rgba(255,255,255,0.18)" stroke="#dfe8f6" stroke-width="1.2"></polygon>
-        <circle cx="60" cy="27" r="4.5" fill="#aeb9c6" stroke="#202a36" stroke-width="2"></circle>
-        <line x1="60" y1="48" x2="60" y2="38" stroke="#1d2632" stroke-width="2.4"></line>
-        ${tripod}
-      `;
-    } else if (kind === "softbox-rect") {
-      body = `
-        <rect x="34" y="10" width="52" height="28" rx="8" fill="#f7fbff" stroke="#16202c" stroke-width="3"></rect>
-        <rect x="40" y="15" width="40" height="18" rx="5" fill="rgba(255,255,255,0.22)" stroke="#dfe7f2" stroke-width="1.2"></rect>
-        <line x1="60" y1="38" x2="60" y2="41" stroke="#1d2632" stroke-width="2.2"></line>
-        ${tripod}
-      `;
-    } else if (kind === "led-panel") {
-      body = `
-        <rect x="38" y="10" width="44" height="30" rx="6" fill="#c7d7e8" stroke="#17212d" stroke-width="3"></rect>
-        <rect x="43" y="15" width="34" height="20" rx="4" fill="#eef6ff" stroke="#9eb6cf" stroke-width="1.2"></rect>
-        <circle cx="51" cy="22" r="1.5" fill="#adc9e7"></circle>
-        <circle cx="60" cy="22" r="1.5" fill="#adc9e7"></circle>
-        <circle cx="69" cy="22" r="1.5" fill="#adc9e7"></circle>
-        <circle cx="51" cy="28" r="1.5" fill="#adc9e7"></circle>
-        <circle cx="60" cy="28" r="1.5" fill="#adc9e7"></circle>
-        <circle cx="69" cy="28" r="1.5" fill="#adc9e7"></circle>
-        <line x1="60" y1="40" x2="60" y2="43" stroke="#1d2632" stroke-width="2.2"></line>
-        ${tripod}
-      `;
-    } else if (kind === "striplight") {
-      body = `
-        <rect x="48" y="6" width="24" height="38" rx="8" fill="#f5f9fd" stroke="#17212d" stroke-width="3"></rect>
-        <rect x="52" y="12" width="16" height="26" rx="5" fill="rgba(255,255,255,0.22)" stroke="#dbe5f0" stroke-width="1.1"></rect>
-        <line x1="60" y1="44" x2="60" y2="46" stroke="#1d2632" stroke-width="2.2"></line>
-        ${tripod}
-      `;
-    } else if (kind === "tube") {
-      body = `
-        <rect x="52" y="8" width="16" height="38" rx="8" fill="rgba(153,224,255,0.18)"></rect>
-        <rect x="56" y="6" width="8" height="42" rx="4" fill="#e4f6ff" stroke="#19313f" stroke-width="2"></rect>
-        <line x1="60" y1="48" x2="60" y2="50" stroke="#1d2632" stroke-width="2.2"></line>
-        ${tripod}
-      `;
-    } else if (kind === "umbrella") {
-      body = `
-        <path d="M22 24 Q60 3 98 24 Q60 18 22 24Z" fill="#f5f9fe" stroke="#18222d" stroke-width="3"></path>
-        <line x1="60" y1="24" x2="60" y2="49" stroke="#6a7788" stroke-width="2.2"></line>
-        <line x1="60" y1="24" x2="32" y2="23" stroke="#b8c6d6" stroke-width="1.1"></line>
-        <line x1="60" y1="24" x2="44" y2="15" stroke="#b8c6d6" stroke-width="1.1"></line>
-        <line x1="60" y1="24" x2="76" y2="15" stroke="#b8c6d6" stroke-width="1.1"></line>
-        <line x1="60" y1="24" x2="88" y2="23" stroke="#b8c6d6" stroke-width="1.1"></line>
-        ${tripod}
-      `;
-    } else if (kind === "lantern") {
-      body = `
-        <circle cx="60" cy="24" r="16" fill="#f7fbff" stroke="#17212d" stroke-width="3"></circle>
-        <ellipse cx="60" cy="24" rx="9" ry="16" fill="none" stroke="#d4dfeb" stroke-width="1.2"></ellipse>
-        <ellipse cx="60" cy="24" rx="16" ry="8" fill="none" stroke="#d4dfeb" stroke-width="1.2"></ellipse>
-        <line x1="60" y1="40" x2="60" y2="44" stroke="#1d2632" stroke-width="2.2"></line>
-        ${tripod}
-      `;
-    } else if (kind === "ringlight") {
-      body = `
-        <circle cx="60" cy="24" r="16" fill="#f8fbff" stroke="#17212d" stroke-width="3"></circle>
-        <circle cx="60" cy="24" r="7.5" fill="#0d1624" stroke="#90a0b3" stroke-width="1.2"></circle>
-        <rect x="56" y="39" width="8" height="6" rx="2" fill="#98a7b8" stroke="#1d2632" stroke-width="1.5"></rect>
-        ${tripod}
-      `;
-    } else if (kind === "beauty-dish") {
-      body = `
-        <circle cx="60" cy="24" r="15" fill="#edf3f9" stroke="#18222d" stroke-width="3"></circle>
-        <circle cx="60" cy="24" r="4.4" fill="#aab7c6" stroke="#25303d" stroke-width="1.6"></circle>
-        <line x1="60" y1="39" x2="60" y2="42" stroke="#1d2632" stroke-width="2.2"></line>
-        ${tripod}
-      `;
-    } else if (kind === "reflector-disc") {
-      body = `
-        <circle cx="60" cy="24" r="16" fill="#f2f4f7" stroke="#1a2430" stroke-width="3"></circle>
-        <path d="M60 8 A16 16 0 0 1 76 24 L60 24 Z" fill="#cfd6de"></path>
-        <path d="M60 40 A16 16 0 0 1 44 24 L60 24 Z" fill="#e7ebf0"></path>
-        <circle cx="60" cy="24" r="10" fill="none" stroke="#aeb8c3" stroke-width="1.2"></circle>
-        ${tripod}
-      `;
-    } else if (kind === "spot-projector") {
-      body = `
-        <rect x="35" y="18" width="38" height="14" rx="6" fill="#bac4d0" stroke="#18222d" stroke-width="3"></rect>
-        <rect x="71" y="16" width="16" height="18" rx="5" fill="#8c98a7" stroke="#17212d" stroke-width="2.4"></rect>
-        <circle cx="85" cy="25" r="5" fill="#e7f5ff" stroke="#22303d" stroke-width="2"></circle>
-        <line x1="55" y1="32" x2="60" y2="38" stroke="#1d2632" stroke-width="2.2"></line>
-        ${tripod}
-      `;
-    } else if (kind === "spot-head") {
-      body = `
-        <circle cx="60" cy="24" r="12" fill="#b8c3cf" stroke="#18222d" stroke-width="3"></circle>
-        <circle cx="64" cy="24" r="5" fill="#e7f5ff" stroke="#22303d" stroke-width="2"></circle>
-        <rect x="44" y="18" width="10" height="12" rx="3" fill="#7f8b99" stroke="#1d2632" stroke-width="1.8"></rect>
-        <line x1="60" y1="36" x2="60" y2="39" stroke="#1d2632" stroke-width="2.2"></line>
-        ${tripod}
-      `;
-    } else if (kind === "cstand") {
-      body = `
-        <circle cx="60" cy="24" r="4.2" fill="#d6dde5"></circle>
-        <circle cx="60" cy="17" r="4.2" fill="#d6dde5"></circle>
-        <line x1="60" y1="12" x2="60" y2="34" stroke="#c0cad5" stroke-width="3.4" stroke-linecap="round"></line>
-        <line x1="60" y1="17" x2="74" y2="13" stroke="#e2b56f" stroke-width="2.3" stroke-linecap="round"></line>
-        <rect x="72" y="10" width="10" height="6" rx="2" fill="#efc884" stroke="#2a313a" stroke-width="1.4"></rect>
-        ${cStandBase}
-      `;
-    } else if (kind === "cstand-arm") {
-      body = `
-        <circle cx="60" cy="24" r="4.2" fill="#d6dde5"></circle>
-        <circle cx="60" cy="17" r="4.2" fill="#d6dde5"></circle>
-        <line x1="60" y1="12" x2="60" y2="34" stroke="#c0cad5" stroke-width="3.4" stroke-linecap="round"></line>
-        <line x1="60" y1="17" x2="84" y2="11" stroke="#e2b56f" stroke-width="2.3" stroke-linecap="round"></line>
-        <rect x="82" y="8" width="10" height="6" rx="2" fill="#efc884" stroke="#2a313a" stroke-width="1.4"></rect>
-        ${cStandBase}
-      `;
-    } else if (kind === "combo-stand") {
-      body = `
-        <line x1="60" y1="10" x2="60" y2="34" stroke="#cbd3dc" stroke-width="4" stroke-linecap="round"></line>
-        <line x1="54" y1="14" x2="54" y2="32" stroke="#9aa7b5" stroke-width="1.8"></line>
-        <line x1="66" y1="14" x2="66" y2="32" stroke="#9aa7b5" stroke-width="1.8"></line>
-        <rect x="54" y="7" width="12" height="8" rx="2" fill="#efc884" stroke="#2a313a" stroke-width="1.4"></rect>
-        ${tripod}
-      `;
-    } else if (kind === "roller-stand") {
-      body = `
-        <line x1="60" y1="10" x2="60" y2="34" stroke="#cbd3dc" stroke-width="3.8" stroke-linecap="round"></line>
-        <circle cx="60" cy="15" r="4" fill="#d8dee5"></circle>
-        <rect x="56" y="7" width="8" height="7" rx="2" fill="#efc884" stroke="#2a313a" stroke-width="1.2"></rect>
-        ${rollingBase}
-      `;
-    } else if (kind === "boom-stand") {
-      body = `
-        <line x1="60" y1="11" x2="60" y2="34" stroke="#cbd3dc" stroke-width="3.8" stroke-linecap="round"></line>
-        <circle cx="60" cy="15" r="4" fill="#d8dee5"></circle>
-        <line x1="60" y1="15" x2="86" y2="9" stroke="#efc884" stroke-width="2.4" stroke-linecap="round"></line>
-        <rect x="85" y="6" width="8" height="7" rx="2" fill="#c99958" stroke="#2a313a" stroke-width="1.2"></rect>
-        <rect x="42" y="9" width="8" height="6" rx="2" fill="#7c8792" stroke="#2a313a" stroke-width="1.2"></rect>
-        ${rollingBase}
-      `;
-    } else if (kind === "power-pack") {
-      body = `
-        <rect x="38" y="16" width="44" height="24" rx="6" fill="#969faa" stroke="#18222d" stroke-width="2.4"></rect>
-        <rect x="44" y="22" width="14" height="4" rx="2" fill="#dfe6ee"></rect>
-        <rect x="44" y="29" width="28" height="5" rx="2" fill="#728090"></rect>
-        <circle cx="76" cy="27" r="4" fill="#efc884"></circle>
-      `;
-    } else if (kind === "flag") {
-      body = `
-        <rect x="34" y="10" width="52" height="24" rx="5" fill="#28303a" stroke="#080b10" stroke-width="3"></rect>
-        <rect x="38" y="14" width="44" height="16" rx="3" fill="#11171e"></rect>
-        <line x1="38" y1="34" x2="38" y2="39" stroke="#728091" stroke-width="2.2"></line>
-        ${tripod}
-      `;
-    } else if (kind === "flat-panel") {
-      body = `
-        <rect x="30" y="10" width="60" height="26" rx="6" fill="#eef2f5" stroke="#18222d" stroke-width="3"></rect>
-        <line x1="60" y1="10" x2="60" y2="36" stroke="#b7c2ce" stroke-width="2"></line>
-        <line x1="60" y1="36" x2="60" y2="39" stroke="#1d2632" stroke-width="2.2"></line>
-        ${tripod}
-      `;
-    } else if (kind === "camera") {
-      body = `
-        <rect x="38" y="18" width="30" height="16" rx="5" fill="#66707d" stroke="#18222d" stroke-width="3"></rect>
-        <circle cx="72" cy="26" r="8" fill="#89cfff" stroke="#122131" stroke-width="2.4"></circle>
-        <rect x="44" y="14" width="10" height="6" rx="2" fill="#87909b"></rect>
-        ${tripod}
-      `;
-    } else if (kind === "subject") {
-      body = `
-        <circle cx="60" cy="16" r="7" fill="#e2bc9d"></circle>
-        <path d="M44 42 C46 29 52 24 60 24 C68 24 74 29 76 42 Z" fill="#394554"></path>
-        <path d="M49 42 C51 32 55 28 60 28 C65 28 69 32 71 42 Z" fill="#556273"></path>
-      `;
-    } else if (kind === "director-chair") {
-      body = `
-        <rect x="42" y="12" width="28" height="11" rx="5" fill="#d7b994" stroke="#3d3023" stroke-width="2"></rect>
-        <rect x="44" y="24" width="24" height="8" rx="4" fill="#d4b189" stroke="#3d3023" stroke-width="2"></rect>
-        <line x1="44" y1="23" x2="68" y2="47" stroke="#66717e" stroke-width="2.4"></line>
-        <line x1="68" y1="23" x2="44" y2="47" stroke="#66717e" stroke-width="2.4"></line>
-      `;
-    } else if (kind === "stool") {
-      body = `
-        <rect x="44" y="18" width="32" height="7" rx="4" fill="#c9aa83" stroke="#3d3023" stroke-width="2"></rect>
-        <line x1="50" y1="25" x2="46" y2="47" stroke="#6a7480" stroke-width="2.4"></line>
-        <line x1="70" y1="25" x2="74" y2="47" stroke="#6a7480" stroke-width="2.4"></line>
-        <line x1="60" y1="25" x2="60" y2="49" stroke="#6a7480" stroke-width="2.4"></line>
-      `;
-    } else if (kind === "chair") {
-      body = `
-        <rect x="42" y="24" width="26" height="10" rx="4" fill="#d4b189" stroke="#3d3023" stroke-width="2"></rect>
-        <rect x="39" y="11" width="30" height="15" rx="6" fill="#d7b994" stroke="#3d3023" stroke-width="2"></rect>
-        <line x1="46" y1="34" x2="43" y2="49" stroke="#66717e" stroke-width="2.2"></line>
-        <line x1="64" y1="34" x2="67" y2="49" stroke="#66717e" stroke-width="2.2"></line>
-      `;
-    } else if (kind === "armchair") {
-      body = `
-        <rect x="36" y="14" width="48" height="22" rx="8" fill="#caa47b" stroke="#3d3023" stroke-width="2.2"></rect>
-        <rect x="42" y="19" width="36" height="14" rx="6" fill="#e0c1a0"></rect>
-        <rect x="31" y="20" width="10" height="12" rx="5" fill="#caa47b" stroke="#3d3023" stroke-width="2"></rect>
-        <rect x="79" y="20" width="10" height="12" rx="5" fill="#caa47b" stroke="#3d3023" stroke-width="2"></rect>
-      `;
-    } else if (kind === "bench") {
-      body = `
-        <rect x="28" y="22" width="64" height="10" rx="5" fill="#cfa67a" stroke="#3d3023" stroke-width="2"></rect>
-        <line x1="36" y1="32" x2="34" y2="48" stroke="#66717e" stroke-width="2.2"></line>
-        <line x1="84" y1="32" x2="86" y2="48" stroke="#66717e" stroke-width="2.2"></line>
-      `;
-    } else if (kind === "sofa") {
-      body = `
-        <rect x="30" y="20" width="60" height="18" rx="7" fill="#cba57c" stroke="#3c2f22" stroke-width="2.4"></rect>
-        <rect x="34" y="13" width="52" height="12" rx="6" fill="#d7b48b" stroke="#3c2f22" stroke-width="2"></rect>
-        <rect x="39" y="24" width="18" height="10" rx="4" fill="#dfc4a7"></rect>
-        <rect x="63" y="24" width="18" height="10" rx="4" fill="#dfc4a7"></rect>
-      `;
-    } else if (kind === "round-table") {
-      body = `
-        <ellipse cx="60" cy="21" rx="24" ry="12" fill="#d4b188" stroke="#3c2f22" stroke-width="2.2"></ellipse>
-        <line x1="60" y1="33" x2="60" y2="47" stroke="#687381" stroke-width="3"></line>
-        <line x1="48" y1="47" x2="72" y2="47" stroke="#687381" stroke-width="2.4"></line>
-      `;
-    } else if (kind === "desk") {
-      body = `
-        <rect x="28" y="18" width="64" height="10" rx="4" fill="#d4b188" stroke="#3c2f22" stroke-width="2.2"></rect>
-        <rect x="38" y="28" width="44" height="10" rx="3" fill="#9d8167" opacity="0.9"></rect>
-        <line x1="34" y1="28" x2="34" y2="48" stroke="#66717e" stroke-width="2.2"></line>
-        <line x1="86" y1="28" x2="86" y2="48" stroke="#66717e" stroke-width="2.2"></line>
-      `;
-    } else if (kind === "makeup-station") {
-      body = `
-        <rect x="30" y="29" width="60" height="8" rx="4" fill="#d4b188" stroke="#3c2f22" stroke-width="2"></rect>
-        <rect x="42" y="8" width="36" height="18" rx="6" fill="#dff0ff" stroke="#1a2430" stroke-width="2"></rect>
-        <circle cx="46" cy="12" r="1.7" fill="#ffd79e"></circle>
-        <circle cx="74" cy="12" r="1.7" fill="#ffd79e"></circle>
-        <circle cx="46" cy="22" r="1.7" fill="#ffd79e"></circle>
-        <circle cx="74" cy="22" r="1.7" fill="#ffd79e"></circle>
-        <line x1="38" y1="37" x2="36" y2="49" stroke="#66717e" stroke-width="2"></line>
-        <line x1="82" y1="37" x2="84" y2="49" stroke="#66717e" stroke-width="2"></line>
-      `;
-    } else if (kind === "table") {
-      body = `
-        <rect x="30" y="16" width="60" height="10" rx="5" fill="#d4b188" stroke="#3c2f22" stroke-width="2.2"></rect>
-        <line x1="40" y1="26" x2="38" y2="49" stroke="#687381" stroke-width="2.4"></line>
-        <line x1="80" y1="26" x2="82" y2="49" stroke="#687381" stroke-width="2.4"></line>
-      `;
-    } else if (kind === "tether-station") {
-      body = `
-        <rect x="36" y="24" width="48" height="6" rx="3" fill="#aab3be" stroke="#18222d" stroke-width="1.8"></rect>
-        <path d="M44 15 H68 L74 24 H50 Z" fill="#606b78" stroke="#18222d" stroke-width="2"></path>
-        <line x1="60" y1="30" x2="60" y2="49" stroke="#6b7683" stroke-width="2.4"></line>
-        <line x1="49" y1="49" x2="71" y2="49" stroke="#6b7683" stroke-width="2.2"></line>
-      `;
-    } else if (kind === "monitor-station") {
-      body = `
-        <rect x="38" y="11" width="44" height="26" rx="5" fill="#131a24" stroke="#aab4c0" stroke-width="2"></rect>
-        <rect x="44" y="17" width="32" height="14" rx="3" fill="#7bb6e8" opacity="0.7"></rect>
-        <line x1="60" y1="37" x2="60" y2="49" stroke="#6b7683" stroke-width="2.4"></line>
-        <line x1="49" y1="49" x2="71" y2="49" stroke="#6b7683" stroke-width="2.2"></line>
-      `;
-    } else if (kind === "dimmer-desk") {
-      body = `
-        <rect x="30" y="20" width="60" height="18" rx="6" fill="#8d98a6" stroke="#18222d" stroke-width="2"></rect>
-        <rect x="36" y="24" width="48" height="10" rx="4" fill="#5a6774"></rect>
-        <line x1="42" y1="25" x2="42" y2="33" stroke="#efc884" stroke-width="1.8"></line>
-        <line x1="52" y1="25" x2="52" y2="33" stroke="#efc884" stroke-width="1.8"></line>
-        <line x1="62" y1="25" x2="62" y2="33" stroke="#efc884" stroke-width="1.8"></line>
-        <line x1="72" y1="25" x2="72" y2="33" stroke="#efc884" stroke-width="1.8"></line>
-      `;
-    } else if (kind === "cart") {
-      body = `
-        <rect x="36" y="18" width="48" height="8" rx="3" fill="#9ea9b6" stroke="#18222d" stroke-width="2"></rect>
-        <rect x="36" y="30" width="48" height="8" rx="3" fill="#9ea9b6" stroke="#18222d" stroke-width="2"></rect>
-        <line x1="42" y1="18" x2="42" y2="38" stroke="#6a7583" stroke-width="2"></line>
-        <line x1="78" y1="18" x2="78" y2="38" stroke="#6a7583" stroke-width="2"></line>
-        <path d="M84 18 Q91 21 91 28" fill="none" stroke="#6a7583" stroke-width="2"></path>
-        <circle cx="42" cy="46" r="4" fill="#6a7583"></circle>
-        <circle cx="78" cy="46" r="4" fill="#6a7583"></circle>
-      `;
-    } else if (kind === "sandbag") {
-      body = `
-        <path d="M36 31 C36 20 44 16 52 16 C57 16 59 20 60 24 C61 20 63 16 68 16 C76 16 84 20 84 31 C84 38 79 43 72 43 C66 43 63 40 60 35 C57 40 54 43 48 43 C41 43 36 38 36 31 Z" fill="#6f5b49" stroke="#2a211b" stroke-width="2"></path>
-        <rect x="56" y="20" width="8" height="6" rx="3" fill="#baa286"></rect>
-      `;
-    } else if (kind === "ladder") {
-      body = `
-        <line x1="44" y1="12" x2="36" y2="48" stroke="#b8c1cb" stroke-width="3"></line>
-        <line x1="76" y1="12" x2="84" y2="48" stroke="#b8c1cb" stroke-width="3"></line>
-        <line x1="46" y1="18" x2="74" y2="18" stroke="#b8c1cb" stroke-width="2.4"></line>
-        <line x1="43" y1="28" x2="77" y2="28" stroke="#b8c1cb" stroke-width="2.4"></line>
-        <line x1="40" y1="38" x2="80" y2="38" stroke="#b8c1cb" stroke-width="2.4"></line>
-      `;
-    } else if (kind === "mirror") {
-      body = `
-        <rect x="44" y="8" width="32" height="40" rx="12" fill="#dfefff" stroke="#1a2430" stroke-width="3"></rect>
-        <rect x="49" y="13" width="22" height="30" rx="9" fill="#99c6ef" opacity="0.7"></rect>
-        <line x1="52" y1="49" x2="46" y2="57" stroke="#8a97a8" stroke-width="2.2"></line>
-        <line x1="68" y1="49" x2="74" y2="57" stroke="#8a97a8" stroke-width="2.2"></line>
-      `;
-    } else if (kind === "applebox") {
-      body = `
-        <rect x="36" y="18" width="48" height="24" rx="4" fill="#cfa67a" stroke="#3c2f22" stroke-width="2.4"></rect>
-        <rect x="44" y="25" width="12" height="6" rx="3" fill="#9d754e"></rect>
-        <rect x="64" y="25" width="12" height="6" rx="3" fill="#9d754e"></rect>
-        <line x1="36" y1="23" x2="84" y2="23" stroke="#9d754e" stroke-width="1.4"></line>
-      `;
-    } else if (kind === "block") {
-      body = `
-        <rect x="42" y="16" width="36" height="26" rx="4" fill="#cfa67a" stroke="#3c2f22" stroke-width="2.4"></rect>
-        <line x1="42" y1="24" x2="78" y2="24" stroke="#9d754e" stroke-width="1.4"></line>
-      `;
-    } else {
-      body = `
-        ${tripod}
-        <circle cx="60" cy="24" r="12" fill="#c8d0d8" stroke="#17212d" stroke-width="3"></circle>
-      `;
-    }
-
+    const kind = getVariantVisualKind(variantId, variant.family);
+    const ratio = Math.min(3, Math.max(1, window.devicePixelRatio || 1) * 1.5);
+    const src = StudioModels.thumbnail(kind, variantId, variant, 150, 92, ratio);
     return `
       <span class="variant-preview" aria-hidden="true">
-        <svg viewBox="0 0 120 60" class="variant-svg" role="img" aria-label="${title}">
-          ${body}
-          ${directionBadge}
-        </svg>
+        <img class="variant-img" src="${src}" alt="" width="150" height="92" draggable="false" data-title="${title}">
       </span>
     `;
   }
+
   function renderColorSwatches(container, palette, kind) {
     container.innerHTML = palette.map(function (entry) {
       const label = getLocalizedColorLabel(entry);
@@ -3972,8 +3796,8 @@
     const metricMarkup = buildSelectionMetrics(item, copy).map(function (entry) {
       return `
         <div class="metric-chip">
-          <strong>${escapeHtml(entry.label)}</strong>
-          <span>${escapeHtml(entry.value)}</span>
+          <dt>${escapeHtml(entry.label)}</dt>
+          <dd>${escapeHtml(isolateNumbers(entry.value))}</dd>
         </div>
       `;
     }).join("");
@@ -3983,9 +3807,12 @@
       <div class="selection-head">
         <div class="selection-copy">
           <strong>${escapeHtml(itemLabel)}</strong>
-          <span>${escapeHtml(copy.type)} · ${escapeHtml(copy.short)}</span>
+          <span>${escapeHtml(copy.type)} · ${escapeHtml(copy.short)} · ${escapeHtml(isolateNumbers(copy.size))}</span>
         </div>
-        <button class="delete-btn" type="button" data-action="delete">${escapeHtml(t("selection.delete"))}</button>
+        <button class="delete-btn" type="button" data-action="delete" aria-label="${escapeHtml(t("stage.deleteAria"))}">
+          <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9.5h6.6L12 4M6.8 6.8v4.4M9.2 6.8v4.4"/></svg>
+          <span>${escapeHtml(t("selection.delete"))}</span>
+        </button>
       </div>
       <div class="selection-grid">
         <label>${escapeHtml(getUiCopy("x"))}<input type="number" step="0.1" data-field="x" value="${item.x.toFixed(2)}"></label>
@@ -3993,11 +3820,7 @@
         <label>${escapeHtml(t("selection.rotation"))}<input type="number" step="1" data-field="rotation" value="${item.rotation.toFixed(0)}"></label>
       </div>
       ${powerMarkup}
-      <div class="selection-metrics">${metricMarkup}</div>
-      <div class="selection-actions">
-        <span class="inline-note">${escapeHtml(copy.size)}</span>
-        <span class="inline-note">${escapeHtml(copy.height)}</span>
-      </div>
+      <dl class="selection-metrics">${metricMarkup}</dl>
     `;
   }
 
@@ -4014,6 +3837,7 @@
     syncStageViewUi();
     resizeCanvas(refs.planCanvas);
     resizeCanvas(refs.isoCanvas);
+    if (updatePlanRegion()) syncStageViewUi();
     updateColorSwatchState();
     updateSelectionPanel();
     updateStatus();
@@ -4046,6 +3870,11 @@
   }
 
   function handleKeydown(event) {
+    if (event.key === "Escape" && isCompactLibraryViewport() && !state.libraryCollapsed) {
+      closeLibraryPanel();
+      return;
+    }
+
     const item = getSelectedItem();
     if (!item) return;
 
@@ -4313,12 +4142,6 @@
     };
   }
 
-  function getPointerStudioPoint(event) {
-    const canvasPoint = getCanvasPointFromEvent(event, refs.planCanvas);
-    if (!canvasPoint) return null;
-    const metrics = getPlanMetrics(refs.planCanvas.width, refs.planCanvas.height);
-    return planToStudio(canvasPoint.x, canvasPoint.y, metrics);
-  }
 
   function resolveMeasurePoint(studioX, studioY) {
     const hit = hitTest(studioX, studioY);
@@ -4389,8 +4212,12 @@
     return clamp(value, radius + 0.2, STUDIO.depth - radius - 0.18);
   }
 
-  function drawPlanView(targetCtx, width, height) {
+  function drawPlanView(targetCtx, width, height, options) {
     const ctx = targetCtx || planCtx;
+    // Plan affiche en vignette (a l'ecran ou dans un export) : sans etiquettes ni cotes.
+    const compact = options && typeof options.compact === "boolean"
+      ? options.compact
+      : (!targetCtx && state.primaryView === "iso");
     const canvasWidth = width || refs.planCanvas.width;
     const canvasHeight = height || refs.planCanvas.height;
     const metrics = getPlanMetrics(canvasWidth, canvasHeight);
@@ -4398,6 +4225,7 @@
     const backdrop = getBackdropColor();
 
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    planLabelQueue = [];
 
     const bg = ctx.createLinearGradient(0, 0, 0, canvasHeight);
     bg.addColorStop(0, "rgba(255,255,255,0.07)");
@@ -4413,25 +4241,29 @@
     const shell = ctx.createLinearGradient(stageLeft, stageTop, stageLeft, stageTop + stageHeight);
     shell.addColorStop(0, lightenHex(floor.color, 0.14));
     shell.addColorStop(1, darkenHex(floor.color, 0.18));
-    roundRect(ctx, stageLeft, stageTop, stageWidth, stageHeight, 30 * metrics.unit);
+    roundRect(ctx, stageLeft, stageTop, stageWidth, stageHeight, PLAN_CORNER_RADIUS * metrics.unit);
     ctx.fillStyle = shell;
     ctx.fill();
 
     drawPlanBackdrop(ctx, metrics, backdrop.color);
     drawPlanGrid(ctx, metrics);
-    drawPlanMeasures(ctx, metrics);
+    if (!compact) drawPlanMeasures(ctx, metrics);
 
-    state.items.forEach(function (item) {
-      drawPlanItem(ctx, item, metrics);
-    });
+    drawPlanItems(ctx, metrics);
+
+    if (compact) {
+      planLabelQueue = [];
+      return;
+    }
 
     const measurementGuides = state.measurementMode ? getMeasurementModeGuides() : [];
     if (measurementGuides.length) {
+      const theme = getCanvasTheme();
       drawMeasurementGuides(ctx, measurementGuides, metrics, {
-        stroke: "rgba(255, 190, 114, 0.72)",
-        border: "rgba(255, 190, 114, 0.3)",
-        fill: "rgba(16, 14, 18, 0.92)",
-        text: "rgba(255, 246, 229, 0.96)"
+        stroke: theme.measureModeLine,
+        border: theme.measureModeBorder,
+        fill: theme.measureBg,
+        text: theme.measureText
       });
     }
 
@@ -4444,7 +4276,8 @@
     }
 
     drawManualMeasurement(ctx, metrics);
-    drawPlanItemLabels(ctx, metrics);
+    queuePlanItemLabels(metrics);
+    flushPlanLabels(ctx, metrics);
   }
 
   function drawPlanBackdrop(ctx, metrics, color) {
@@ -4453,66 +4286,88 @@
     const left = metrics.left;
     const top = metrics.top;
 
+    // Mur de fond : bande pleine, puis arrondi du cyclo rendu par un degrade d'ombre.
     const backdropGradient = ctx.createLinearGradient(0, top, 0, top + depth);
-    backdropGradient.addColorStop(0, lightenHex(color, 0.15));
-    backdropGradient.addColorStop(1, darkenHex(color, 0.08));
-    roundTopRect(ctx, left, top, width, depth + 14 * metrics.unit, 30 * metrics.unit);
+    backdropGradient.addColorStop(0, lightenHex(color, 0.12));
+    backdropGradient.addColorStop(1, darkenHex(color, 0.06));
+    roundTopRect(ctx, left, top, width, depth, PLAN_CORNER_RADIUS * metrics.unit);
     ctx.fillStyle = backdropGradient;
     ctx.fill();
 
-    ctx.strokeStyle = rgbaFromHex(darkenHex(color, 0.3), 0.6);
-    ctx.lineWidth = 2 * metrics.unit;
+    const sweep = 18 * metrics.unit;
+    const sweepGradient = ctx.createLinearGradient(0, top + depth, 0, top + depth + sweep);
+    sweepGradient.addColorStop(0, rgbaFromHex(darkenHex(color, 0.35), 0.28));
+    sweepGradient.addColorStop(1, rgbaFromHex(darkenHex(color, 0.35), 0));
+    ctx.fillStyle = sweepGradient;
+    ctx.fillRect(left, top + depth, width, sweep);
+
+    ctx.strokeStyle = rgbaFromHex(darkenHex(color, 0.3), 0.55);
+    ctx.lineWidth = Math.max(1, 1.5 * metrics.unit);
     ctx.beginPath();
-    ctx.moveTo(left + 16 * metrics.unit, top + depth - 2 * metrics.unit);
-    ctx.quadraticCurveTo(left + width / 2, top + depth + 20 * metrics.unit, left + width - 16 * metrics.unit, top + depth - 2 * metrics.unit);
+    ctx.moveTo(left, top + depth);
+    ctx.lineTo(left + width, top + depth);
     ctx.stroke();
   }
+
 
   function drawPlanGrid(ctx, metrics) {
     const left = metrics.left;
     const top = metrics.top;
     const width = STUDIO.width * metrics.scale;
     const height = STUDIO.depth * metrics.scale;
+    const floorTop = top + STUDIO.backdropDepth * metrics.scale;
+    const hairline = Math.max(1, (metrics.px || 1));
 
     ctx.save();
-    roundRect(ctx, left, top, width, height, 30 * metrics.unit);
+    // Grille uniquement sur le sol, pas sur le mur de fond.
+    ctx.beginPath();
+    ctx.rect(left, floorTop, width, top + height - floorTop);
     ctx.clip();
 
-    ctx.strokeStyle = "rgba(255,255,255,0.22)";
-    ctx.lineWidth = 1;
-    for (let x = 0.5; x < STUDIO.width; x += 0.5) {
-      const px = left + x * metrics.scale;
+    // Traits fins tous les 50 cm, traits marques tous les metres.
+    [[0.5, "rgba(255,255,255,0.16)"], [1, "rgba(255,255,255,0.34)"]].forEach(function (pass) {
+      const step = pass[0];
+      ctx.strokeStyle = pass[1];
+      ctx.lineWidth = hairline;
       ctx.beginPath();
-      ctx.moveTo(px, top);
-      ctx.lineTo(px, top + height);
+      for (let x = step; x < STUDIO.width; x += step) {
+        if (step === 0.5 && Number.isInteger(x)) continue;
+        const px = Math.round(left + x * metrics.scale) + 0.5;
+        ctx.moveTo(px, floorTop);
+        ctx.lineTo(px, top + height);
+      }
+      for (let y = step; y < STUDIO.depth; y += step) {
+        if (step === 0.5 && Number.isInteger(y)) continue;
+        const py = Math.round(top + y * metrics.scale) + 0.5;
+        if (py <= floorTop) continue;
+        ctx.moveTo(left, py);
+        ctx.lineTo(left + width, py);
+      }
       ctx.stroke();
-    }
-    for (let y = 0.5; y < STUDIO.depth; y += 0.5) {
-      const py = top + y * metrics.scale;
-      ctx.beginPath();
-      ctx.moveTo(left, py);
-      ctx.lineTo(left + width, py);
-      ctx.stroke();
-    }
+    });
 
     ctx.restore();
 
-    ctx.strokeStyle = "rgba(7, 10, 16, 0.22)";
+    ctx.strokeStyle = "rgba(7, 10, 16, 0.28)";
     ctx.lineWidth = 2 * metrics.unit;
-    roundRect(ctx, left, top, width, height, 30 * metrics.unit);
+    roundRect(ctx, left, top, width, height, PLAN_CORNER_RADIUS * metrics.unit);
     ctx.stroke();
   }
 
+
   function drawPlanMeasures(ctx, metrics) {
     ctx.save();
-    ctx.fillStyle = "rgba(238,245,255,0.72)";
-    ctx.font = `${Math.round(13 * metrics.unit)}px "Segoe UI", sans-serif`;
+    const fontSize = Math.max(12 * metrics.unit, 13 * (metrics.px || 1));
+    const offset = fontSize * 1.6;
+    ctx.fillStyle = getCanvasTheme().dimensionText;
+    ctx.font = canvasFont(fontSize, 600);
     ctx.textAlign = "center";
-    ctx.fillText(`${STUDIO.width} m`, metrics.left + (STUDIO.width * metrics.scale) / 2, metrics.top + STUDIO.depth * metrics.scale + 26 * metrics.unit);
+    ctx.textBaseline = "middle";
+    ctx.fillText(isolateNumbers(`${STUDIO.width} m`), metrics.left + (STUDIO.width * metrics.scale) / 2, metrics.top + STUDIO.depth * metrics.scale + offset);
     ctx.save();
-    ctx.translate(metrics.left - 26 * metrics.unit, metrics.top + (STUDIO.depth * metrics.scale) / 2);
+    ctx.translate(metrics.left - offset, metrics.top + (STUDIO.depth * metrics.scale) / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText(`${STUDIO.depth} m`, 0, 0);
+    ctx.fillText(isolateNumbers(`${STUDIO.depth} m`), 0, 0);
     ctx.restore();
     ctx.restore();
   }
@@ -4530,93 +4385,273 @@
     return null;
   }
 
-  function traceOctagonPath(ctx, radiusX, radiusY) {
-    const insetX = radiusX * 0.42;
-    const insetY = radiusY * 0.42;
-    ctx.beginPath();
-    ctx.moveTo(-radiusX + insetX, -radiusY);
-    ctx.lineTo(radiusX - insetX, -radiusY);
-    ctx.lineTo(radiusX, -radiusY + insetY);
-    ctx.lineTo(radiusX, radiusY - insetY);
-    ctx.lineTo(radiusX - insetX, radiusY);
-    ctx.lineTo(-radiusX + insetX, radiusY);
-    ctx.lineTo(-radiusX, radiusY - insetY);
-    ctx.lineTo(-radiusX, -radiusY + insetY);
-    ctx.closePath();
-  }
 
-  function drawPlanItem(ctx, item, metrics) {
-    const center = studioToPlan(item.x, item.y, metrics);
-    const width = item.width * metrics.scale;
-    const depth = item.depth * metrics.scale;
-    const beam = getPlanBeamConfig(item);
-
-    if (beam) {
-      drawPlanBeam(ctx, item, metrics, beam.lengthMeters, beam.widthMeters, beam.color);
-    }
-
-    ctx.save();
-    ctx.translate(center.x, center.y);
-    ctx.rotate(degreesToRadians(item.rotation));
-
-    if (item.family === "subject") drawPlanSubject(ctx, width, depth, metrics);
-    else if (item.family === "camera") drawPlanCamera(ctx, width, depth, metrics);
-    else if (item.family === "softbox") drawPlanSoftbox(ctx, item, width, depth, metrics);
-    else if (item.family === "striplight") drawPlanStriplight(ctx, item, width, depth, metrics);
-    else if (item.family === "reflector") drawPlanReflector(ctx, item, width, depth, metrics);
-    else if (item.family === "flag") drawPlanFlag(ctx, width, depth, metrics);
-    else if (item.family === "vflat") drawPlanVFlat(ctx, width, depth, metrics);
-    else if (item.family === "stand") drawPlanStand(ctx, item, width, depth, metrics);
-    else if (item.family === "stool") drawPlanStool(ctx, item, width, depth, metrics);
-    else if (item.family === "table") drawPlanTable(ctx, item, width, depth, metrics);
-
-    ctx.restore();
-  }
-
-  function drawPlanItemLabels(ctx, metrics) {
+  // Elements du plan : faisceaux lumineux au sol, puis modeles 3D vus de dessus.
+  function drawPlanItems(ctx, metrics) {
     state.items.forEach(function (item) {
-      const center = studioToPlan(item.x, item.y, metrics);
-      const width = item.width * metrics.scale;
-      const depth = item.depth * metrics.scale;
-      drawPlanItemLabel(ctx, item, center, width, depth, metrics);
+      const beam = getPlanBeamConfig(item);
+      if (beam) drawPlanBeam(ctx, item, metrics, beam.lengthMeters, beam.widthMeters, beam.color);
+    });
+    const view = StudioModels.planView(function (p) {
+      return [metrics.left + p[0] * metrics.scale, metrics.top + p[1] * metrics.scale];
+    }, Math.max(0.6, (metrics.px || 1) * 0.8));
+    StudioModels.render(ctx, getItemModelInstances(state.items), view);
+  }
+
+
+  // ---------------------------------------------------------------------------
+  // Etiquettes du plan : elles sont mises en file pendant le rendu, puis placees
+  // a la fin pour eviter les objets, la poignee de rotation et les autres etiquettes.
+  // ---------------------------------------------------------------------------
+  function getCanvasFontFamily() {
+    if (!getCanvasFontFamily.cached) {
+      const value = getComputedStyle(document.documentElement).getPropertyValue("--font-base").trim();
+      getCanvasFontFamily.cached = value || "Inter, system-ui, sans-serif";
+    }
+    return getCanvasFontFamily.cached;
+  }
+
+  const CANVAS_THEME_DEFAULTS = {
+    labelBg: "rgba(8, 12, 18, 0.88)",
+    labelBgSelected: "rgba(8, 12, 18, 0.96)",
+    labelBorder: "rgba(255, 255, 255, 0.14)",
+    labelBorderSelected: "rgba(140, 220, 255, 0.55)",
+    labelText: "rgba(247, 241, 235, 0.98)",
+    leader: "rgba(8, 12, 18, 0.55)",
+    dimensionText: "rgba(238, 245, 255, 0.82)",
+    measureLine: "rgba(143, 208, 255, 0.62)",
+    measureBorder: "rgba(143, 208, 255, 0.4)",
+    measureBg: "rgba(9, 16, 28, 0.9)",
+    measureText: "rgba(240, 248, 255, 0.96)",
+    measureModeLine: "rgba(255, 190, 114, 0.72)",
+    measureModeBorder: "rgba(255, 190, 114, 0.35)",
+    manualLine: "rgba(251, 191, 36, 0.92)",
+    manualPoint: "#fbbf24",
+    manualBorder: "rgba(251, 191, 36, 0.45)",
+    manualText: "#fff7e0",
+    selection: "rgba(116, 180, 255, 0.95)",
+    handle: "#ffb561",
+    handleHover: "#ffd49a"
+  };
+
+  // Couleurs d'interface du canvas, definies en variables CSS (--canvas-*) dans
+  // css/simple-studio.css ; les valeurs ci-dessus servent de secours.
+  function getCanvasTheme() {
+    if (getCanvasTheme.cached) return getCanvasTheme.cached;
+    const styles = getComputedStyle(document.documentElement);
+    const theme = {};
+    Object.keys(CANVAS_THEME_DEFAULTS).forEach(function (key) {
+      const cssName = "--canvas-" + key.replace(/[A-Z]/g, function (letter) { return "-" + letter.toLowerCase(); });
+      theme[key] = styles.getPropertyValue(cssName).trim() || CANVAS_THEME_DEFAULTS[key];
+    });
+    getCanvasTheme.cached = theme;
+    return theme;
+  }
+
+  function canvasFont(sizePx, weight) {
+    return `${weight || 500} ${Math.round(sizePx)}px ${getCanvasFontFamily()}`;
+  }
+
+  // Isole chaque valeur chiffree (1.66 m, 58 x 58 cm, f/5.9, 72%) dans un bloc
+  // gauche-a-droite, pour qu'elle reste lisible dans une phrase en arabe.
+
+  function isolateNumbers(text) {
+    if (state.language !== "ar") return String(text);
+    return String(text).replace(NUMERIC_TOKEN, function (match) {
+      return "\u2066" + match + "\u2069";
     });
   }
 
-  function drawPlanItemLabel(ctx, item, center, width, depth, metrics) {
-    const label = getLocalizedItemLabel(item);
-    const paddingX = 10 * metrics.unit;
-    const labelHeight = 22 * metrics.unit;
-    const stageLeft = metrics.left + 12 * metrics.unit;
-    const stageRight = metrics.left + STUDIO.width * metrics.scale - 12 * metrics.unit;
-    const stageTop = metrics.top + 12 * metrics.unit;
-    const stageBottom = metrics.top + STUDIO.depth * metrics.scale - 12 * metrics.unit;
-    const labelOffset = Math.max(width, depth) * 0.68;
+  function getPlanLabelFontSize(metrics) {
+    return Math.max(11 * metrics.unit, 12 * (metrics.px || 1));
+  }
+
+  function measurePlanLabel(ctx, text, metrics, weight) {
+    const fontSize = getPlanLabelFontSize(metrics);
+    ctx.save();
+    ctx.font = canvasFont(fontSize, weight);
+    const textWidth = ctx.measureText(isolateNumbers(text)).width;
+    ctx.restore();
+    return {
+      width: textWidth + fontSize * 1.7,
+      height: Math.round(fontSize * 1.85),
+      fontSize: fontSize
+    };
+  }
+
+  function queuePlanItemLabels(metrics) {
+    const selectedId = state.selectedId;
+    const ordered = state.items.slice().sort(function (a, b) {
+      return (b.id === selectedId) - (a.id === selectedId);
+    });
+    ordered.forEach(function (item) {
+      planLabelQueue.push({
+        kind: "item",
+        itemId: item.id,
+        text: getLocalizedItemLabel(item),
+        anchor: studioToPlan(item.x, item.y, metrics),
+        radius: Math.max(item.width, item.depth) * metrics.scale * 0.5,
+        selected: item.id === selectedId
+      });
+    });
+  }
+
+  function queueMeasureLabel(text, from, to, labelT, palette) {
+    planLabelQueue.push({
+      kind: "measure",
+      text: text,
+      from: from,
+      to: to,
+      labelT: typeof labelT === "number" ? labelT : 0.5,
+      palette: palette
+    });
+  }
+
+  function rectOverlapArea(a, b) {
+    const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+    const h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+    return w > 0 && h > 0 ? w * h : 0;
+  }
+
+  function getPlanLabelObstacles(metrics) {
+    const obstacles = state.items.map(function (item) {
+      const center = studioToPlan(item.x, item.y, metrics);
+      const half = Math.max(item.width, item.depth) * metrics.scale * 0.5;
+      return { itemId: item.id, x: center.x - half, y: center.y - half, w: half * 2, h: half * 2 };
+    });
+    const selected = getSelectedItem();
+    if (selected) {
+      const handlePoint = getRotateHandle(selected);
+      const handle = studioToPlan(handlePoint.x, handlePoint.y, metrics);
+      const r = 12 * metrics.unit;
+      obstacles.push({ x: handle.x - r, y: handle.y - r, w: r * 2, h: r * 2, weight: 4 });
+    }
+    return obstacles;
+  }
+
+  function getItemLabelCandidates(entry, size) {
+    const gap = 6 * (size.fontSize / 12);
+    const r = Math.max(entry.radius, 8);
+    const a = entry.anchor;
+    const out = [];
+    [1, 1.9].forEach(function (ring) {
+      const dy = r * ring + size.height / 2 + gap;
+      const dx = r * ring + size.width / 2 + gap;
+      out.push(
+        { x: a.x, y: a.y - dy },
+        { x: a.x, y: a.y + dy },
+        { x: a.x + dx, y: a.y },
+        { x: a.x - dx, y: a.y },
+        { x: a.x + dx * 0.8, y: a.y - dy * 0.8 },
+        { x: a.x - dx * 0.8, y: a.y - dy * 0.8 },
+        { x: a.x + dx * 0.8, y: a.y + dy * 0.8 },
+        { x: a.x - dx * 0.8, y: a.y + dy * 0.8 }
+      );
+    });
+    return out;
+  }
+
+  function getMeasureLabelCandidates(entry, size) {
+    const out = [];
+    const dx = entry.to.x - entry.from.x;
+    const dy = entry.to.y - entry.from.y;
+    const length = Math.hypot(dx, dy) || 1;
+    const nx = -dy / length;
+    const ny = dx / length;
+    const shift = size.height * 0.9;
+    [entry.labelT, 0.35, 0.65, 0.25, 0.75].forEach(function (t) {
+      const x = entry.from.x + dx * t;
+      const y = entry.from.y + dy * t;
+      out.push(
+        { x: x, y: y },
+        { x: x + nx * shift, y: y + ny * shift },
+        { x: x - nx * shift, y: y - ny * shift }
+      );
+    });
+    return out;
+  }
+
+  function flushPlanLabels(ctx, metrics) {
+    const queue = planLabelQueue;
+    planLabelQueue = [];
+    if (!queue.length) return;
+
+    const bounds = {
+      left: metrics.left + 6 * metrics.unit,
+      top: metrics.top + 6 * metrics.unit,
+      right: metrics.left + metrics.stageWidth - 6 * metrics.unit,
+      bottom: metrics.top + metrics.stageHeight - 6 * metrics.unit
+    };
+    const obstacles = getPlanLabelObstacles(metrics);
+    const placed = [];
+    const ordered = queue.filter(function (entry) { return entry.kind === "measure"; })
+      .concat(queue.filter(function (entry) { return entry.kind !== "measure"; }));
+
+    ordered.forEach(function (entry) {
+      const weight = entry.kind === "item" && entry.selected ? 650 : 550;
+      const size = measurePlanLabel(ctx, entry.text, metrics, weight);
+      const candidates = entry.kind === "measure"
+        ? getMeasureLabelCandidates(entry, size)
+        : getItemLabelCandidates(entry, size);
+      let best = null;
+
+      candidates.forEach(function (candidate, index) {
+        const x = clamp(candidate.x - size.width / 2, bounds.left, Math.max(bounds.left, bounds.right - size.width));
+        const y = clamp(candidate.y - size.height / 2, bounds.top, Math.max(bounds.top, bounds.bottom - size.height));
+        const rect = { x: x, y: y, w: size.width, h: size.height };
+        // Petite penalite par rang : a recouvrement egal, on garde la position la plus naturelle.
+        let score = index * 0.5;
+        placed.forEach(function (other) {
+          score += rectOverlapArea(rect, other) * 6;
+        });
+        obstacles.forEach(function (obstacle) {
+          if (obstacle.itemId && obstacle.itemId === entry.itemId) return;
+          score += rectOverlapArea(rect, obstacle) * (obstacle.weight || 1);
+        });
+        if (!best || score < best.score) best = { rect: rect, score: score, index: index };
+      });
+
+      placed.push(best.rect);
+      drawPlanLabel(ctx, entry, best.rect, size, weight, metrics, entry.kind === "item" && best.index >= 8);
+    });
+  }
+
+  function drawPlanLabel(ctx, entry, rect, size, weight, metrics, needsLeader) {
+    const theme = getCanvasTheme();
+    const palette = entry.kind === "measure"
+      ? Object.assign({
+        fill: theme.measureBg,
+        border: theme.measureBorder,
+        text: theme.measureText
+      }, entry.palette || {})
+      : {
+        fill: entry.selected ? theme.labelBgSelected : theme.labelBg,
+        border: entry.selected ? theme.labelBorderSelected : theme.labelBorder,
+        text: theme.labelText
+      };
+    const lineWidth = Math.max(1, 1.2 * metrics.unit);
 
     ctx.save();
-    ctx.font = `${Math.round(11 * metrics.unit)}px "Segoe UI", sans-serif`;
+    if (needsLeader && entry.anchor) {
+      // Etiquette eloignee de son objet : trait de rappel.
+      ctx.strokeStyle = theme.leader;
+      ctx.lineWidth = lineWidth;
+      ctx.beginPath();
+      ctx.moveTo(entry.anchor.x, entry.anchor.y);
+      ctx.lineTo(clamp(entry.anchor.x, rect.x, rect.x + rect.w), clamp(entry.anchor.y, rect.y, rect.y + rect.h));
+      ctx.stroke();
+    }
+    roundRect(ctx, rect.x, rect.y, rect.w, rect.h, rect.h / 2);
+    ctx.fillStyle = palette.fill;
+    ctx.fill();
+    ctx.strokeStyle = palette.border;
+    ctx.lineWidth = lineWidth;
+    ctx.stroke();
+    ctx.font = canvasFont(size.fontSize, weight);
+    ctx.fillStyle = palette.text;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-
-    const labelWidth = ctx.measureText(label).width + paddingX * 2;
-    const halfWidth = labelWidth / 2;
-    let labelX = clamp(center.x, stageLeft + halfWidth, stageRight - halfWidth);
-    let labelY = center.y - labelOffset;
-
-    if (labelY - labelHeight / 2 < stageTop) {
-      labelY = center.y + labelOffset;
-    }
-    if (labelY + labelHeight / 2 > stageBottom) {
-      labelY = stageBottom - labelHeight / 2;
-    }
-
-    ctx.fillStyle = item.id === state.selectedId ? "rgba(8, 12, 18, 0.96)" : "rgba(8, 12, 18, 0.9)";
-    roundRect(ctx, labelX - halfWidth, labelY - labelHeight / 2, labelWidth, labelHeight, 11 * metrics.unit);
-    ctx.fill();
-    ctx.strokeStyle = item.id === state.selectedId ? "rgba(140, 220, 255, 0.42)" : "rgba(255, 255, 255, 0.12)";
-    ctx.lineWidth = 1.2 * metrics.unit;
-    ctx.stroke();
-    ctx.fillStyle = "rgba(247, 241, 235, 0.96)";
-    ctx.fillText(label, labelX, labelY + 1 * metrics.unit);
+    ctx.fillText(isolateNumbers(entry.text), rect.x + rect.w / 2, rect.y + rect.h / 2 + size.fontSize * 0.06);
     ctx.restore();
   }
 
@@ -4721,11 +4756,12 @@
   function drawMeasurementGuides(ctx, guides, metrics, palette) {
     if (!guides.length) return;
 
+    const theme = getCanvasTheme();
     const colors = Object.assign({
-      stroke: "rgba(143, 208, 255, 0.62)",
-      border: "rgba(143, 208, 255, 0.36)",
-      fill: "rgba(9, 16, 28, 0.84)",
-      text: "rgba(240, 248, 255, 0.92)"
+      stroke: theme.measureLine,
+      border: theme.measureBorder,
+      fill: theme.measureBg,
+      text: theme.measureText
     }, palette || {});
 
     ctx.save();
@@ -4737,32 +4773,17 @@
       const from = studioToPlan(guide.from.x, guide.from.y, metrics);
       const to = studioToPlan(guide.to.x, guide.to.y, metrics);
       const labelT = typeof guide.labelT === "number" ? guide.labelT : 0.5;
-      const midX = from.x + (to.x - from.x) * labelT;
-      const midY = from.y + (to.y - from.y) * labelT;
-      const paddingX = 10 * metrics.unit;
 
       ctx.beginPath();
       ctx.moveTo(from.x, from.y);
       ctx.lineTo(to.x, to.y);
       ctx.stroke();
 
-      ctx.setLineDash([]);
-      ctx.font = `${Math.round(11 * metrics.unit)}px "Segoe UI", sans-serif`;
-      const labelWidth = ctx.measureText(guide.label).width + paddingX * 2;
-      const labelHeight = 22 * metrics.unit;
-      ctx.fillStyle = colors.fill;
-      roundRect(ctx, midX - labelWidth / 2, midY - labelHeight / 2, labelWidth, labelHeight, 10 * metrics.unit);
-      ctx.fill();
-      ctx.strokeStyle = colors.border;
-      ctx.lineWidth = 1.2 * metrics.unit;
-      ctx.stroke();
-      ctx.fillStyle = colors.text;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(guide.label, midX, midY + 1 * metrics.unit);
-      ctx.setLineDash([10 * metrics.unit, 8 * metrics.unit]);
-      ctx.strokeStyle = colors.stroke;
-      ctx.lineWidth = 2 * metrics.unit;
+      queueMeasureLabel(guide.label, from, to, labelT, {
+        fill: colors.fill,
+        border: colors.border,
+        text: colors.text
+      });
     });
 
     ctx.restore();
@@ -4779,8 +4800,6 @@
 
     const start = studioToPlan(state.measureStart.x, state.measureStart.y, metrics);
     const end = studioToPlan(endPoint.x, endPoint.y, metrics);
-    const midX = (start.x + end.x) / 2;
-    const midY = (start.y + end.y) / 2;
     const distance = formatDistanceLabel(distanceBetweenItems(state.measureStart, endPoint));
     const labelParts = [];
 
@@ -4789,8 +4808,9 @@
 
     const label = labelParts.length ? `${labelParts.join(" <-> ")} · ${distance}` : distance;
 
+    const theme = getCanvasTheme();
     ctx.save();
-    ctx.strokeStyle = "rgba(251, 191, 36, 0.92)";
+    ctx.strokeStyle = theme.manualLine;
     ctx.setLineDash([12 * metrics.unit, 8 * metrics.unit]);
     ctx.lineWidth = 2.2 * metrics.unit;
     ctx.beginPath();
@@ -4802,26 +4822,18 @@
     [start, end].forEach(function (point) {
       ctx.beginPath();
       ctx.arc(point.x, point.y, 5 * metrics.unit, 0, Math.PI * 2);
-      ctx.fillStyle = "#fbbf24";
+      ctx.fillStyle = theme.manualPoint;
       ctx.fill();
       ctx.strokeStyle = "rgba(12, 20, 34, 0.88)";
       ctx.lineWidth = 1.6 * metrics.unit;
       ctx.stroke();
     });
 
-    ctx.font = `${Math.round(11 * metrics.unit)}px "Segoe UI", sans-serif`;
-    const labelWidth = ctx.measureText(label).width + 20 * metrics.unit;
-    const labelHeight = 24 * metrics.unit;
-    ctx.fillStyle = "rgba(14, 20, 30, 0.92)";
-    roundRect(ctx, midX - labelWidth / 2, midY - labelHeight / 2, labelWidth, labelHeight, 10 * metrics.unit);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(251, 191, 36, 0.38)";
-    ctx.lineWidth = 1.2 * metrics.unit;
-    ctx.stroke();
-    ctx.fillStyle = "#fff7e0";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(label, midX, midY + 1 * metrics.unit);
+    queueMeasureLabel(label, start, end, 0.5, {
+      fill: theme.measureBg,
+      border: theme.manualBorder,
+      text: theme.manualText
+    });
     ctx.restore();
   }
 
@@ -4834,7 +4846,8 @@
     ctx.save();
     ctx.translate(center.x, center.y);
     ctx.rotate(degreesToRadians(item.rotation));
-    ctx.strokeStyle = "rgba(116, 180, 255, 0.95)";
+    const theme = getCanvasTheme();
+    ctx.strokeStyle = theme.selection;
     ctx.lineWidth = 3 * metrics.unit;
     if (item.shape === "circle" || item.shape === "ellipse") {
       ctx.beginPath();
@@ -4847,13 +4860,13 @@
     ctx.restore();
 
     ctx.save();
-    ctx.strokeStyle = "rgba(255, 181, 97, 0.95)";
+    ctx.strokeStyle = theme.handle;
     ctx.lineWidth = 2.6 * metrics.unit;
     ctx.beginPath();
     ctx.moveTo(center.x, center.y);
     ctx.lineTo(handle.x, handle.y);
     ctx.stroke();
-    ctx.fillStyle = state.hoverHandle ? "#ffd49a" : "#ffb561";
+    ctx.fillStyle = state.hoverHandle ? theme.handleHover : theme.handle;
     ctx.beginPath();
     ctx.arc(handle.x, handle.y, 8 * metrics.unit, 0, Math.PI * 2);
     ctx.fill();
@@ -4863,793 +4876,10 @@
     ctx.restore();
   }
 
-  function drawPlanSubject(ctx, width, depth, metrics) {
-    const shadow = ctx.createRadialGradient(0, 7 * metrics.unit, width * 0.08, 0, 7 * metrics.unit, width * 0.72);
-    shadow.addColorStop(0, "rgba(0,0,0,0.22)");
-    shadow.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = shadow;
-    ctx.beginPath();
-    ctx.ellipse(0, 8 * metrics.unit, width * 0.7, depth * 0.5, 0, 0, Math.PI * 2);
-    ctx.fill();
 
-    const body = ctx.createLinearGradient(0, -depth / 2, 0, depth / 2);
-    body.addColorStop(0, "#596675");
-    body.addColorStop(1, "#24303c");
-    ctx.fillStyle = body;
-    ctx.beginPath();
-    ctx.ellipse(0, 4 * metrics.unit, width * 0.42, depth * 0.4, 0, 0, Math.PI * 2);
-    ctx.fill();
 
-    ctx.fillStyle = "#e0bc9b";
-    ctx.beginPath();
-    ctx.arc(0, -depth * 0.24, width * 0.18, 0, Math.PI * 2);
-    ctx.fill();
 
-    ctx.fillStyle = "#1c222a";
-    ctx.beginPath();
-    ctx.moveTo(0, -depth * 0.38);
-    ctx.lineTo(width * 0.12, -depth * 0.18);
-    ctx.lineTo(-width * 0.12, -depth * 0.18);
-    ctx.closePath();
-    ctx.fill();
-  }
 
-  function drawPlanCamera(ctx, width, depth, metrics) {
-    drawTripodShadow(ctx, width * 0.9, depth * 0.9);
-    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
-    ctx.lineWidth = 3 * metrics.unit;
-    ctx.lineCap = "round";
-    drawTripodLegs(ctx, width * 0.55, depth * 0.58);
-
-    const body = ctx.createLinearGradient(0, -depth / 3, 0, depth / 2);
-    body.addColorStop(0, "#6d7681");
-    body.addColorStop(1, "#2a3139");
-    roundRect(ctx, -width * 0.26, -depth * 0.15, width * 0.52, depth * 0.4, 12 * metrics.unit);
-    ctx.fillStyle = body;
-    ctx.fill();
-
-    const lens = ctx.createRadialGradient(width * 0.12, -depth * 0.02, width * 0.02, width * 0.12, -depth * 0.02, width * 0.2);
-    lens.addColorStop(0, "#8fd0ff");
-    lens.addColorStop(0.4, "#28517b");
-    lens.addColorStop(1, "#101924");
-    ctx.beginPath();
-    ctx.arc(width * 0.12, -depth * 0.02, width * 0.2, 0, Math.PI * 2);
-    ctx.fillStyle = lens;
-    ctx.fill();
-  }
-
-  function drawPlanSoftbox(ctx, item, width, depth, metrics) {
-    const kind = getVariantVisualKind(item.variantId, item.family);
-    drawTripodShadow(ctx, width * 0.94, depth * 0.94);
-    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
-    ctx.lineWidth = 3 * metrics.unit;
-    ctx.lineCap = "round";
-    drawTripodLegs(ctx, width * 0.44, depth * 0.5);
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, -depth * 0.2);
-    ctx.stroke();
-
-    if (kind === "softbox-octa" || kind === "softbox-parabolic") {
-      const radiusX = width * 0.44;
-      const radiusY = depth * (kind === "softbox-parabolic" ? 0.48 : 0.42);
-      const panel = ctx.createLinearGradient(-radiusX, -radiusY, radiusX, radiusY);
-      panel.addColorStop(0, "#fbfcfd");
-      panel.addColorStop(0.56, "#e8edf2");
-      panel.addColorStop(1, "#bac4cf");
-      traceOctagonPath(ctx, radiusX, radiusY);
-      ctx.fillStyle = panel;
-      ctx.fill();
-      ctx.lineWidth = 4 * metrics.unit;
-      ctx.strokeStyle = "#222a33";
-      ctx.stroke();
-
-      ctx.strokeStyle = "rgba(210, 220, 232, 0.82)";
-      ctx.lineWidth = 1.5 * metrics.unit;
-      traceOctagonPath(ctx, radiusX * 0.68, radiusY * 0.68);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(-radiusX * 0.62, 0);
-      ctx.lineTo(radiusX * 0.62, 0);
-      ctx.moveTo(0, -radiusY * 0.62);
-      ctx.lineTo(0, radiusY * 0.62);
-      ctx.stroke();
-      if (kind === "softbox-parabolic") {
-        ctx.beginPath();
-        ctx.arc(0, 0, Math.max(width, depth) * 0.08, 0, Math.PI * 2);
-        ctx.fillStyle = "#a9b4c0";
-        ctx.fill();
-        ctx.strokeStyle = "#2d3640";
-        ctx.lineWidth = 2 * metrics.unit;
-        ctx.stroke();
-      }
-      return;
-    }
-
-    if (kind === "led-panel") {
-      roundRect(ctx, -width * 0.32, -depth * 0.42, width * 0.64, depth * 0.58, 12 * metrics.unit);
-      const body = ctx.createLinearGradient(0, -depth * 0.42, 0, depth * 0.16);
-      body.addColorStop(0, "#c7d6e5");
-      body.addColorStop(1, "#92a6bb");
-      ctx.fillStyle = body;
-      ctx.fill();
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.strokeStyle = "#212933";
-      ctx.stroke();
-      roundRect(ctx, -width * 0.23, -depth * 0.3, width * 0.46, depth * 0.34, 8 * metrics.unit);
-      ctx.fillStyle = "rgba(240, 248, 255, 0.8)";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(132, 161, 189, 0.72)";
-      ctx.lineWidth = 1.6 * metrics.unit;
-      ctx.stroke();
-      return;
-    }
-
-    roundRect(ctx, -width * 0.42, -depth * 0.42, width * 0.84, depth * 0.54, 16 * metrics.unit);
-    const panel = ctx.createLinearGradient(0, -depth * 0.42, 0, depth * 0.12);
-    panel.addColorStop(0, "#fbfcfd");
-    panel.addColorStop(0.58, "#e6eaef");
-    panel.addColorStop(1, "#bcc5cf");
-    ctx.fillStyle = panel;
-    ctx.fill();
-    ctx.lineWidth = 4 * metrics.unit;
-    ctx.strokeStyle = "#222a33";
-    ctx.stroke();
-    roundRect(ctx, -width * 0.3, -depth * 0.28, width * 0.6, depth * 0.26, 10 * metrics.unit);
-    ctx.strokeStyle = "rgba(214, 223, 233, 0.76)";
-    ctx.lineWidth = 1.6 * metrics.unit;
-    ctx.stroke();
-  }
-  function drawPlanStriplight(ctx, item, width, depth, metrics) {
-    const kind = getVariantVisualKind(item.variantId, item.family);
-    drawTripodShadow(ctx, width * 0.96, depth * 0.96);
-    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
-    ctx.lineWidth = 3 * metrics.unit;
-    ctx.lineCap = "round";
-    drawTripodLegs(ctx, width * 0.56, depth * 0.56);
-
-    if (kind === "tube") {
-      roundRect(ctx, -width * 0.08, -depth * 0.5, width * 0.16, depth * 0.94, 18 * metrics.unit);
-      ctx.fillStyle = "rgba(173, 231, 255, 0.22)";
-      ctx.fill();
-      roundRect(ctx, -width * 0.04, -depth * 0.48, width * 0.08, depth * 0.9, 18 * metrics.unit);
-      ctx.fillStyle = "#e8f7ff";
-      ctx.fill();
-      ctx.strokeStyle = "#233141";
-      ctx.lineWidth = 2.2 * metrics.unit;
-      ctx.stroke();
-      return;
-    }
-
-    roundRect(ctx, -width * 0.22, -depth * 0.48, width * 0.44, depth * 0.92, 14 * metrics.unit);
-    const panel = ctx.createLinearGradient(0, -depth * 0.46, 0, depth * 0.42);
-    panel.addColorStop(0, "#fbfbfc");
-    panel.addColorStop(0.6, "#e7eaee");
-    panel.addColorStop(1, "#bec6ce");
-    ctx.fillStyle = panel;
-    ctx.fill();
-    ctx.lineWidth = 4 * metrics.unit;
-    ctx.strokeStyle = "#252c35";
-    ctx.stroke();
-  }
-  function drawPlanReflector(ctx, item, width, depth, metrics) {
-    const kind = getVariantVisualKind(item.variantId, item.family);
-    drawTripodShadow(ctx, width * 0.94, depth * 0.94);
-    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
-    ctx.lineWidth = 3 * metrics.unit;
-    ctx.lineCap = "round";
-    drawTripodLegs(ctx, width * 0.4, depth * 0.42);
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, -depth * 0.12);
-    ctx.stroke();
-
-    if (kind === "umbrella") {
-      const disc = ctx.createRadialGradient(-width * 0.16, -depth * 0.18, width * 0.08, 0, 0, width * 0.54);
-      disc.addColorStop(0, "#ffffff");
-      disc.addColorStop(0.42, "#edf1f5");
-      disc.addColorStop(1, "#a1aab5");
-      ctx.fillStyle = disc;
-      ctx.beginPath();
-      ctx.ellipse(0, -depth * 0.02, width * 0.48, depth * 0.42, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.strokeStyle = "rgba(53,61,72,0.92)";
-      ctx.stroke();
-      ctx.strokeStyle = "rgba(150, 160, 175, 0.72)";
-      ctx.lineWidth = 1.5 * metrics.unit;
-      [-0.8, -0.35, 0, 0.35, 0.8].forEach(function (factor) {
-        ctx.beginPath();
-        ctx.moveTo(0, -depth * 0.02);
-        ctx.lineTo(width * 0.42 * factor, -depth * 0.22);
-        ctx.stroke();
-      });
-      return;
-    }
-
-    if (kind === "lantern") {
-      const lantern = ctx.createRadialGradient(-width * 0.12, -depth * 0.12, width * 0.05, 0, 0, width * 0.46);
-      lantern.addColorStop(0, "#ffffff");
-      lantern.addColorStop(0.7, "#edf2f7");
-      lantern.addColorStop(1, "#aab4c0");
-      ctx.fillStyle = lantern;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, width * 0.42, depth * 0.42, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.strokeStyle = "rgba(53,61,72,0.92)";
-      ctx.stroke();
-      ctx.strokeStyle = "rgba(189, 198, 208, 0.8)";
-      ctx.lineWidth = 1.4 * metrics.unit;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, width * 0.2, depth * 0.42, 0, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.ellipse(0, 0, width * 0.42, depth * 0.2, 0, 0, Math.PI * 2);
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "ringlight") {
-      ctx.beginPath();
-      ctx.ellipse(0, 0, width * 0.42, depth * 0.42, 0, 0, Math.PI * 2);
-      ctx.fillStyle = "#f6fbff";
-      ctx.fill();
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.strokeStyle = "rgba(38,45,54,0.94)";
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.ellipse(0, 0, width * 0.17, depth * 0.17, 0, 0, Math.PI * 2);
-      ctx.fillStyle = "#18202a";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(151, 166, 184, 0.8)";
-      ctx.lineWidth = 1.8 * metrics.unit;
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "beauty-dish") {
-      const disc = ctx.createRadialGradient(-width * 0.18, -depth * 0.18, width * 0.08, 0, 0, width * 0.52);
-      disc.addColorStop(0, "#ffffff");
-      disc.addColorStop(0.48, "#e7edf2");
-      disc.addColorStop(1, "#99a4b0");
-      ctx.fillStyle = disc;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, width * 0.46, depth * 0.46, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.strokeStyle = "rgba(61,67,76,0.9)";
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.ellipse(0, 0, width * 0.12, depth * 0.12, 0, 0, Math.PI * 2);
-      ctx.fillStyle = "#a9b4c0";
-      ctx.fill();
-      ctx.strokeStyle = "#2c3642";
-      ctx.lineWidth = 1.8 * metrics.unit;
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "spot-projector") {
-      roundRect(ctx, -width * 0.3, -depth * 0.14, width * 0.44, depth * 0.28, 10 * metrics.unit);
-      const body = ctx.createLinearGradient(-width * 0.3, 0, width * 0.14, 0);
-      body.addColorStop(0, "#aeb9c5");
-      body.addColorStop(1, "#7d8895");
-      ctx.fillStyle = body;
-      ctx.fill();
-      ctx.lineWidth = 2.8 * metrics.unit;
-      ctx.strokeStyle = "#202934";
-      ctx.stroke();
-      roundRect(ctx, width * 0.08, -depth * 0.18, width * 0.22, depth * 0.36, 12 * metrics.unit);
-      ctx.fillStyle = "#8895a4";
-      ctx.fill();
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.ellipse(width * 0.24, 0, width * 0.1, depth * 0.12, 0, 0, Math.PI * 2);
-      ctx.fillStyle = "#dff5ff";
-      ctx.fill();
-      ctx.strokeStyle = "#25313d";
-      ctx.lineWidth = 2 * metrics.unit;
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "spot-head") {
-      const head = ctx.createRadialGradient(-width * 0.1, -depth * 0.08, width * 0.04, 0, 0, width * 0.3);
-      head.addColorStop(0, "#d9e4ee");
-      head.addColorStop(0.44, "#a9b5c2");
-      head.addColorStop(1, "#6c7784");
-      ctx.fillStyle = head;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, width * 0.3, depth * 0.3, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.lineWidth = 2.8 * metrics.unit;
-      ctx.strokeStyle = "#202934";
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.ellipse(width * 0.08, 0, width * 0.12, depth * 0.12, 0, 0, Math.PI * 2);
-      ctx.fillStyle = "#e5f7ff";
-      ctx.fill();
-      ctx.strokeStyle = "#24303d";
-      ctx.lineWidth = 2 * metrics.unit;
-      ctx.stroke();
-      return;
-    }
-
-    const disc = ctx.createRadialGradient(-width * 0.18, -depth * 0.18, width * 0.08, 0, 0, width * 0.54);
-    disc.addColorStop(0, "#ffffff");
-    disc.addColorStop(0.42, "#e4e8eb");
-    disc.addColorStop(1, "#98a2ae");
-    ctx.fillStyle = disc;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, width * 0.48, depth * 0.48, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.lineWidth = 3 * metrics.unit;
-    ctx.strokeStyle = "rgba(61,67,76,0.9)";
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.ellipse(0, 0, width * 0.24, depth * 0.24, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = "rgba(160, 171, 184, 0.8)";
-    ctx.lineWidth = 1.4 * metrics.unit;
-    ctx.stroke();
-  }
-  function drawPlanFlag(ctx, width, depth, metrics) {
-    drawTripodShadow(ctx, width * 1.08, width * 0.68);
-    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
-    ctx.lineWidth = 3 * metrics.unit;
-    ctx.lineCap = "round";
-    drawTripodLegs(ctx, width * 0.36, width * 0.34);
-
-    roundRect(ctx, -width * 0.48, -depth * 0.4, width * 0.96, depth * 0.8, 12 * metrics.unit);
-    const panel = ctx.createLinearGradient(0, -depth * 0.4, 0, depth * 0.4);
-    panel.addColorStop(0, "#444d57");
-    panel.addColorStop(1, "#171b20");
-    ctx.fillStyle = panel;
-    ctx.fill();
-    ctx.lineWidth = 3 * metrics.unit;
-    ctx.strokeStyle = "#0b0d10";
-    ctx.stroke();
-  }
-
-  function drawPlanVFlat(ctx, width, depth, metrics) {
-    const panelWidth = width * 0.44;
-    const panelHeight = width * 1.02;
-    ctx.save();
-    ctx.translate(-width * 0.12, 0);
-    roundRect(ctx, -panelWidth, -panelHeight / 2, panelWidth, panelHeight, 12 * metrics.unit);
-    ctx.fillStyle = "#f7f4ef";
-    ctx.fill();
-    ctx.strokeStyle = "rgba(60, 61, 66, 0.24)";
-    ctx.lineWidth = 3 * metrics.unit;
-    ctx.stroke();
-
-    ctx.translate(width * 0.24, 0);
-    ctx.rotate(degreesToRadians(18));
-    roundRect(ctx, 0, -panelHeight / 2, panelWidth, panelHeight, 12 * metrics.unit);
-    ctx.fillStyle = "#e8e0d4";
-    ctx.fill();
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  function drawPlanStand(ctx, item, width, depth, metrics) {
-    const kind = getVariantVisualKind(item.variantId, item.family);
-    const legX = Math.max(width * 0.26, 14 * metrics.unit);
-    const legY = Math.max(depth * 0.26, 14 * metrics.unit);
-    drawTripodShadow(ctx, Math.max(width, 20 * metrics.unit), Math.max(depth, 20 * metrics.unit));
-    ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
-    ctx.lineWidth = 3 * metrics.unit;
-    ctx.lineCap = "round";
-
-    if (kind === "cstand" || kind === "cstand-arm") {
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(legX * 1.05, legY * 0.84);
-      ctx.moveTo(0, 0);
-      ctx.lineTo(-legX * 0.75, legY * 0.96);
-      ctx.moveTo(0, 0);
-      ctx.lineTo(-legX * 0.15, -legY * 0.96);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(0, -depth * 0.42);
-      ctx.stroke();
-      ctx.fillStyle = "#d7dde4";
-      ctx.beginPath();
-      ctx.arc(0, -depth * 0.44, 5 * metrics.unit, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(0, -depth * 0.31, 4 * metrics.unit, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = "#e1ac56";
-      ctx.lineWidth = 2.2 * metrics.unit;
-      ctx.beginPath();
-      ctx.moveTo(0, -depth * 0.44);
-      ctx.lineTo(width * (kind === "cstand-arm" ? 0.52 : 0.3), -depth * (kind === "cstand-arm" ? 0.66 : 0.56));
-      ctx.stroke();
-      ctx.fillStyle = "#efc884";
-      roundRect(ctx, width * (kind === "cstand-arm" ? 0.46 : 0.22), -depth * (kind === "cstand-arm" ? 0.73 : 0.63), Math.max(width * 0.16, 8 * metrics.unit), Math.max(depth * 0.12, 8 * metrics.unit), 5 * metrics.unit);
-      ctx.fill();
-      return;
-    }
-
-    if (kind === "roller-stand" || kind === "boom-stand") {
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(legX * 1.02, legY * 0.78);
-      ctx.moveTo(0, 0);
-      ctx.lineTo(-legX * 1.02, legY * 0.78);
-      ctx.moveTo(0, 0);
-      ctx.lineTo(0, -legY * 1.02);
-      ctx.stroke();
-      [[legX * 1.02, legY * 0.78], [-legX * 1.02, legY * 0.78], [0, -legY * 1.02]].forEach(function (point) {
-        ctx.beginPath();
-        ctx.arc(point[0], point[1], 4 * metrics.unit, 0, Math.PI * 2);
-        ctx.fillStyle = "#6f7b88";
-        ctx.fill();
-      });
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(0, -depth * 0.4);
-      ctx.strokeStyle = "rgba(82, 94, 111, 0.92)";
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.stroke();
-      ctx.fillStyle = "#d7dde4";
-      ctx.beginPath();
-      ctx.arc(0, -depth * 0.44, 5 * metrics.unit, 0, Math.PI * 2);
-      ctx.fill();
-      if (kind === "boom-stand") {
-        ctx.strokeStyle = "#e1ac56";
-        ctx.lineWidth = 2.4 * metrics.unit;
-        ctx.beginPath();
-        ctx.moveTo(0, -depth * 0.44);
-        ctx.lineTo(width * 0.62, -depth * 0.64);
-        ctx.stroke();
-        ctx.fillStyle = "#efc884";
-        roundRect(ctx, width * 0.56, -depth * 0.7, Math.max(width * 0.1, 7 * metrics.unit), Math.max(depth * 0.12, 8 * metrics.unit), 4 * metrics.unit);
-        ctx.fill();
-        ctx.fillStyle = "#7b8794";
-        roundRect(ctx, -width * 0.34, -depth * 0.49, Math.max(width * 0.11, 8 * metrics.unit), Math.max(depth * 0.08, 7 * metrics.unit), 4 * metrics.unit);
-        ctx.fill();
-      } else {
-        ctx.fillStyle = "#efc884";
-        roundRect(ctx, -Math.max(width * 0.08, 7 * metrics.unit), -depth * 0.58, Math.max(width * 0.16, 8 * metrics.unit), Math.max(depth * 0.1, 8 * metrics.unit), 5 * metrics.unit);
-        ctx.fill();
-      }
-      return;
-    }
-
-    if (kind === "combo-stand") {
-      drawTripodLegs(ctx, legX * 1.1, legY * 1.1);
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(0, -depth * 0.48);
-      ctx.stroke();
-      ctx.strokeStyle = "rgba(196, 205, 216, 0.9)";
-      ctx.lineWidth = 2 * metrics.unit;
-      ctx.beginPath();
-      ctx.moveTo(-width * 0.08, -depth * 0.18);
-      ctx.lineTo(-width * 0.08, -depth * 0.46);
-      ctx.moveTo(width * 0.08, -depth * 0.18);
-      ctx.lineTo(width * 0.08, -depth * 0.46);
-      ctx.stroke();
-      ctx.fillStyle = "#efc884";
-      roundRect(ctx, -Math.max(width * 0.09, 8 * metrics.unit), -depth * 0.56, Math.max(width * 0.18, 12 * metrics.unit), Math.max(depth * 0.12, 9 * metrics.unit), 5 * metrics.unit);
-      ctx.fill();
-      return;
-    }
-
-    drawTripodLegs(ctx, legX, legY);
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, -depth * 0.38);
-    ctx.stroke();
-    ctx.fillStyle = "#d7dde4";
-    ctx.beginPath();
-    ctx.arc(0, -depth * 0.42, 5 * metrics.unit, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "#e1ac56";
-    ctx.lineWidth = 2.2 * metrics.unit;
-    ctx.beginPath();
-    ctx.moveTo(0, -depth * 0.42);
-    ctx.lineTo(width * 0.34, -depth * 0.58);
-    ctx.stroke();
-    ctx.fillStyle = "#efc884";
-    roundRect(ctx, width * 0.24, -depth * 0.7, Math.max(width * 0.16, 8 * metrics.unit), Math.max(depth * 0.12, 8 * metrics.unit), 5 * metrics.unit);
-    ctx.fill();
-  }
-  function drawPlanStool(ctx, item, width, depth, metrics) {
-    const kind = getVariantVisualKind(item.variantId, item.family);
-    drawTripodShadow(ctx, width * 0.82, depth * 0.82);
-
-    if (kind === "director-chair") {
-      roundRect(ctx, -width * 0.26, -depth * 0.32, width * 0.52, depth * 0.18, 8 * metrics.unit);
-      ctx.fillStyle = "#d7b994";
-      ctx.fill();
-      ctx.strokeStyle = "#4c3b2e";
-      ctx.lineWidth = 2 * metrics.unit;
-      ctx.stroke();
-      roundRect(ctx, -width * 0.2, -depth * 0.02, width * 0.4, depth * 0.16, 8 * metrics.unit);
-      ctx.fillStyle = "#d4b189";
-      ctx.fill();
-      ctx.stroke();
-      ctx.strokeStyle = "rgba(82,94,111,0.92)";
-      ctx.lineWidth = 2.6 * metrics.unit;
-      ctx.beginPath();
-      ctx.moveTo(-width * 0.2, -depth * 0.02);
-      ctx.lineTo(width * 0.2, depth * 0.42);
-      ctx.moveTo(width * 0.2, -depth * 0.02);
-      ctx.lineTo(-width * 0.2, depth * 0.42);
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "chair") {
-      roundRect(ctx, -width * 0.26, -depth * 0.32, width * 0.52, depth * 0.18, 8 * metrics.unit);
-      ctx.fillStyle = "#d7b994";
-      ctx.fill();
-      ctx.strokeStyle = "#4c3b2e";
-      ctx.lineWidth = 2 * metrics.unit;
-      ctx.stroke();
-      roundRect(ctx, -width * 0.22, -depth * 0.02, width * 0.44, depth * 0.18, 8 * metrics.unit);
-      ctx.fillStyle = "#d4b189";
-      ctx.fill();
-      ctx.stroke();
-      ctx.strokeStyle = "rgba(82,94,111,0.92)";
-      ctx.lineWidth = 2.4 * metrics.unit;
-      ctx.beginPath();
-      ctx.moveTo(-width * 0.18, depth * 0.06);
-      ctx.lineTo(-width * 0.24, depth * 0.42);
-      ctx.moveTo(width * 0.18, depth * 0.06);
-      ctx.lineTo(width * 0.24, depth * 0.42);
-      ctx.stroke();
-      return;
-    }
-
-    const seat = ctx.createRadialGradient(-width * 0.14, -depth * 0.18, width * 0.05, 0, 0, width * 0.42);
-    seat.addColorStop(0, "#5f6973");
-    seat.addColorStop(0.5, "#343c45");
-    seat.addColorStop(1, "#1d232a");
-    ctx.fillStyle = seat;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, width * 0.42, depth * 0.42, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(82,94,111,0.92)";
-    ctx.lineWidth = 3 * metrics.unit;
-    ctx.lineCap = "round";
-    drawTripodLegs(ctx, width * 0.36, depth * 0.36);
-  }
-  function drawPlanTable(ctx, item, width, depth, metrics) {
-    const kind = getVariantVisualKind(item.variantId, item.family);
-    drawTripodShadow(ctx, width * 1.04, depth * 1.08);
-
-    if (kind === "round-table") {
-      ctx.beginPath();
-      ctx.ellipse(0, 0, width * 0.36, depth * 0.36, 0, 0, Math.PI * 2);
-      const top = ctx.createRadialGradient(-width * 0.08, -depth * 0.1, width * 0.04, 0, 0, width * 0.4);
-      top.addColorStop(0, "#dbc19f");
-      top.addColorStop(1, "#8a725d");
-      ctx.fillStyle = top;
-      ctx.fill();
-      ctx.strokeStyle = "rgba(39,32,28,0.9)";
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.stroke();
-      ctx.strokeStyle = "rgba(105, 93, 84, 0.94)";
-      ctx.lineWidth = 2.6 * metrics.unit;
-      ctx.beginPath();
-      ctx.moveTo(0, depth * 0.08);
-      ctx.lineTo(0, depth * 0.38);
-      ctx.moveTo(-width * 0.16, depth * 0.38);
-      ctx.lineTo(width * 0.16, depth * 0.38);
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "bench") {
-      roundRect(ctx, -width * 0.48, -depth * 0.16, width * 0.96, depth * 0.32, 12 * metrics.unit);
-      ctx.fillStyle = "#cfa67a";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(60,47,35,0.92)";
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.stroke();
-      ctx.strokeStyle = "rgba(103, 112, 126, 0.94)";
-      ctx.lineWidth = 2.4 * metrics.unit;
-      ctx.beginPath();
-      ctx.moveTo(-width * 0.34, depth * 0.08);
-      ctx.lineTo(-width * 0.38, depth * 0.36);
-      ctx.moveTo(width * 0.34, depth * 0.08);
-      ctx.lineTo(width * 0.38, depth * 0.36);
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "armchair" || kind === "sofa") {
-      roundRect(ctx, -width * 0.42, -depth * 0.22, width * 0.84, depth * 0.48, 18 * metrics.unit);
-      ctx.fillStyle = kind === "armchair" ? "#cca67c" : "#c89f76";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(60,47,35,0.92)";
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.stroke();
-      roundRect(ctx, -width * 0.34, -depth * 0.36, width * 0.68, depth * 0.22, 14 * metrics.unit);
-      ctx.fillStyle = "#dfc3a6";
-      ctx.fill();
-      ctx.stroke();
-      if (kind === "armchair") {
-        roundRect(ctx, -width * 0.48, -depth * 0.08, width * 0.14, depth * 0.24, 10 * metrics.unit);
-        ctx.fillStyle = "#cca67c";
-        ctx.fill();
-        roundRect(ctx, width * 0.34, -depth * 0.08, width * 0.14, depth * 0.24, 10 * metrics.unit);
-        ctx.fill();
-      }
-      return;
-    }
-
-    if (kind === "applebox" || kind === "block") {
-      roundRect(ctx, -width * 0.5, -depth * 0.34, width, depth * 0.68, 10 * metrics.unit);
-      ctx.fillStyle = "#cfa67a";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(60,47,35,0.92)";
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.stroke();
-      if (kind === "applebox") {
-        roundRect(ctx, -width * 0.28, -depth * 0.08, width * 0.18, depth * 0.16, 8 * metrics.unit);
-        ctx.fillStyle = "#9f784f";
-        ctx.fill();
-        roundRect(ctx, width * 0.1, -depth * 0.08, width * 0.18, depth * 0.16, 8 * metrics.unit);
-        ctx.fill();
-      }
-      return;
-    }
-
-    if (kind === "sandbag") {
-      ctx.fillStyle = "#6f5b49";
-      ctx.beginPath();
-      ctx.ellipse(-width * 0.18, 0, width * 0.24, depth * 0.32, 0, 0, Math.PI * 2);
-      ctx.ellipse(width * 0.18, 0, width * 0.24, depth * 0.32, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = "rgba(42,33,27,0.9)";
-      ctx.lineWidth = 2 * metrics.unit;
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(0, -depth * 0.06, Math.max(width * 0.08, 4 * metrics.unit), 0, Math.PI * 2);
-      ctx.fillStyle = "#baa286";
-      ctx.fill();
-      return;
-    }
-
-    if (kind === "tether-station") {
-      roundRect(ctx, -width * 0.4, -depth * 0.18, width * 0.8, depth * 0.2, 8 * metrics.unit);
-      ctx.fillStyle = "#aeb8c4";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(34,42,52,0.94)";
-      ctx.lineWidth = 2.2 * metrics.unit;
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(-width * 0.22, -depth * 0.18);
-      ctx.lineTo(width * 0.12, -depth * 0.18);
-      ctx.lineTo(width * 0.24, -depth * 0.36);
-      ctx.lineTo(-width * 0.1, -depth * 0.36);
-      ctx.closePath();
-      ctx.fillStyle = "#66717d";
-      ctx.fill();
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, depth * 0.02);
-      ctx.lineTo(0, depth * 0.4);
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "monitor-station") {
-      roundRect(ctx, -width * 0.32, -depth * 0.34, width * 0.64, depth * 0.42, 10 * metrics.unit);
-      ctx.fillStyle = "#121a24";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(170, 180, 192, 0.9)";
-      ctx.lineWidth = 2.4 * metrics.unit;
-      ctx.stroke();
-      roundRect(ctx, -width * 0.22, -depth * 0.24, width * 0.44, depth * 0.22, 8 * metrics.unit);
-      ctx.fillStyle = "rgba(123, 182, 232, 0.66)";
-      ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(0, depth * 0.08);
-      ctx.lineTo(0, depth * 0.36);
-      ctx.strokeStyle = "rgba(103, 112, 126, 0.94)";
-      ctx.lineWidth = 2.6 * metrics.unit;
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "dimmer-desk") {
-      roundRect(ctx, -width * 0.46, -depth * 0.28, width * 0.92, depth * 0.56, 14 * metrics.unit);
-      ctx.fillStyle = "#8c97a5";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(34,42,52,0.94)";
-      ctx.lineWidth = 2.4 * metrics.unit;
-      ctx.stroke();
-      ctx.strokeStyle = "#efc884";
-      ctx.lineWidth = 1.8 * metrics.unit;
-      for (let index = -2; index <= 2; index += 1) {
-        ctx.beginPath();
-        ctx.moveTo(index * width * 0.1, -depth * 0.12);
-        ctx.lineTo(index * width * 0.1, depth * 0.12);
-        ctx.stroke();
-      }
-      return;
-    }
-
-    if (kind === "cart") {
-      roundRect(ctx, -width * 0.42, -depth * 0.24, width * 0.84, depth * 0.14, 8 * metrics.unit);
-      ctx.fillStyle = "#9ea9b6";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(34,42,52,0.94)";
-      ctx.lineWidth = 2 * metrics.unit;
-      ctx.stroke();
-      roundRect(ctx, -width * 0.42, depth * 0.02, width * 0.84, depth * 0.14, 8 * metrics.unit);
-      ctx.fill();
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(-width * 0.32, -depth * 0.1);
-      ctx.lineTo(-width * 0.32, depth * 0.18);
-      ctx.moveTo(width * 0.32, -depth * 0.1);
-      ctx.lineTo(width * 0.32, depth * 0.18);
-      ctx.stroke();
-      [[-width * 0.3, depth * 0.28], [width * 0.3, depth * 0.28]].forEach(function (point) {
-        ctx.beginPath();
-        ctx.arc(point[0], point[1], 4 * metrics.unit, 0, Math.PI * 2);
-        ctx.fillStyle = "#6f7b88";
-        ctx.fill();
-      });
-      return;
-    }
-
-    if (kind === "desk") {
-      roundRect(ctx, -width * 0.5, -depth * 0.22, width, depth * 0.44, 14 * metrics.unit);
-      ctx.fillStyle = "#d4b188";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(39,32,28,0.9)";
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.stroke();
-      roundRect(ctx, -width * 0.32, depth * 0.02, width * 0.64, depth * 0.18, 10 * metrics.unit);
-      ctx.fillStyle = "#9a7c62";
-      ctx.fill();
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "makeup-station") {
-      roundRect(ctx, -width * 0.5, -depth * 0.1, width, depth * 0.22, 12 * metrics.unit);
-      ctx.fillStyle = "#d4b188";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(39,32,28,0.9)";
-      ctx.lineWidth = 3 * metrics.unit;
-      ctx.stroke();
-      roundRect(ctx, -width * 0.2, -depth * 0.48, width * 0.4, depth * 0.26, 10 * metrics.unit);
-      ctx.fillStyle = "#dff0ff";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(35,48,61,0.92)";
-      ctx.lineWidth = 2.2 * metrics.unit;
-      ctx.stroke();
-      return;
-    }
-
-    roundRect(ctx, -width * 0.5, -depth * 0.34, width, depth * 0.68, 16 * metrics.unit);
-    const top = ctx.createLinearGradient(0, -depth * 0.34, 0, depth * 0.34);
-    top.addColorStop(0, "#897767");
-    top.addColorStop(1, "#58483d");
-    ctx.fillStyle = top;
-    ctx.fill();
-    ctx.strokeStyle = "rgba(39,32,28,0.9)";
-    ctx.lineWidth = 4 * metrics.unit;
-    ctx.stroke();
-    ctx.strokeStyle = "rgba(105, 93, 84, 0.94)";
-    ctx.lineWidth = 3 * metrics.unit;
-    ctx.beginPath();
-    ctx.moveTo(-width * 0.34, -depth * 0.18);
-    ctx.lineTo(-width * 0.22, depth * 0.24);
-    ctx.moveTo(width * 0.34, -depth * 0.18);
-    ctx.lineTo(width * 0.22, depth * 0.24);
-    ctx.stroke();
-  }
   function drawPlanBeam(ctx, item, metrics, lengthMeters, widthMeters, color) {
     const center = studioToPlan(item.x, item.y, metrics);
     const angle = degreesToRadians(item.rotation);
@@ -5682,26 +4912,7 @@
     ctx.fill();
   }
 
-  function drawTripodShadow(ctx, width, depth) {
-    const shadow = ctx.createRadialGradient(0, 8, width * 0.05, 0, 8, Math.max(width, depth) * 0.72);
-    shadow.addColorStop(0, "rgba(0,0,0,0.2)");
-    shadow.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = shadow;
-    ctx.beginPath();
-    ctx.ellipse(0, 10, width * 0.64, depth * 0.42, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
 
-  function drawTripodLegs(ctx, radiusX, radiusY) {
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(radiusX * 0.92, radiusY * 0.84);
-    ctx.moveTo(0, 0);
-    ctx.lineTo(-radiusX * 0.96, radiusY * 0.9);
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, -radiusY * 0.86);
-    ctx.stroke();
-  }
 
   function drawIsoView(targetCtx, width, height) {
     const ctx = targetCtx || isoCtx;
@@ -5724,11 +4935,11 @@
       drawIsoLightSpread(ctx, item, metrics);
     });
 
-    state.items.slice().sort(function (a, b) {
-      return (a.x + a.y) - (b.x + b.y);
-    }).forEach(function (item) {
-      drawIsoItem(ctx, item, metrics);
-    });
+    const view = StudioModels.isoView(function (p) {
+      const q = isoProject(p[0], p[1], p[2], metrics);
+      return [q.x, q.y];
+    }, Math.max(0.6, getCanvasPixelRatio(refs.isoCanvas, canvasWidth, canvasHeight) * 0.8));
+    StudioModels.render(ctx, getItemModelInstances(state.items), view);
   }
 
   function drawIsoStudio(ctx, metrics, floorColor, backdropColor) {
@@ -5840,815 +5051,26 @@
     ctx.fill();
   }
 
-  function drawIsoItem(ctx, item, metrics) {
-    const kind = getVariantVisualKind(item.variantId, item.family);
-    if (item.family === "subject") drawIsoSubject(ctx, item, metrics);
-    else if (item.family === "camera") drawIsoCamera(ctx, item, metrics);
-    else if (item.family === "softbox") drawIsoSoftbox(ctx, item, metrics, kind);
-    else if (item.family === "striplight") drawIsoStriplight(ctx, item, metrics, kind);
-    else if (item.family === "reflector") drawIsoReflector(ctx, item, metrics, kind);
-    else if (item.family === "flag") drawIsoPanel(ctx, item, metrics, item.width * 0.95, item.depth, item.height * 0.54, item.height * 0.44, "#23272c");
-    else if (item.family === "vflat") drawIsoVFlat(ctx, item, metrics, kind);
-    else if (item.family === "stand") drawIsoGripStand(ctx, item, metrics, kind);
-    else if (item.family === "stool") drawIsoStool(ctx, item, metrics, kind);
-    else if (item.family === "table") drawIsoTable(ctx, item, metrics, kind);
-  }
-  function drawIsoSubject(ctx, item, metrics) {
-    const base = isoProject(item.x, item.y, 0, metrics);
-    const head = isoProject(item.x, item.y, Math.max(1.2, item.height - 0.07), metrics);
-    const shoulderLeft = isoProject(item.x - 0.16, item.y, item.height * 0.8, metrics);
-    const shoulderRight = isoProject(item.x + 0.16, item.y, item.height * 0.8, metrics);
-    const hip = isoProject(item.x, item.y, item.height * 0.45, metrics);
-    const footLeft = isoProject(item.x - 0.08, item.y + 0.04, 0, metrics);
-    const footRight = isoProject(item.x + 0.08, item.y + 0.04, 0, metrics);
 
-    drawIsoShadow(ctx, base.x, base.y + 3 * metrics.unit, 22 * metrics.unit, 10 * metrics.unit);
-    ctx.strokeStyle = "#2d343d";
-    ctx.lineWidth = 3.2 * metrics.unit;
-    ctx.lineCap = "round";
-    ctx.beginPath();
-    ctx.moveTo(hip.x, hip.y);
-    ctx.lineTo(footLeft.x, footLeft.y);
-    ctx.moveTo(hip.x, hip.y);
-    ctx.lineTo(footRight.x, footRight.y);
-    ctx.moveTo(shoulderLeft.x, shoulderLeft.y);
-    ctx.lineTo(hip.x, hip.y);
-    ctx.lineTo(shoulderRight.x, shoulderRight.y);
-    ctx.stroke();
 
-    const torso = ctx.createLinearGradient(0, shoulderLeft.y, 0, hip.y);
-    torso.addColorStop(0, "#4b5561");
-    torso.addColorStop(1, "#20262d");
-    ctx.strokeStyle = torso;
-    ctx.lineWidth = 8 * metrics.unit;
-    ctx.beginPath();
-    ctx.moveTo(shoulderLeft.x, shoulderLeft.y);
-    ctx.lineTo(shoulderRight.x, shoulderRight.y);
-    ctx.moveTo((shoulderLeft.x + shoulderRight.x) / 2, shoulderLeft.y);
-    ctx.lineTo(hip.x, hip.y);
-    ctx.stroke();
 
-    ctx.fillStyle = "#dfbc9c";
-    ctx.beginPath();
-    ctx.arc(head.x, head.y, 8 * metrics.unit, 0, Math.PI * 2);
-    ctx.fill();
-  }
 
-  function drawIsoCamera(ctx, item, metrics) {
-    const bodyHeight = Math.max(1.2, item.height - 0.15);
-    drawIsoStand(ctx, item, metrics, bodyHeight - 0.12);
-    drawIsoPrism(ctx, item.x, item.y - 0.08, bodyHeight - 0.28, 0.38, 0.28, 0.18, item.rotation, metrics, {
-      top: "#68717b",
-      left: "#2a3037",
-      right: "#414a54"
-    });
-    const lensCenter = isoProject(item.x + Math.cos(degreesToRadians(item.rotation)) * 0.14, item.y + Math.sin(degreesToRadians(item.rotation)) * 0.14, bodyHeight - 0.16, metrics);
-    const lens = ctx.createRadialGradient(lensCenter.x - 2, lensCenter.y - 2, 1, lensCenter.x, lensCenter.y, 9 * metrics.unit);
-    lens.addColorStop(0, "#8fc8ff");
-    lens.addColorStop(0.4, "#28517b");
-    lens.addColorStop(1, "#101924");
-    ctx.fillStyle = lens;
-    ctx.beginPath();
-    ctx.arc(lensCenter.x, lensCenter.y, 7 * metrics.unit, 0, Math.PI * 2);
-    ctx.fill();
-  }
 
-  function projectIsoFacingPoint(item, u, z, metrics) {
-    const radians = degreesToRadians(item.rotation);
-    return isoProject(item.x + Math.cos(radians) * u, item.y + Math.sin(radians) * u, z, metrics);
-  }
 
-  function traceIsoPoints(ctx, points) {
-    if (!points.length) return;
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let index = 1; index < points.length; index += 1) {
-      ctx.lineTo(points[index].x, points[index].y);
-    }
-    ctx.closePath();
-  }
 
-  function fillStrokeIsoShape(ctx, points, fillStyle, strokeStyle, lineWidth) {
-    traceIsoPoints(ctx, points);
-    ctx.fillStyle = fillStyle;
-    ctx.fill();
-    if (strokeStyle) {
-      ctx.strokeStyle = strokeStyle;
-      ctx.lineWidth = lineWidth;
-      ctx.stroke();
-    }
-  }
 
-  function buildIsoFacingEllipsePoints(item, metrics, zCenter, width, height, segments) {
-    const points = [];
-    for (let index = 0; index < segments; index += 1) {
-      const angle = (index / segments) * Math.PI * 2;
-      points.push(projectIsoFacingPoint(item, Math.cos(angle) * width * 0.5, zCenter + Math.sin(angle) * height * 0.5, metrics));
-    }
-    return points;
-  }
 
-  function buildIsoFacingProfilePoints(item, metrics, zCenter, width, height, profile) {
-    return profile.map(function (point) {
-      return projectIsoFacingPoint(item, point.u * width * 0.5, zCenter + point.v * height * 0.5, metrics);
-    });
-  }
 
-  function drawIsoSoftbox(ctx, item, metrics, kind) {
-    if (kind === "softbox-octa" || kind === "softbox-parabolic") {
-      const faceHeight = Math.max(0.68, item.depth * 1.25);
-      const zCenter = Math.max(0.92, item.height - faceHeight * 0.5 - 0.16);
-      const center = isoProject(item.x, item.y, zCenter, metrics);
-      const outer = buildIsoFacingProfilePoints(item, metrics, zCenter, item.width * 0.94, faceHeight, [
-        { u: -0.56, v: -1.0 },
-        { u: 0.56, v: -1.0 },
-        { u: 1.0, v: -0.56 },
-        { u: 1.0, v: 0.56 },
-        { u: 0.56, v: 1.0 },
-        { u: -0.56, v: 1.0 },
-        { u: -1.0, v: 0.56 },
-        { u: -1.0, v: -0.56 }
-      ]);
-      const inner = buildIsoFacingProfilePoints(item, metrics, zCenter, item.width * 0.66, faceHeight * 0.66, [
-        { u: -0.56, v: -1.0 },
-        { u: 0.56, v: -1.0 },
-        { u: 1.0, v: -0.56 },
-        { u: 1.0, v: 0.56 },
-        { u: 0.56, v: 1.0 },
-        { u: -0.56, v: 1.0 },
-        { u: -1.0, v: 0.56 },
-        { u: -1.0, v: -0.56 }
-      ]);
-      const panel = ctx.createRadialGradient(center.x - 5 * metrics.unit, center.y - 6 * metrics.unit, 2, center.x, center.y, 22 * metrics.unit);
-      panel.addColorStop(0, "#ffffff");
-      panel.addColorStop(0.55, "#ecf0f4");
-      panel.addColorStop(1, "#b7c1cb");
-      drawIsoStand(ctx, item, metrics, item.height - 0.06);
-      fillStrokeIsoShape(ctx, outer, panel, "#222a33", 2.2 * metrics.unit);
-      traceIsoPoints(ctx, inner);
-      ctx.strokeStyle = "rgba(215, 223, 232, 0.84)";
-      ctx.lineWidth = 1.2 * metrics.unit;
-      ctx.stroke();
-      if (kind === "softbox-parabolic") {
-        ctx.beginPath();
-        ctx.arc(center.x, center.y, 4.2 * metrics.unit, 0, Math.PI * 2);
-        ctx.fillStyle = "#aab5c1";
-        ctx.fill();
-        ctx.strokeStyle = "#29323d";
-        ctx.lineWidth = 1.2 * metrics.unit;
-        ctx.stroke();
-      }
-      return;
-    }
 
-    if (kind === "led-panel") {
-      drawIsoLightPanel(ctx, item, metrics, item.width * 0.82, item.depth * 0.9, 0.08, "#d7e5f4");
-      return;
-    }
 
-    drawIsoLightPanel(ctx, item, metrics, item.width * 0.86, item.depth * 0.84, 0.08, "#f3f5f7");
-  }
 
-  function drawIsoStriplight(ctx, item, metrics, kind) {
-    if (kind === "tube") {
-      drawIsoStand(ctx, item, metrics, item.height - 0.08);
-      const top = projectIsoFacingPoint(item, 0, item.height - 0.08, metrics);
-      const bottom = projectIsoFacingPoint(item, 0, Math.max(0.56, item.height - 1.18), metrics);
-      ctx.strokeStyle = "rgba(178, 231, 255, 0.26)";
-      ctx.lineWidth = 8 * metrics.unit;
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ctx.moveTo(top.x, top.y);
-      ctx.lineTo(bottom.x, bottom.y);
-      ctx.stroke();
-      ctx.strokeStyle = "#eaf8ff";
-      ctx.lineWidth = 3.4 * metrics.unit;
-      ctx.beginPath();
-      ctx.moveTo(top.x, top.y);
-      ctx.lineTo(bottom.x, bottom.y);
-      ctx.stroke();
-      return;
-    }
 
-    drawIsoLightPanel(ctx, item, metrics, item.width * 0.9, item.depth * 1.8, 0.07, "#f2f4f6");
-  }
 
-  function drawIsoLightPanel(ctx, item, metrics, panelWidth, panelHeight, thickness, panelColor) {
-    const topHeight = item.height;
-    const panelBaseZ = Math.max(0.8, topHeight - Math.max(0.55, panelHeight) - 0.18);
-    drawIsoStand(ctx, item, metrics, topHeight - 0.08);
-    drawIsoVerticalPrism(ctx, item.x, item.y, panelBaseZ, panelWidth, thickness, Math.max(0.6, panelHeight), item.rotation, metrics, {
-      front: panelColor,
-      side: darkenHex(panelColor, 0.14),
-      edge: "#2a2f36"
-    });
-  }
 
-  function drawIsoReflector(ctx, item, metrics, kind) {
-    const centerZ = Math.max(0.74, item.height - 0.44);
-    const center = isoProject(item.x, item.y, centerZ, metrics);
-    const disc = ctx.createRadialGradient(center.x - 4 * metrics.unit, center.y - 5 * metrics.unit, 2, center.x, center.y, 20 * metrics.unit);
-    disc.addColorStop(0, "#ffffff");
-    disc.addColorStop(0.55, "#e2e7eb");
-    disc.addColorStop(1, "#98a2ac");
 
-    if (kind === "umbrella") {
-      drawIsoStand(ctx, item, metrics, item.height - 0.14);
-      const canopy = buildIsoFacingEllipsePoints(item, metrics, centerZ, item.width * 1.02, item.width * 0.66, 18);
-      fillStrokeIsoShape(ctx, canopy, disc, "rgba(63,68,75,0.88)", 1.8 * metrics.unit);
-      const mount = isoProject(item.x, item.y, centerZ - 0.06, metrics);
-      [-0.8, -0.35, 0, 0.35, 0.8].forEach(function (factor) {
-        const rim = projectIsoFacingPoint(item, factor * item.width * 0.42, centerZ - item.width * 0.12, metrics);
-        ctx.beginPath();
-        ctx.moveTo(mount.x, mount.y);
-        ctx.lineTo(rim.x, rim.y);
-        ctx.strokeStyle = "rgba(173, 183, 194, 0.86)";
-        ctx.lineWidth = 1.1 * metrics.unit;
-        ctx.stroke();
-      });
-      return;
-    }
 
-    if (kind === "lantern") {
-      drawIsoStand(ctx, item, metrics, item.height - 0.14);
-      const outer = buildIsoFacingEllipsePoints(item, metrics, centerZ, item.width * 0.76, item.width * 0.8, 18);
-      const seamA = buildIsoFacingEllipsePoints(item, metrics, centerZ, item.width * 0.34, item.width * 0.8, 14);
-      const seamB = buildIsoFacingEllipsePoints(item, metrics, centerZ, item.width * 0.76, item.width * 0.34, 14);
-      fillStrokeIsoShape(ctx, outer, disc, "rgba(63,68,75,0.88)", 1.8 * metrics.unit);
-      traceIsoPoints(ctx, seamA);
-      ctx.strokeStyle = "rgba(210, 218, 226, 0.9)";
-      ctx.lineWidth = 1.1 * metrics.unit;
-      ctx.stroke();
-      traceIsoPoints(ctx, seamB);
-      ctx.stroke();
-      return;
-    }
 
-    if (kind === "ringlight") {
-      drawIsoStand(ctx, item, metrics, item.height - 0.14);
-      const outer = buildIsoFacingEllipsePoints(item, metrics, centerZ, item.width * 0.78, item.width * 0.78, 18);
-      const inner = buildIsoFacingEllipsePoints(item, metrics, centerZ, item.width * 0.34, item.width * 0.34, 18);
-      fillStrokeIsoShape(ctx, outer, "#f8fbff", "rgba(63,68,75,0.88)", 1.8 * metrics.unit);
-      fillStrokeIsoShape(ctx, inner, "#0f1620", "rgba(148,160,173,0.84)", 1.1 * metrics.unit);
-      return;
-    }
 
-    if (kind === "beauty-dish" || kind === "reflector-disc") {
-      drawIsoStand(ctx, item, metrics, item.height - 0.14);
-      const outer = buildIsoFacingEllipsePoints(item, metrics, centerZ, item.width * 0.82, item.width * 0.64, 18);
-      fillStrokeIsoShape(ctx, outer, disc, "rgba(63,68,75,0.88)", 1.8 * metrics.unit);
-      if (kind === "beauty-dish") {
-        const inner = buildIsoFacingEllipsePoints(item, metrics, centerZ, item.width * 0.2, item.width * 0.2, 14);
-        fillStrokeIsoShape(ctx, inner, "#adb8c4", "#2e3843", 1.1 * metrics.unit);
-      }
-      return;
-    }
-
-    if (kind === "spot-projector" || kind === "spot-head") {
-      const radians = degreesToRadians(item.rotation);
-      const bodyZ = item.height - (kind === "spot-projector" ? 0.34 : 0.26);
-      const bodyWidth = kind === "spot-projector" ? Math.max(0.32, item.width * 0.7) : Math.max(0.18, item.width * 0.48);
-      const bodyDepth = kind === "spot-projector" ? Math.max(0.18, item.depth * 0.36) : Math.max(0.14, item.depth * 0.28);
-      const bodyHeight = kind === "spot-projector" ? 0.18 : 0.14;
-      drawIsoStand(ctx, item, metrics, bodyZ + bodyHeight + 0.04);
-      drawIsoPrism(ctx, item.x, item.y, bodyZ, bodyWidth, bodyDepth, bodyHeight, item.rotation, metrics, {
-        top: kind === "spot-projector" ? "#aeb8c4" : "#bdc7d2",
-        left: kind === "spot-projector" ? "#8b96a3" : "#97a3af",
-        right: kind === "spot-projector" ? "#798491" : "#7f8b98"
-      });
-      const lens = isoProject(item.x + Math.cos(radians) * bodyWidth * 0.34, item.y + Math.sin(radians) * bodyWidth * 0.34, bodyZ + bodyHeight * 0.5, metrics);
-      const glass = ctx.createRadialGradient(lens.x - 2, lens.y - 2, 1, lens.x, lens.y, 7 * metrics.unit);
-      glass.addColorStop(0, "#e7f5ff");
-      glass.addColorStop(0.45, "#69a2d3");
-      glass.addColorStop(1, "#132131");
-      ctx.fillStyle = glass;
-      ctx.beginPath();
-      ctx.arc(lens.x, lens.y, kind === "spot-projector" ? 5 * metrics.unit : 4.2 * metrics.unit, 0, Math.PI * 2);
-      ctx.fill();
-      return;
-    }
-
-    drawIsoStand(ctx, item, metrics, item.height - 0.18);
-    const outer = buildIsoFacingEllipsePoints(item, metrics, centerZ, item.width * 0.82, item.width * 0.64, 18);
-    fillStrokeIsoShape(ctx, outer, disc, "rgba(63,68,75,0.88)", 1.8 * metrics.unit);
-  }
-
-  function drawIsoVFlat(ctx, item, metrics, kind) {
-    if (kind === "mirror") {
-      drawIsoVerticalPrism(ctx, item.x, item.y, 0, item.width * 0.96, 0.04, item.height * 0.86, item.rotation, metrics, {
-        front: "#dfefff",
-        side: "#b7c9db",
-        edge: "#31404f"
-      });
-      drawIsoVerticalPrism(ctx, item.x, item.y, 0.04, item.width * 0.78, 0.02, item.height * 0.7, item.rotation, metrics, {
-        front: "rgba(142, 198, 236, 0.68)",
-        side: "rgba(104, 146, 178, 0.72)",
-        edge: "rgba(49, 64, 79, 0.72)"
-      });
-      return;
-    }
-
-    const radians = degreesToRadians(item.rotation);
-    drawIsoVerticalPrism(ctx, item.x - Math.cos(radians) * 0.12, item.y - Math.sin(radians) * 0.12, 0, item.width * 0.46, 0.04, item.height * 0.82, item.rotation - 10, metrics, {
-      front: "#f8f5ef",
-      side: "#ddd4c7",
-      edge: "rgba(55,55,55,0.22)"
-    });
-    drawIsoVerticalPrism(ctx, item.x + Math.cos(radians) * 0.12, item.y + Math.sin(radians) * 0.12, 0, item.width * 0.46, 0.04, item.height * 0.82, item.rotation + 18, metrics, {
-      front: "#ece3d8",
-      side: "#d1c5b8",
-      edge: "rgba(55,55,55,0.22)"
-    });
-  }
-
-  function drawIsoGripStand(ctx, item, metrics, kind) {
-    const topZ = Math.max(1.4, item.height - 0.08);
-    drawIsoStand(ctx, item, metrics, topZ);
-    const head = isoProject(item.x, item.y, Math.max(1.15, item.height - 0.16), metrics);
-    ctx.fillStyle = "#d8dde3";
-    ctx.beginPath();
-    ctx.ellipse(head.x, head.y, 6 * metrics.unit, 4 * metrics.unit, -0.45, 0, Math.PI * 2);
-    ctx.fill();
-
-    const radians = degreesToRadians(item.rotation);
-    const armLength = kind === "boom-stand" ? Math.min(0.92, item.width * 0.46) : kind === "cstand-arm" ? Math.min(0.74, item.width * 0.4) : kind === "cstand" ? Math.min(0.38, item.width * 0.26) : 0;
-    if (armLength > 0) {
-      const armEnd = isoProject(item.x + Math.cos(radians) * armLength, item.y + Math.sin(radians) * armLength, Math.max(1.0, item.height - 0.28), metrics);
-      ctx.strokeStyle = "#e1ac56";
-      ctx.lineWidth = 2 * metrics.unit;
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ctx.moveTo(head.x, head.y);
-      ctx.lineTo(armEnd.x, armEnd.y);
-      ctx.stroke();
-      ctx.fillStyle = "#efc884";
-      ctx.beginPath();
-      ctx.arc(armEnd.x, armEnd.y, 4 * metrics.unit, 0, Math.PI * 2);
-      ctx.fill();
-      if (kind === "boom-stand") {
-        const weight = isoProject(item.x - Math.cos(radians) * 0.24, item.y - Math.sin(radians) * 0.24, Math.max(0.95, item.height - 0.26), metrics);
-        ctx.fillStyle = "#7a858f";
-        ctx.fillRect(weight.x - 5 * metrics.unit, weight.y - 4 * metrics.unit, 10 * metrics.unit, 8 * metrics.unit);
-      }
-    }
-
-    if (kind === "combo-stand") {
-      const sideA = isoProject(item.x - 0.06, item.y, Math.max(0.7, item.height - 0.46), metrics);
-      const sideB = isoProject(item.x + 0.06, item.y, Math.max(0.7, item.height - 0.46), metrics);
-      ctx.strokeStyle = "#c4cdd7";
-      ctx.lineWidth = 1.6 * metrics.unit;
-      ctx.beginPath();
-      ctx.moveTo(sideA.x, sideA.y);
-      ctx.lineTo(sideA.x, head.y + 2 * metrics.unit);
-      ctx.moveTo(sideB.x, sideB.y);
-      ctx.lineTo(sideB.x, head.y + 2 * metrics.unit);
-      ctx.stroke();
-    }
-
-    if (kind === "roller-stand" || kind === "boom-stand") {
-      [
-        isoProject(item.x + 0.18, item.y + 0.12, 0, metrics),
-        isoProject(item.x - 0.18, item.y + 0.12, 0, metrics),
-        isoProject(item.x, item.y - 0.2, 0, metrics)
-      ].forEach(function (wheel) {
-        ctx.beginPath();
-        ctx.arc(wheel.x, wheel.y, 3.2 * metrics.unit, 0, Math.PI * 2);
-        ctx.fillStyle = "#6f7b88";
-        ctx.fill();
-      });
-    }
-  }
-
-  function drawIsoStool(ctx, item, metrics, kind) {
-    if (kind === "director-chair" || kind === "chair") {
-      const seatZ = kind === "director-chair" ? Math.min(0.58, item.height * 0.48) : Math.min(0.5, item.height * 0.52);
-      drawIsoPrism(ctx, item.x, item.y, seatZ, item.width * 0.6, item.depth * 0.46, 0.06, item.rotation, metrics, {
-        top: "#d4b189",
-        left: "#a78363",
-        right: "#be9975"
-      });
-      drawIsoVerticalPrism(ctx, item.x, item.y - 0.08, seatZ + 0.04, item.width * 0.62, 0.04, kind === "director-chair" ? Math.min(0.48, item.height * 0.42) : Math.min(0.4, item.height * 0.35), item.rotation, metrics, {
-        front: "#d7b994",
-        side: "#b58d66",
-        edge: "#4b3a2e"
-      });
-      const radians = degreesToRadians(item.rotation);
-      const legA = isoProject(item.x - Math.cos(radians) * 0.16 - Math.sin(radians) * 0.08, item.y - Math.sin(radians) * 0.16 + Math.cos(radians) * 0.08, 0, metrics);
-      const legB = isoProject(item.x + Math.cos(radians) * 0.16 - Math.sin(radians) * 0.08, item.y + Math.sin(radians) * 0.16 + Math.cos(radians) * 0.08, 0, metrics);
-      const seatCenter = isoProject(item.x, item.y, seatZ, metrics);
-      ctx.strokeStyle = "#66717e";
-      ctx.lineWidth = 2.2 * metrics.unit;
-      ctx.beginPath();
-      ctx.moveTo(seatCenter.x - 6 * metrics.unit, seatCenter.y + 2 * metrics.unit);
-      ctx.lineTo(legA.x, legA.y);
-      ctx.moveTo(seatCenter.x + 6 * metrics.unit, seatCenter.y + 2 * metrics.unit);
-      ctx.lineTo(legB.x, legB.y);
-      if (kind === "director-chair") {
-        ctx.moveTo(seatCenter.x - 7 * metrics.unit, seatCenter.y + 1 * metrics.unit);
-        ctx.lineTo(legB.x, legB.y);
-        ctx.moveTo(seatCenter.x + 7 * metrics.unit, seatCenter.y + 1 * metrics.unit);
-        ctx.lineTo(legA.x, legA.y);
-      }
-      ctx.stroke();
-      return;
-    }
-
-    const seatHeight = item.height;
-    const center = isoProject(item.x, item.y, seatHeight, metrics);
-    const base = isoProject(item.x, item.y, 0, metrics);
-    drawIsoShadow(ctx, base.x, base.y + 2 * metrics.unit, 16 * metrics.unit, 8 * metrics.unit);
-    ctx.fillStyle = "#303841";
-    ctx.beginPath();
-    ctx.ellipse(center.x, center.y, 14 * metrics.unit, 8 * metrics.unit, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "#5a636d";
-    ctx.lineWidth = 2.6 * metrics.unit;
-    const legA = isoProject(item.x - 0.12, item.y - 0.08, 0, metrics);
-    const legB = isoProject(item.x + 0.12, item.y - 0.08, 0, metrics);
-    const legC = isoProject(item.x, item.y + 0.12, 0, metrics);
-    ctx.beginPath();
-    ctx.moveTo(center.x - 6 * metrics.unit, center.y);
-    ctx.lineTo(legA.x, legA.y);
-    ctx.moveTo(center.x + 6 * metrics.unit, center.y);
-    ctx.lineTo(legB.x, legB.y);
-    ctx.moveTo(center.x, center.y + 2 * metrics.unit);
-    ctx.lineTo(legC.x, legC.y);
-    ctx.stroke();
-  }
-
-  function drawIsoTable(ctx, item, metrics, kind) {
-    if (kind === "round-table") {
-      const top = isoProject(item.x, item.y, item.height, metrics);
-      drawIsoShadow(ctx, top.x, isoProject(item.x, item.y, 0, metrics).y + 2 * metrics.unit, 18 * metrics.unit, 9 * metrics.unit);
-      ctx.beginPath();
-      ctx.ellipse(top.x, top.y, 18 * metrics.unit, 9 * metrics.unit, -0.42, 0, Math.PI * 2);
-      const tabletop = ctx.createRadialGradient(top.x - 4 * metrics.unit, top.y - 3 * metrics.unit, 2, top.x, top.y, 18 * metrics.unit);
-      tabletop.addColorStop(0, "#dec4a2");
-      tabletop.addColorStop(1, "#8b745f");
-      ctx.fillStyle = tabletop;
-      ctx.fill();
-      ctx.strokeStyle = "#4e3f33";
-      ctx.lineWidth = 2 * metrics.unit;
-      ctx.stroke();
-      const base = isoProject(item.x, item.y, 0, metrics);
-      ctx.strokeStyle = "#6c7783";
-      ctx.lineWidth = 2.4 * metrics.unit;
-      ctx.beginPath();
-      ctx.moveTo(top.x, top.y + 2 * metrics.unit);
-      ctx.lineTo(base.x, base.y);
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "bench") {
-      drawIsoPrism(ctx, item.x, item.y, item.height - 0.04, item.width * 0.96, item.depth * 0.7, 0.06, item.rotation, metrics, {
-        top: "#cfa67a",
-        left: "#9d754e",
-        right: "#b8885d"
-      });
-      const radians = degreesToRadians(item.rotation);
-      const legs = [
-        orientedCorners(item.x, item.y, item.width * 0.32, item.depth * 0.18, radians)[0],
-        orientedCorners(item.x, item.y, item.width * 0.32, item.depth * 0.18, radians)[2]
-      ];
-      ctx.strokeStyle = "#66717e";
-      ctx.lineWidth = 2.2 * metrics.unit;
-      legs.forEach(function (leg) {
-        const topLeg = isoProject(leg.x, leg.y, item.height - 0.04, metrics);
-        const bottomLeg = isoProject(leg.x, leg.y, 0, metrics);
-        ctx.beginPath();
-        ctx.moveTo(topLeg.x, topLeg.y);
-        ctx.lineTo(bottomLeg.x, bottomLeg.y);
-        ctx.stroke();
-      });
-      return;
-    }
-
-    if (kind === "armchair" || kind === "sofa") {
-      const seatHeight = kind === "armchair" ? 0.36 : 0.34;
-      drawIsoPrism(ctx, item.x, item.y, seatHeight, item.width * 0.82, item.depth * 0.72, 0.18, item.rotation, metrics, {
-        top: kind === "armchair" ? "#cca67c" : "#c89f76",
-        left: "#9e7854",
-        right: "#b88f67"
-      });
-      const radians = degreesToRadians(item.rotation);
-      drawIsoVerticalPrism(ctx, item.x - Math.sin(radians) * item.depth * 0.18, item.y + Math.cos(radians) * item.depth * 0.18, seatHeight + 0.14, item.width * 0.74, 0.06, kind === "armchair" ? 0.32 : 0.28, item.rotation, metrics, {
-        front: "#dfc3a6",
-        side: "#c7a88a",
-        edge: "#563f2f"
-      });
-      if (kind === "armchair") {
-        drawIsoPrism(ctx, item.x - Math.cos(radians) * item.width * 0.34, item.y - Math.sin(radians) * item.width * 0.34, seatHeight + 0.06, item.width * 0.12, item.depth * 0.42, 0.16, item.rotation, metrics, {
-          top: "#cca67c",
-          left: "#9e7854",
-          right: "#b88f67"
-        });
-        drawIsoPrism(ctx, item.x + Math.cos(radians) * item.width * 0.34, item.y + Math.sin(radians) * item.width * 0.34, seatHeight + 0.06, item.width * 0.12, item.depth * 0.42, 0.16, item.rotation, metrics, {
-          top: "#cca67c",
-          left: "#9e7854",
-          right: "#b88f67"
-        });
-      }
-      return;
-    }
-
-    if (kind === "applebox" || kind === "block") {
-      drawIsoPrism(ctx, item.x, item.y, 0, item.width * 0.92, item.depth * 0.92, Math.max(0.08, item.height), item.rotation, metrics, {
-        top: "#cfa67a",
-        left: "#9f784f",
-        right: "#b88961"
-      });
-      return;
-    }
-
-    if (kind === "sandbag") {
-      const left = isoProject(item.x - 0.12, item.y, item.height * 0.5, metrics);
-      const right = isoProject(item.x + 0.12, item.y, item.height * 0.5, metrics);
-      const base = isoProject(item.x, item.y, 0, metrics);
-      drawIsoShadow(ctx, base.x, base.y + 2 * metrics.unit, 14 * metrics.unit, 7 * metrics.unit);
-      ctx.fillStyle = "#6f5b49";
-      ctx.beginPath();
-      ctx.ellipse(left.x, left.y, 10 * metrics.unit, 6 * metrics.unit, -0.2, 0, Math.PI * 2);
-      ctx.ellipse(right.x, right.y, 10 * metrics.unit, 6 * metrics.unit, 0.2, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc((left.x + right.x) / 2, (left.y + right.y) / 2 - 2 * metrics.unit, 3.2 * metrics.unit, 0, Math.PI * 2);
-      ctx.fillStyle = "#baa286";
-      ctx.fill();
-      return;
-    }
-
-    if (kind === "tether-station") {
-      drawIsoPrism(ctx, item.x, item.y, item.height - 0.04, item.width * 0.82, item.depth * 0.62, 0.05, item.rotation, metrics, {
-        top: "#aeb8c4",
-        left: "#798390",
-        right: "#929daa"
-      });
-      const radians = degreesToRadians(item.rotation);
-      drawIsoPrism(ctx, item.x - Math.sin(radians) * 0.06, item.y + Math.cos(radians) * 0.04, item.height + 0.01, item.width * 0.42, item.depth * 0.28, 0.05, item.rotation, metrics, {
-        top: "#606b78",
-        left: "#3a434d",
-        right: "#4f5965"
-      });
-      const base = isoProject(item.x, item.y, 0, metrics);
-      const top = isoProject(item.x, item.y, item.height - 0.04, metrics);
-      ctx.strokeStyle = "#6b7683";
-      ctx.lineWidth = 2.2 * metrics.unit;
-      ctx.beginPath();
-      ctx.moveTo(top.x, top.y + 2 * metrics.unit);
-      ctx.lineTo(base.x, base.y);
-      ctx.stroke();
-      return;
-    }
-
-    if (kind === "monitor-station") {
-      drawIsoVerticalPrism(ctx, item.x, item.y, item.height - 0.34, item.width * 0.7, 0.04, 0.28, item.rotation, metrics, {
-        front: "#121a24",
-        side: "#66717d",
-        edge: "#aab4c0"
-      });
-      drawIsoVerticalPrism(ctx, item.x, item.y, item.height - 0.3, item.width * 0.52, 0.02, 0.18, item.rotation, metrics, {
-        front: "rgba(123, 182, 232, 0.7)",
-        side: "rgba(72, 118, 160, 0.74)",
-        edge: "rgba(170,180,192,0.54)"
-      });
-      drawIsoStand(ctx, item, metrics, item.height - 0.04);
-      return;
-    }
-
-    if (kind === "dimmer-desk") {
-      drawIsoPrism(ctx, item.x, item.y, item.height - 0.04, item.width * 0.92, item.depth * 0.76, 0.08, item.rotation, metrics, {
-        top: "#8d98a6",
-        left: "#626d7a",
-        right: "#788493"
-      });
-      const radians = degreesToRadians(item.rotation);
-      for (let index = -2; index <= 2; index += 1) {
-        const sliderA = isoProject(item.x + Math.cos(radians) * index * 0.08 - Math.sin(radians) * 0.1, item.y + Math.sin(radians) * index * 0.08 + Math.cos(radians) * 0.1, item.height + 0.04, metrics);
-        const sliderB = isoProject(item.x + Math.cos(radians) * index * 0.08 + Math.sin(radians) * 0.1, item.y + Math.sin(radians) * index * 0.08 - Math.cos(radians) * 0.1, item.height + 0.04, metrics);
-        ctx.beginPath();
-        ctx.moveTo(sliderA.x, sliderA.y);
-        ctx.lineTo(sliderB.x, sliderB.y);
-        ctx.strokeStyle = "#efc884";
-        ctx.lineWidth = 1.2 * metrics.unit;
-        ctx.stroke();
-      }
-      return;
-    }
-
-    if (kind === "cart") {
-      drawIsoPrism(ctx, item.x, item.y, item.height - 0.18, item.width * 0.9, item.depth * 0.82, 0.04, item.rotation, metrics, {
-        top: "#a0abb8",
-        left: "#727d89",
-        right: "#8994a1"
-      });
-      drawIsoPrism(ctx, item.x, item.y, item.height - 0.46, item.width * 0.9, item.depth * 0.82, 0.04, item.rotation, metrics, {
-        top: "#a0abb8",
-        left: "#727d89",
-        right: "#8994a1"
-      });
-      const radians = degreesToRadians(item.rotation);
-      const corners = orientedCorners(item.x, item.y, item.width * 0.32, item.depth * 0.26, radians);
-      ctx.strokeStyle = "#697482";
-      ctx.lineWidth = 2 * metrics.unit;
-      corners.forEach(function (corner) {
-        const top = isoProject(corner.x, corner.y, item.height - 0.18, metrics);
-        const bottom = isoProject(corner.x, corner.y, item.height - 0.46, metrics);
-        ctx.beginPath();
-        ctx.moveTo(top.x, top.y);
-        ctx.lineTo(bottom.x, bottom.y);
-        ctx.stroke();
-      });
-      [corners[1], corners[2]].forEach(function (corner) {
-        const wheel = isoProject(corner.x, corner.y, 0, metrics);
-        ctx.beginPath();
-        ctx.arc(wheel.x, wheel.y, 3.2 * metrics.unit, 0, Math.PI * 2);
-        ctx.fillStyle = "#6f7b88";
-        ctx.fill();
-      });
-      return;
-    }
-
-    if (kind === "desk") {
-      drawIsoPrism(ctx, item.x, item.y, item.height - 0.04, item.width * 0.94, item.depth * 0.8, 0.06, item.rotation, metrics, {
-        top: "#d4b188",
-        left: "#9d7c61",
-        right: "#b58f6e"
-      });
-      drawIsoPrism(ctx, item.x, item.y + 0.02, item.height - 0.16, item.width * 0.54, item.depth * 0.24, 0.12, item.rotation, metrics, {
-        top: "#9a7c62",
-        left: "#755f4e",
-        right: "#876f5b"
-      });
-      return;
-    }
-
-    if (kind === "makeup-station") {
-      drawIsoPrism(ctx, item.x, item.y, item.height - 0.04, item.width * 0.92, item.depth * 0.7, 0.06, item.rotation, metrics, {
-        top: "#d4b188",
-        left: "#9d7c61",
-        right: "#b58f6e"
-      });
-      drawIsoVerticalPrism(ctx, item.x, item.y - 0.1, item.height - 0.02, item.width * 0.44, 0.04, 0.34, item.rotation, metrics, {
-        front: "#dff0ff",
-        side: "#bfd6ea",
-        edge: "#2a3642"
-      });
-      return;
-    }
-
-    drawIsoPrism(ctx, item.x, item.y, item.height - 0.06, item.width * 0.92, item.depth * 0.92, 0.08, item.rotation, metrics, {
-      top: "#8a7969",
-      left: "#5c4c40",
-      right: "#6f5e51"
-    });
-    const radians = degreesToRadians(item.rotation);
-    const corners = orientedCorners(item.x, item.y, item.width * 0.32, item.depth * 0.28, radians);
-    ctx.strokeStyle = "#74685f";
-    ctx.lineWidth = 2.5 * metrics.unit;
-    corners.forEach(function (corner) {
-      const top = isoProject(corner.x, corner.y, item.height - 0.06, metrics);
-      const bottom = isoProject(corner.x, corner.y, 0, metrics);
-      ctx.beginPath();
-      ctx.moveTo(top.x, top.y);
-      ctx.lineTo(bottom.x, bottom.y);
-      ctx.stroke();
-    });
-  }
-  function drawIsoPanel(ctx, item, metrics, width, thickness, height, zBase, color) {
-    drawIsoStand(ctx, item, metrics, zBase + height);
-    drawIsoVerticalPrism(ctx, item.x, item.y, zBase, width, thickness, height, item.rotation, metrics, {
-      front: color,
-      side: darkenHex(color, 0.22),
-      edge: "#0f1012"
-    });
-  }
-
-  function drawIsoStand(ctx, item, metrics, topZ) {
-    const base = isoProject(item.x, item.y, 0, metrics);
-    const top = isoProject(item.x, item.y, topZ, metrics);
-    drawIsoShadow(ctx, base.x, base.y + 2 * metrics.unit, 16 * metrics.unit, 7 * metrics.unit);
-    ctx.strokeStyle = "#545d66";
-    ctx.lineWidth = 2.4 * metrics.unit;
-    ctx.lineCap = "round";
-    const leg1 = isoProject(item.x + 0.18, item.y + 0.12, 0, metrics);
-    const leg2 = isoProject(item.x - 0.18, item.y + 0.12, 0, metrics);
-    const leg3 = isoProject(item.x, item.y - 0.2, 0, metrics);
-    ctx.beginPath();
-    ctx.moveTo(base.x, base.y);
-    ctx.lineTo(leg1.x, leg1.y);
-    ctx.moveTo(base.x, base.y);
-    ctx.lineTo(leg2.x, leg2.y);
-    ctx.moveTo(base.x, base.y);
-    ctx.lineTo(leg3.x, leg3.y);
-    ctx.moveTo(base.x, base.y);
-    ctx.lineTo(top.x, top.y);
-    ctx.stroke();
-  }
-
-  function drawIsoPrism(ctx, centerX, centerY, zBase, width, depth, height, rotation, metrics, colors) {
-    const radians = degreesToRadians(rotation);
-    const corners = orientedCorners(centerX, centerY, width / 2, depth / 2, radians);
-    const a = isoProject(corners[0].x, corners[0].y, zBase, metrics);
-    const b = isoProject(corners[1].x, corners[1].y, zBase, metrics);
-    const c = isoProject(corners[2].x, corners[2].y, zBase, metrics);
-    const d = isoProject(corners[3].x, corners[3].y, zBase, metrics);
-    const aTop = isoProject(corners[0].x, corners[0].y, zBase + height, metrics);
-    const bTop = isoProject(corners[1].x, corners[1].y, zBase + height, metrics);
-    const cTop = isoProject(corners[2].x, corners[2].y, zBase + height, metrics);
-    const dTop = isoProject(corners[3].x, corners[3].y, zBase + height, metrics);
-
-    ctx.fillStyle = colors.left;
-    ctx.beginPath();
-    ctx.moveTo(a.x, a.y);
-    ctx.lineTo(d.x, d.y);
-    ctx.lineTo(dTop.x, dTop.y);
-    ctx.lineTo(aTop.x, aTop.y);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = colors.right;
-    ctx.beginPath();
-    ctx.moveTo(d.x, d.y);
-    ctx.lineTo(c.x, c.y);
-    ctx.lineTo(cTop.x, cTop.y);
-    ctx.lineTo(dTop.x, dTop.y);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = colors.top;
-    ctx.beginPath();
-    ctx.moveTo(aTop.x, aTop.y);
-    ctx.lineTo(bTop.x, bTop.y);
-    ctx.lineTo(cTop.x, cTop.y);
-    ctx.lineTo(dTop.x, dTop.y);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  function drawIsoVerticalPrism(ctx, centerX, centerY, zBase, width, depth, height, rotation, metrics, colors) {
-    const radians = degreesToRadians(rotation);
-    const corners = orientedCorners(centerX, centerY, width / 2, depth / 2, radians);
-    const fl = isoProject(corners[0].x, corners[0].y, zBase, metrics);
-    const fr = isoProject(corners[1].x, corners[1].y, zBase, metrics);
-    const br = isoProject(corners[2].x, corners[2].y, zBase, metrics);
-    const bl = isoProject(corners[3].x, corners[3].y, zBase, metrics);
-    const flTop = isoProject(corners[0].x, corners[0].y, zBase + height, metrics);
-    const frTop = isoProject(corners[1].x, corners[1].y, zBase + height, metrics);
-    const brTop = isoProject(corners[2].x, corners[2].y, zBase + height, metrics);
-    const blTop = isoProject(corners[3].x, corners[3].y, zBase + height, metrics);
-
-    ctx.fillStyle = colors.side;
-    ctx.beginPath();
-    ctx.moveTo(fr.x, fr.y);
-    ctx.lineTo(br.x, br.y);
-    ctx.lineTo(brTop.x, brTop.y);
-    ctx.lineTo(frTop.x, frTop.y);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = colors.front;
-    ctx.beginPath();
-    ctx.moveTo(fl.x, fl.y);
-    ctx.lineTo(fr.x, fr.y);
-    ctx.lineTo(frTop.x, frTop.y);
-    ctx.lineTo(flTop.x, flTop.y);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = colors.edge;
-    ctx.lineWidth = 1.6 * metrics.unit;
-    ctx.beginPath();
-    ctx.moveTo(fl.x, fl.y);
-    ctx.lineTo(fr.x, fr.y);
-    ctx.lineTo(br.x, br.y);
-    ctx.lineTo(bl.x, bl.y);
-    ctx.closePath();
-    ctx.moveTo(flTop.x, flTop.y);
-    ctx.lineTo(frTop.x, frTop.y);
-    ctx.lineTo(brTop.x, brTop.y);
-    ctx.lineTo(blTop.x, blTop.y);
-    ctx.closePath();
-    ctx.moveTo(fl.x, fl.y);
-    ctx.lineTo(flTop.x, flTop.y);
-    ctx.moveTo(fr.x, fr.y);
-    ctx.lineTo(frTop.x, frTop.y);
-    ctx.moveTo(br.x, br.y);
-    ctx.lineTo(brTop.x, brTop.y);
-    ctx.moveTo(bl.x, bl.y);
-    ctx.lineTo(blTop.x, blTop.y);
-    ctx.stroke();
-  }
-
-  function drawIsoShadow(ctx, x, y, rx, ry) {
-    const shadow = ctx.createRadialGradient(x, y, rx * 0.1, x, y, rx);
-    shadow.addColorStop(0, "rgba(0,0,0,0.18)");
-    shadow.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = shadow;
-    ctx.beginPath();
-    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
 
   async function copyImage() {
     try {
@@ -6703,12 +5125,12 @@
     window.print();
   }
 
-  function drawStageView(viewId, ctx, width, height) {
+  function drawStageView(viewId, ctx, width, height, options) {
     if (viewId === "iso") {
       drawIsoView(ctx, width, height);
       return;
     }
-    drawPlanView(ctx, width, height);
+    drawPlanView(ctx, width, height, options);
   }
 
   function createStudioSnapshotCanvas(width, height) {
@@ -6719,19 +5141,29 @@
 
     const mainView = state.primaryView === "iso" ? "iso" : "plan";
     const secondaryView = getSecondaryView();
-    drawStageView(mainView, ctx, width, height);
 
-    const insetWidth = Math.round(width * 0.28);
-    const insetHeight = Math.round(height * 0.28);
+    // Mise en page de l'export : vue principale a gauche, vignette dans une colonne
+    // a droite, pour qu'elle ne recouvre jamais le plan.
+    const gap = Math.round(width * 0.02);
+    const columnWidth = Math.round(width * 0.26);
+    const mainWidth = width - columnWidth - gap;
+    const mainCanvas = document.createElement("canvas");
+    mainCanvas.width = mainWidth;
+    mainCanvas.height = height;
+    drawStageView(mainView, mainCanvas.getContext("2d"), mainWidth, height, { compact: false });
+    ctx.drawImage(mainCanvas, 0, 0);
+
+    const padding = Math.round(width * 0.012);
+    const radius = Math.round(width * 0.012);
+    const insetWidth = columnWidth - gap - padding * 2;
+    const insetHeight = Math.round(insetWidth * 0.7);
     const insetCanvas = document.createElement("canvas");
     insetCanvas.width = insetWidth;
     insetCanvas.height = insetHeight;
-    drawStageView(secondaryView, insetCanvas.getContext("2d"), insetWidth, insetHeight);
+    drawStageView(secondaryView, insetCanvas.getContext("2d"), insetWidth, insetHeight, { compact: true });
 
-    const cardX = width - insetWidth - Math.round(width * 0.05);
-    const cardY = Math.round(height * 0.06);
-    const padding = Math.round(width * 0.012);
-    const radius = Math.round(width * 0.012);
+    const cardX = mainWidth + gap + padding;
+    const cardY = Math.round(height * 0.08);
 
     ctx.save();
     ctx.fillStyle = "rgba(9, 16, 28, 0.88)";
@@ -6742,6 +5174,7 @@
 
     return canvas;
   }
+
 
   function buildPdfFromCanvas(canvas) {
     const jpegDataUrl = canvas.toDataURL("image/jpeg", 0.92);
@@ -6816,13 +5249,6 @@
     return output;
   }
 
-  function createExportCanvas(width, height, renderer) {
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    renderer(canvas.getContext("2d"), width, height);
-    return canvas.toDataURL("image/png");
-  }
 
   function resizeCanvas(canvas) {
     const ratio = window.devicePixelRatio || 1;
@@ -6834,12 +5260,100 @@
     }
   }
 
+  // Zone du canvas plan non couverte par la vignette secondaire (en pixels canvas).
+  // Calculee a chaque rendu ; ignoree pour les exports qui ont leur propre taille.
+  // Renvoie true si l'etat replie/deplie de la vignette a change.
+  function updatePlanRegion() {
+    const wasCollapsed = state.insetCollapsed;
+    state.planRegion = null;
+    const region = computePlanRegionAvoidingInset();
+
+    if (state.primaryView === "iso") {
+      state.insetCollapsed = state.insetPreference === true;
+    } else if (state.insetPreference === null) {
+      // Automatique : on replie la vignette si elle ne peut pas etre evitee sans trop reduire le plan.
+      state.insetCollapsed = !region;
+    } else {
+      state.insetCollapsed = state.insetPreference;
+    }
+
+    if (region && !state.insetCollapsed && state.primaryView !== "iso") {
+      state.planRegion = region;
+    }
+    return wasCollapsed !== state.insetCollapsed;
+  }
+
+  function computePlanRegionAvoidingInset() {
+    const canvas = refs.planCanvas;
+    const pane = refs.isoViewPane;
+    if (!canvas || !pane || state.primaryView === "iso") return null;
+
+    const canvasRect = canvas.getBoundingClientRect();
+    const paneRect = pane.getBoundingClientRect();
+    if (!canvasRect.width || !canvasRect.height || !paneRect.width) return null;
+
+    const ratio = canvas.width / canvasRect.width;
+    const gap = 12;
+    const W = canvasRect.width;
+    const H = canvasRect.height;
+    const left = paneRect.left - canvasRect.left;
+    const right = paneRect.right - canvasRect.left;
+    const top = paneRect.top - canvasRect.top;
+    const bottom = paneRect.bottom - canvasRect.top;
+    const candidates = [
+      { x: 0, y: 0, w: left - gap, h: H },
+      { x: right + gap, y: 0, w: W - right - gap, h: H },
+      { x: 0, y: 0, w: W, h: top - gap },
+      { x: 0, y: bottom + gap, w: W, h: H - bottom - gap }
+    ].filter(function (region) {
+      return region.w > 80 && region.h > 80;
+    });
+    if (!candidates.length) return null;
+
+    function fitScale(region) {
+      const padding = Math.max(36, Math.min(region.w, region.h) * 0.06);
+      return Math.min((region.w - padding * 2) / STUDIO.width, (region.h - padding * 2) / STUDIO.depth);
+    }
+
+    let best = candidates[0];
+    candidates.forEach(function (region) {
+      if (fitScale(region) > fitScale(best)) best = region;
+    });
+
+    // Eviter la vignette ne doit pas reduire le plan de plus de 30 %.
+    if (fitScale(best) < fitScale({ w: W, h: H }) * 0.7) return null;
+
+    return {
+      canvasWidth: canvas.width,
+      canvasHeight: canvas.height,
+      x: best.x * ratio,
+      y: best.y * ratio,
+      w: best.w * ratio,
+      h: best.h * ratio
+    };
+  }
+
+
+  function getPlanRegion(width, height) {
+    const region = state.planRegion;
+    if (region && region.canvasWidth === width && region.canvasHeight === height) {
+      return region;
+    }
+    return { x: 0, y: 0, w: width, h: height };
+  }
+
   function getPlanBaseMetrics(width, height) {
-    const padding = Math.min(width, height) * 0.075;
-    const scale = Math.min((width - padding * 2) / STUDIO.width, (height - padding * 2) / STUDIO.depth);
+    const region = getPlanRegion(width, height);
+    // Marge minimale de 36 px ecran pour loger les cotes (6 m / 8 m) autour du plateau.
+    const minPadding = 36 * getCanvasPixelRatio(refs.planCanvas, width, height);
+    const padding = Math.max(minPadding, Math.min(region.w, region.h) * (region.w === width && region.h === height ? 0.075 : 0.06));
+    const scale = Math.min((region.w - padding * 2) / STUDIO.width, (region.h - padding * 2) / STUDIO.depth);
     return {
       padding: padding,
       scale: scale,
+      region: region,
+      centerX: region.x + region.w / 2,
+      centerY: region.y + region.h / 2,
       stageWidth: STUDIO.width * scale,
       stageHeight: STUDIO.depth * scale
     };
@@ -6849,8 +5363,8 @@
     const base = getPlanBaseMetrics(width, height);
     const stageWidth = base.stageWidth * zoom;
     const stageHeight = base.stageHeight * zoom;
-    const maxPanX = Math.max(0, (stageWidth - (width - base.padding * 2)) / 2);
-    const maxPanY = Math.max(0, (stageHeight - (height - base.padding * 2)) / 2);
+    const maxPanX = Math.max(0, (stageWidth - (base.region.w - base.padding * 2)) / 2);
+    const maxPanY = Math.max(0, (stageHeight - (base.region.h - base.padding * 2)) / 2);
     return {
       x: clamp(panX, -maxPanX, maxPanX),
       y: clamp(panY, -maxPanY, maxPanY)
@@ -6864,30 +5378,45 @@
     const stageHeight = STUDIO.depth * scale;
     const pan = getClampedPlanPan(width, height, state.planZoom, state.planPanX, state.planPanY);
     return {
-      left: width / 2 + pan.x - stageWidth / 2,
-      top: height / 2 + pan.y - stageHeight / 2,
+      left: base.centerX + pan.x - stageWidth / 2,
+      top: base.centerY + pan.y - stageHeight / 2,
       scale: scale,
       padding: base.padding,
       panX: pan.x,
       panY: pan.y,
       stageWidth: stageWidth,
       stageHeight: stageHeight,
+      px: getCanvasPixelRatio(refs.planCanvas, width, height),
       unit: Math.max(0.8, scale / 118)
     };
   }
 
+  // Rapport pixels canvas / pixels CSS : le devicePixelRatio a l'ecran,
+  // une valeur proportionnelle a la largeur pour les exports hors ecran.
+  function getCanvasPixelRatio(canvas, width, height) {
+    if (canvas && canvas.width === width && canvas.height === height && canvas.clientWidth) {
+      return width / canvas.clientWidth;
+    }
+    return Math.max(1, width / 1400);
+  }
+
   function getIsoMetrics(width, height) {
-    const scale = Math.min(width / (STUDIO.width + STUDIO.depth + 2.4), height / 7.4) * state.isoZoom;
-    const originYFactor = state.primaryView === "iso" ? 0.72 : 0.74;
+    // Emprise projetee du plateau : 14 m de large (8 + 6), et en hauteur
+    // 3,36 m sous l'origine (sol avant) + 6,02 m au-dessus (haut du fond).
+    const isoBelow = (STUDIO.width + STUDIO.depth) / 2 * 0.48;
+    const isoAbove = (STUDIO.width + STUDIO.depth) / 2 * 0.48 + STUDIO.backdropHeight * 0.95;
+    const fit = Math.min((width * 0.9) / (STUDIO.width + STUDIO.depth), (height * 0.86) / (isoBelow + isoAbove));
+    const scale = fit * state.isoZoom;
     return {
       originX: width / 2,
-      originY: height * originYFactor,
+      originY: height / 2 + ((isoAbove - isoBelow) / 2) * scale,
       scaleX: scale,
       scaleY: scale * 0.48,
       scaleZ: scale * 0.95,
-      unit: Math.max(0.9, scale / 14)
+      unit: Math.max(0.75, scale / 24)
     };
   }
+
 
   function studioToPlan(x, y, metrics) {
     return {
@@ -6912,18 +5441,6 @@
     };
   }
 
-  function orientedCorners(centerX, centerY, halfWidth, halfDepth, radians) {
-    const ux = Math.cos(radians) * halfWidth;
-    const uy = Math.sin(radians) * halfWidth;
-    const vx = -Math.sin(radians) * halfDepth;
-    const vy = Math.cos(radians) * halfDepth;
-    return [
-      { x: centerX - ux - vx, y: centerY - uy - vy },
-      { x: centerX + ux - vx, y: centerY + uy - vy },
-      { x: centerX + ux + vx, y: centerY + uy + vy },
-      { x: centerX - ux + vx, y: centerY - uy + vy }
-    ];
-  }
 
   function getFloorColor() {
     return FLOOR_COLORS.find(function (entry) {
@@ -6937,9 +5454,6 @@
     }) || BACKDROP_COLORS[0];
   }
 
-  function formatMeters(value) {
-    return value.toFixed(1);
-  }
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
