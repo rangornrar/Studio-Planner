@@ -10,8 +10,8 @@
   const LOCALES = {
     fr: {
       dir: "ltr",
-      documentTitle: "Lumiere Studio App | Plan de studio photo pour PC et tablette",
-      metaDescription: "Ouvrez l application Lumiere Studio pour preparer un set photo sur PC ou tablette, basculer entre plan et vue isometrique, mesurer les distances cle, copier l image et telecharger en PNG ou PDF.",
+      documentTitle: "LITE Studio App | Plan de studio photo pour PC et tablette",
+      metaDescription: "Ouvrez l application LITE Studio pour preparer un set photo sur PC ou tablette, basculer entre plan et vue isometrique, mesurer les distances cle, copier l image et telecharger en PNG ou PDF.",
       supportAriaLabel: "Support Ko-fi",
       supportText: "Cet outil vous aide ? Soutenez son evolution.",
       supportButton: "Soutenir sur Ko-fi",
@@ -45,6 +45,7 @@
         hintDrag: "Glisser = deplacer",
         hintRotate: "Poignee orange = rotation",
         toggleLibrary: "Bibliotheque",
+        closeLibrary: "Fermer",
         hintMeasure: "Mesure",
         viewSwitchAria: "Changer la vue principale",
         viewPlan: "Plan",
@@ -54,7 +55,11 @@
         previewEyebrow: "Apercu",
         previewTitle: "Vue isometrique",
         planAriaLabel: "Plan du studio photo",
-        isoAriaLabel: "Vue isometrique du studio photo"
+        isoAriaLabel: "Vue isometrique du studio photo",
+        insetHide: "Reduire l apercu",
+        insetShowIso: "Apercu iso",
+        insetShowPlan: "Apercu plan",
+        deleteAria: "Supprimer l element"
       },
       selection: {
         empty: "Selectionnez un element dans le plan pour ajuster sa position, sa rotation ou le supprimer.",
@@ -77,8 +82,8 @@
     },
     en: {
       dir: "ltr",
-      documentTitle: "Lumiere Studio App | Photo set planner for desktop and tablet",
-      metaDescription: "Open the Lumiere Studio app to plan a photo set on desktop or tablet, switch between plan and isometric view, review key distances, copy the image, and download PNG or PDF.",
+      documentTitle: "LITE Studio App | Photo set planner for desktop and tablet",
+      metaDescription: "Open the LITE Studio app to plan a photo set on desktop or tablet, switch between plan and isometric view, review key distances, copy the image, and download PNG or PDF.",
       supportAriaLabel: "Support Ko-fi",
       supportText: "Helpful tool? Support its evolution.",
       supportButton: "Support on Ko-fi",
@@ -112,6 +117,7 @@
         hintDrag: "Drag = move",
         hintRotate: "Orange handle = rotate",
         toggleLibrary: "Library",
+        closeLibrary: "Close",
         hintMeasure: "Measure",
         viewSwitchAria: "Change the main view",
         viewPlan: "Plan",
@@ -121,7 +127,11 @@
         previewEyebrow: "Preview",
         previewTitle: "Isometric view",
         planAriaLabel: "Studio plan view",
-        isoAriaLabel: "Isometric view of the photo studio"
+        isoAriaLabel: "Isometric view of the photo studio",
+        insetHide: "Hide preview",
+        insetShowIso: "Iso preview",
+        insetShowPlan: "Plan preview",
+        deleteAria: "Delete item"
       },
       selection: {
         empty: "Select an item on the plan to adjust its position, rotation or remove it.",
@@ -189,8 +199,8 @@
     },
     es: {
       dir: "ltr",
-      documentTitle: "Lumiere Studio App | Planificador para escritorio y tableta",
-      metaDescription: "Abre la aplicacion Lumiere Studio para preparar un set fotografico en escritorio o tableta, cambiar entre plano y vista isometrica, medir distancias utiles, copiar la imagen y descargar en PNG o PDF.",
+      documentTitle: "LITE Studio App | Planificador para escritorio y tableta",
+      metaDescription: "Abre la aplicacion LITE Studio para preparar un set fotografico en escritorio o tableta, cambiar entre plano y vista isometrica, medir distancias utiles, copiar la imagen y descargar en PNG o PDF.",
       supportAriaLabel: "Soporte Ko-fi",
       supportText: "¿Esta herramienta te ayuda? Apoya su evolución.",
       supportButton: "Apoyar en Ko-fi",
@@ -224,6 +234,7 @@
         hintDrag: "Arrastrar = mover",
         hintRotate: "Asa naranja = rotacion",
         toggleLibrary: "Biblioteca",
+        closeLibrary: "Cerrar",
         hintMeasure: "Medir",
         viewSwitchAria: "Cambiar la vista principal",
         viewPlan: "Plano",
@@ -233,7 +244,11 @@
         previewEyebrow: "Vista previa",
         previewTitle: "Vista isometrica",
         planAriaLabel: "Plano del estudio fotografico",
-        isoAriaLabel: "Vista isometrica del estudio fotografico"
+        isoAriaLabel: "Vista isometrica del estudio fotografico",
+        insetHide: "Ocultar vista previa",
+        insetShowIso: "Vista iso",
+        insetShowPlan: "Vista plano",
+        deleteAria: "Eliminar elemento"
       },
       selection: {
         empty: "Selecciona un elemento en el plano para ajustar su posicion, su rotacion o eliminarlo.",
@@ -301,8 +316,8 @@
     },
     de: {
       dir: "ltr",
-      documentTitle: "Lumiere Studio App | Planer fur Desktop und Tablet",
-      metaDescription: "Offne die Lumiere Studio App, plane ein Foto-Set auf Desktop oder Tablet, wechsle zwischen Plan und isometrischer Ansicht, miss wichtige Abstanden, kopiere das Bild und lade PNG oder PDF herunter.",
+      documentTitle: "LITE Studio App | Planer fur Desktop und Tablet",
+      metaDescription: "Offne die LITE Studio App, plane ein Foto-Set auf Desktop oder Tablet, wechsle zwischen Plan und isometrischer Ansicht, miss wichtige Abstanden, kopiere das Bild und lade PNG oder PDF herunter.",
       supportAriaLabel: "Ko-fi-Unterstutzung",
       supportText: "Hilft dir dieses Tool? Unterstutze seine Weiterentwicklung.",
       supportButton: "Auf Ko-fi unterstutzen",
@@ -336,6 +351,7 @@
         hintDrag: "Ziehen = bewegen",
         hintRotate: "Oranger Griff = drehen",
         toggleLibrary: "Bibliothek",
+        closeLibrary: "Schliessen",
         hintMeasure: "Messen",
         viewSwitchAria: "Hauptansicht wechseln",
         viewPlan: "Plan",
@@ -345,7 +361,11 @@
         previewEyebrow: "Vorschau",
         previewTitle: "Isometrische Ansicht",
         planAriaLabel: "Plan des Fotostudios",
-        isoAriaLabel: "Isometrische Ansicht des Fotostudios"
+        isoAriaLabel: "Isometrische Ansicht des Fotostudios",
+        insetHide: "Vorschau ausblenden",
+        insetShowIso: "Iso-Vorschau",
+        insetShowPlan: "Plan-Vorschau",
+        deleteAria: "Element loeschen"
       },
       selection: {
         empty: "Wahle ein Element im Plan, um Position, Drehung oder Loschen anzupassen.",
@@ -413,8 +433,8 @@
     },
     ar: {
       dir: "rtl",
-      documentTitle: "Lumiere Studio App | مخطط للاستوديو على الكمبيوتر والتابلت",
-      metaDescription: "افتح تطبيق Lumiere Studio لتحضير إعداد استوديو تصوير على الكمبيوتر أو التابلت، والتنقل بين المخطط والمنظور الأيزومتري، وقياس المسافات المهمة، ونسخ الصورة، وتنزيل PNG أو PDF.",
+      documentTitle: "LITE Studio App | مخطط للاستوديو على الكمبيوتر والتابلت",
+      metaDescription: "افتح تطبيق LITE Studio لتحضير إعداد استوديو تصوير على الكمبيوتر أو التابلت، والتنقل بين المخطط والمنظور الأيزومتري، وقياس المسافات المهمة، ونسخ الصورة، وتنزيل PNG أو PDF.",
       supportAriaLabel: "دعم Ko-fi",
       supportText: "هل هذه الأداة مفيدة لك؟ ادعم تطويرها.",
       supportButton: "ادعم عبر Ko-fi",
@@ -448,6 +468,7 @@
         hintDrag: "سحب = تحريك",
         hintRotate: "المقبض البرتقالي = تدوير",
         toggleLibrary: "المكتبة",
+        closeLibrary: "إغلاق",
         hintMeasure: "قياس",
         viewSwitchAria: "تبديل العرض الرئيسي",
         viewPlan: "الخطة",
@@ -457,7 +478,11 @@
         previewEyebrow: "معاينة",
         previewTitle: "منظور أيزومتري",
         planAriaLabel: "مخطط استوديو التصوير",
-        isoAriaLabel: "منظور أيزومتري لاستوديو التصوير"
+        isoAriaLabel: "منظور أيزومتري لاستوديو التصوير",
+        insetHide: "إخفاء المعاينة",
+        insetShowIso: "معاينة أيزو",
+        insetShowPlan: "معاينة المخطط",
+        deleteAria: "حذف العنصر"
       },
       selection: {
         empty: "حدد عنصراً من المخطط لتعديل موضعه أو تدويره أو حذفه.",
@@ -1213,7 +1238,7 @@
       x: "X (m)",
       y: "Y (m)",
       studio: "Studio {width} x {depth} m",
-      searchPlaceholder: "Rechercher un element, une taille ou un type",
+      searchPlaceholder: "Element, taille ou type",
       searchEmpty: "Aucun element ne correspond a cette recherche.",
       savePreset: "Sauvegarder ce preset",
       savePresetPrompt: "Nom du preset personnalise",
@@ -1243,7 +1268,7 @@
       x: "X (m)",
       y: "Y (m)",
       studio: "Studio {width} x {depth} m",
-      searchPlaceholder: "Search by element, size or type",
+      searchPlaceholder: "Element, size or type",
       searchEmpty: "No element matches this search.",
       savePreset: "Save this preset",
       savePresetPrompt: "Custom preset name",
@@ -1273,7 +1298,7 @@
       x: "X (m)",
       y: "Y (m)",
       studio: "Estudio {width} x {depth} m",
-      searchPlaceholder: "Buscar por elemento, tamano o tipo",
+      searchPlaceholder: "Elemento, tamano o tipo",
       searchEmpty: "Ningun elemento coincide con esta busqueda.",
       savePreset: "Guardar este preset",
       savePresetPrompt: "Nombre del preset personalizado",
@@ -1303,7 +1328,7 @@
       x: "X (m)",
       y: "Y (m)",
       studio: "Studio {width} x {depth} m",
-      searchPlaceholder: "Nach Element, Grosse oder Typ suchen",
+      searchPlaceholder: "Element, Groesse oder Typ",
       searchEmpty: "Kein Element passt zu dieser Suche.",
       savePreset: "Dieses Preset speichern",
       savePresetPrompt: "Name des benutzerdefinierten Presets",
@@ -1333,7 +1358,7 @@
       x: "س (م)",
       y: "ص (م)",
       studio: "استوديو {width} x {depth} م",
-      searchPlaceholder: "ابحث حسب العنصر او الحجم او النوع",
+      searchPlaceholder: "العنصر او الحجم او النوع",
       searchEmpty: "لا يوجد عنصر يطابق هذا البحث.",
       savePreset: "احفظ هذا الاعداد",
       savePresetPrompt: "اسم الاعداد المخصص",

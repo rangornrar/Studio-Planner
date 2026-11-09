@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#07111f">
-  <title>Fotostudio-Planer fur Desktop, Tablet und Mobil | Lumiere Studio</title>
+  <title>Fotostudio-Planer fur Desktop, Tablet und Mobil | LITE Studio</title>
   <meta name="description" content="Bereite einen Fotostudio-Plan auf Desktop, Tablet oder Mobil vor, mit einklappbarer Bibliothek, umschaltbarer Plan- und Iso-Ansicht, automatischen Messwerten, Bildkopie, PNG- oder PDF-Export und Presets.">
   <link rel="canonical" href="https://lumierestudio.archi-it.fr/de/">
   <link rel="alternate" hreflang="fr" href="https://lumierestudio.archi-it.fr/">
@@ -16,26 +16,27 @@
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="de_DE">
-  <meta property="og:site_name" content="Lumiere Studio">
-  <meta property="og:title" content="Lumiere Studio - Fotostudio-Planer fur Desktop, Tablet und Mobil">
+  <meta property="og:site_name" content="LITE Studio">
+  <meta property="og:title" content="LITE Studio - Fotostudio-Planer fur Desktop, Tablet und Mobil">
   <meta property="og:description" content="Eine Web-App, um ein Set auf Desktop aufzubauen, auf Tablet oder Mobil anzupassen, zwischen Plan und Iso zu wechseln und ein sauberes Diagramm zu teilen.">
   <meta property="og:url" content="https://lumierestudio.archi-it.fr/de/">
   <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta property="og:image:alt" content="Screenshot von Lumiere Studio mit Bibliothek, umschaltbarer Hauptansicht und sichtbaren Messwerten">
+  <meta property="og:image:alt" content="Screenshot von LITE Studio mit Bibliothek, umschaltbarer Hauptansicht und sichtbaren Messwerten">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Lumiere Studio - Fotostudio-Planer fur Desktop, Tablet und Mobil">
+  <meta name="twitter:title" content="LITE Studio - Fotostudio-Planer fur Desktop, Tablet und Mobil">
   <meta name="twitter:description" content="Einklappbare Bibliothek, umschaltbare Plan- und Iso-Ansicht, nutzliche Messwerte und schnelle Bild-, PNG- oder PDF-Ausgabe.">
   <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta name="twitter:image:alt" content="Screenshot von Lumiere Studio mit Bibliothek, umschaltbarer Hauptansicht und sichtbaren Messwerten">
+  <meta name="twitter:image:alt" content="Screenshot von LITE Studio mit Bibliothek, umschaltbarer Hauptansicht und sichtbaren Messwerten">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/site-nav.js" defer></script>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Lumiere Studio",
+  "name": "LITE Studio",
   "applicationCategory": "PhotographyApplication",
   "applicationSubCategory": "Photo Studio Planner",
   "operatingSystem": "Web",
@@ -56,7 +57,7 @@
     <div class="site-shell top-strip-inner">
       <div class="top-copy" id="topCopy">Die aktuelle Version funktioniert auf Desktop, Tablet und Mobil. Wenn sie hilft, unterstutze ihre Weiterentwicklung.</div>
       <a class="top-kofi" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">
-        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Lumiere Studio auf Ko-fi unterstutzen">
+        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="LITE Studio auf Ko-fi unterstutzen">
       </a>
     </div>
   </div>
@@ -65,13 +66,22 @@
       <a class="brand" href="index.html">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-copy">
-          <strong>Lumiere Studio</strong>
+          <strong>LITE Studio</strong>
           <span id="brandTagline">Fotostudio-Planer</span>
         </span>
       </a>
-      <div class="site-nav-tools">
+      <a class="site-primary-cta" href="../app.html?lang=de">App</a>
+      <button class="site-menu-toggle" type="button" aria-label="Menu" aria-controls="siteNavTools" aria-expanded="false">
+        <span>Menu</span>
+      </button>
+      <button class="site-nav-backdrop" type="button" aria-label="Menu schliessen" hidden></button>
+      <div class="site-nav-tools" id="siteNavTools">
+        <div class="site-drawer-head">
+          <strong>LITE Studio</strong>
+          <button class="site-menu-close" type="button" aria-label="Menu schliessen">Menu schliessen</button>
+        </div>
         <nav class="nav-links" id="siteNavLinks" aria-label="Hauptnavigation">
-          <a href="../app.html?lang=de">App</a><a href="guide.html">Guide</a><a href="presets.html">Presets</a><a href="faq.html">FAQ</a>
+          <a class="active" href="index.html" aria-current="page">Start</a><a href="../app.html?lang=de">App</a><a href="guide.html">Guide</a><a href="presets.html">Presets</a><a href="faq.html">FAQ</a>
         </nav>
         <nav class="language-switcher" aria-label="Seitensprache auswahlen">
     <div class="language-switcher-list">
@@ -95,8 +105,8 @@
     <section class="hero">
       <div class="site-shell">
         <article class="hero-copy hero-panel">
-          <div class="hero-panel-main" id="heroCopyContent"><p class="eyebrow">Fotostudio-Planer fur Desktop, Tablet und Mobil</p><h1>Baue dein Set auf Desktop auf, passe es auf Tablet oder Mobil an und teile in Sekunden einen sauberen Plan.</h1><p>Lumiere Studio folgt jetzt dem echten Vorbereitungsrhythmus: volle Bibliothek bei genug Platz, kompakte Bedienelemente am Set und immer dieselbe Szene, dieselben Messwerte und dieselben Exporte.</p><div class="hero-actions"><a class="button-link primary" href="../app.html?lang=de">App offnen</a><a class="button-link secondary" href="guide.html">Guide lesen</a></div><div class="hero-points"><div class="point-chip"><strong>Eine App</strong>Dieselbe Szene funktioniert auf Desktop, Tablet und Mobil, ohne das Produkt in mehrere Versionen aufzuteilen.</div><div class="point-chip"><strong>Einklappbare Bibliothek</strong>Auf kompakten Bildschirmen kannst du die Bibliothek ein- oder ausblenden und die ganze Arbeitsflache zuruckholen.</div><div class="point-chip"><strong>Plan / Iso umschaltbar</strong>Du wahlst, welche Ansicht die Hauptansicht sein soll, und zoomst dann per Rad oder Pinch.</div><div class="point-chip"><strong>Messwerte + Export</strong>Prufe wichtige Distanzen, kopiere das Bild, exportiere PNG oder PDF und behalte deine eigenen Presets.</div></div></div>
-          <div class="hero-inline-media" id="heroVisualContent"><figure><img src="../docs/screenshots/studio-portrait.png" alt="Beispiel eines Studio-Plans mit Bibliothek, umschaltbarer Hauptansicht und Messwerten in Lumiere Studio"><figcaption class="hero-caption">Umschaltbare Hauptansicht, einklappbare Bibliothek in kompakten Layouts, lesbare Messwerte und schnelle Bildausgabe.</figcaption><div class="meta-list hero-media-meta"><span>Dichter Desktop</span><span>Kompaktes Tablet</span><span>Touch Mobil</span><span>PNG / PDF</span></div></figure></div>
+          <div class="hero-panel-main" id="heroCopyContent"><p class="eyebrow">Fotostudio-Planer fur Desktop, Tablet und Mobil</p><h1>Baue dein Set auf Desktop auf, passe es auf Tablet oder Mobil an und teile in Sekunden einen sauberen Plan.</h1><p>LITE Studio folgt jetzt dem echten Vorbereitungsrhythmus: volle Bibliothek bei genug Platz, kompakte Bedienelemente am Set und immer dieselbe Szene, dieselben Messwerte und dieselben Exporte.</p><div class="hero-actions"><a class="button-link primary" href="../app.html?lang=de">App offnen</a><a class="button-link secondary" href="guide.html">Guide lesen</a></div><div class="hero-points"><div class="point-chip"><strong>Eine App</strong>Dieselbe Szene funktioniert auf Desktop, Tablet und Mobil, ohne das Produkt in mehrere Versionen aufzuteilen.</div><div class="point-chip"><strong>Einklappbare Bibliothek</strong>Auf kompakten Bildschirmen kannst du die Bibliothek ein- oder ausblenden und die ganze Arbeitsflache zuruckholen.</div><div class="point-chip"><strong>Plan / Iso umschaltbar</strong>Du wahlst, welche Ansicht die Hauptansicht sein soll, und zoomst dann per Rad oder Pinch.</div><div class="point-chip"><strong>Messwerte + Export</strong>Prufe wichtige Distanzen, kopiere das Bild, exportiere PNG oder PDF und behalte deine eigenen Presets.</div></div></div>
+          <div class="hero-inline-media" id="heroVisualContent"><figure><img src="../docs/screenshots/studio-portrait.png" alt="Beispiel eines Studio-Plans mit Bibliothek, umschaltbarer Hauptansicht und Messwerten in LITE Studio"><figcaption class="hero-caption">Umschaltbare Hauptansicht, einklappbare Bibliothek in kompakten Layouts, lesbare Messwerte und schnelle Bildausgabe.</figcaption><div class="meta-list hero-media-meta"><span>Dichter Desktop</span><span>Kompaktes Tablet</span><span>Touch Mobil</span><span>PNG / PDF</span></div></figure></div>
         </article>
       </div>
     </section>
@@ -114,7 +124,7 @@
     <section class="section">
       <div class="site-shell">
         <div class="section-head" id="capturesHeadContent"><p class="eyebrow">Screenshots</p><h2>Die aktuelle App mit ihrer Desktop-, Tablet- und Mobil-Logik, wie sie heute wirklich funktioniert.</h2><p>Die Screenshots zeigen die echte Version: umschaltbare Hauptansicht, lesbare Messwerte, kontrastreiche Labels und eine kompakte Oberflache, wenn der Platz knapper wird.</p></div>
-        <div class="screenshot-grid" id="screenshotGridContent"><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-portrait.png" alt="Portrait-Preset mit wichtigen Messwerten und umschaltbarer Hauptansicht in Lumiere Studio"><figcaption>Portrait-Preset mit den relevanten Distanzen, der passenden Hauptansicht fur den Moment und sauberer Ausgabe fur das Briefing.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-boudoir.png" alt="Boudoir-Preset mit Mobiliar, farbigem Hintergrund und aktueller Lumiere Studio Oberflache"><figcaption>Boudoir-Preset mit Mobiliar, farbigem Hintergrund und einer kompakten Logik, die auf Desktop und Tablet stimmig bleibt.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-video.png" alt="Interview-Preset mit Kamera, LED-Panels und aktueller Lumiere Studio Oberflache"><figcaption>Interview-Preset mit lesbarer Kameraachse, LED-Panels, schnellen Messwerten und sofortigem Export fur das Team.</figcaption></figure></article></div>
+        <div class="screenshot-grid" id="screenshotGridContent"><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-portrait.png" alt="Portrait-Preset mit wichtigen Messwerten und umschaltbarer Hauptansicht in LITE Studio"><figcaption>Portrait-Preset mit den relevanten Distanzen, der passenden Hauptansicht fur den Moment und sauberer Ausgabe fur das Briefing.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-boudoir.png" alt="Boudoir-Preset mit Mobiliar, farbigem Hintergrund und aktueller LITE Studio Oberflache"><figcaption>Boudoir-Preset mit Mobiliar, farbigem Hintergrund und einer kompakten Logik, die auf Desktop und Tablet stimmig bleibt.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-video.png" alt="Interview-Preset mit Kamera, LED-Panels und aktueller LITE Studio Oberflache"><figcaption>Interview-Preset mit lesbarer Kameraachse, LED-Panels, schnellen Messwerten und sofortigem Export fur das Team.</figcaption></figure></article></div>
       </div>
     </section>
     <section class="section">
@@ -122,7 +132,7 @@
     </section>
     <section class="section">
       <div class="site-shell">
-        <div class="cta-panel" id="ctaPanelContent"><p class="eyebrow">Bereit fur die aktuelle Version</p><h2>Lade ein Preset, klappe bei Bedarf die Bibliothek ein und lass die richtige Ansicht deine Szene fuhren.</h2><p>Desktop, Tablet oder Mobil: dieselbe App behalt deine Presets, deine Distanzen und deine Bildausgaben, ohne den Workflow mitten im Prozess zu wechseln.</p><div class="cta-actions"><a class="button-link primary" href="../app.html?lang=de">Lumiere Studio starten</a><a class="button-link secondary" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">Projekt unterstutzen</a></div></div>
+        <div class="cta-panel" id="ctaPanelContent"><p class="eyebrow">Bereit fur die aktuelle Version</p><h2>Lade ein Preset, klappe bei Bedarf die Bibliothek ein und lass die richtige Ansicht deine Szene fuhren.</h2><p>Desktop, Tablet oder Mobil: dieselbe App behalt deine Presets, deine Distanzen und deine Bildausgaben, ohne den Workflow mitten im Prozess zu wechseln.</p><div class="cta-actions"><a class="button-link primary" href="../app.html?lang=de">LITE Studio starten</a><a class="button-link secondary" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">Projekt unterstutzen</a></div></div>
       </div>
     </section>
     <section class="section">
@@ -158,7 +168,7 @@
     </nav>
   </div>
     <div class="site-shell footer-inner">
-      <div id="footerCopy">Lumiere Studio · Fotostudio-Planer fur Desktop, Tablet und Mobil mit umschaltbaren Plan/Iso-Ansichten, Messwerten und Exporten.</div>
+      <div id="footerCopy">LITE Studio · Fotostudio-Planer fur Desktop, Tablet und Mobil mit umschaltbaren Plan/Iso-Ansichten, Messwerten und Exporten.</div>
       <div class="footer-links" id="footerLinks">
         <a href="../app.html?lang=de">App</a><a href="guide.html">Guide</a><a href="presets.html">Presets</a><a href="faq.html">FAQ</a>
       </div>

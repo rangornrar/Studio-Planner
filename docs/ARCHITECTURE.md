@@ -4,7 +4,7 @@ L’application principale est `app.html`. Le contrôleur `js/simple-studio.js` 
 
 Ce choix conserve l’ouverture directe de `app.html`, sans serveur ni chaîne de compilation. Une conversion immédiate en modules ES aurait changé cette contrainte de lancement local. Le seul objet partagé, `window.LiteStudioLocales`, expose les données de localisation ; sa structure de premier niveau est gelée, pas les objets imbriqués.
 
-La séparation reste progressive : le contrôleur conserve une dette de taille et de responsabilités. Les prochaines extractions pertinentes seraient la géométrie, la persistance des presets et le rendu, avec tests de comportement avant déplacement. Les autres fichiers historiques ne sont pas supprimés sur la seule base de leur nom.
+La séparation reste progressive : le contrôleur conserve une dette de taille et de responsabilités. Les prochaines extractions pertinentes seraient la géométrie, la persistance des presets et le rendu, avec tests de comportement avant déplacement. Les anciens fichiers `js/app.js`, `js/store.js`, `js/render-pipeline.js`, `css/app.css`, etc. n'étaient chargés par aucune page : ils ont été retirés (ils restent dans l'historique git).
 
 ## Vérification
 

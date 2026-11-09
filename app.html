@@ -4,32 +4,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lumiere Studio App | Plan de studio photo pour PC et tablette</title>
+  <title>LITE Studio App | Plan de studio photo pour PC et tablette</title>
   <meta name="description"
-    content="Ouvrez l application Lumiere Studio pour preparer un set photo sur PC ou tablette, basculer entre plan et vue isometrique, mesurer les distances cle, copier l image et telecharger en PNG ou PDF.">
+    content="Ouvrez l application LITE Studio pour preparer un set photo sur PC ou tablette, basculer entre plan et vue isometrique, mesurer les distances cle, copier l image et telecharger en PNG ou PDF.">
   <meta name="theme-color" content="#120f16">
   <link rel="canonical" href="https://lumierestudio.archi-it.fr/app.html">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="fr_FR">
-  <meta property="og:site_name" content="Lumiere Studio">
-  <meta property="og:title" content="Lumiere Studio App | Plan de studio photo pour PC et tablette">
+  <meta property="og:site_name" content="LITE Studio">
+  <meta property="og:title" content="LITE Studio App | Plan de studio photo pour PC et tablette">
   <meta property="og:description"
     content="Application web pour placer lumieres, cameras et sujets, basculer entre plan et vue isometrique, afficher les mesures automatiques et sortir un visuel propre en PNG ou PDF.">
   <meta property="og:url" content="https://lumierestudio.archi-it.fr/app.html">
   <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta property="og:image:alt" content="Capture de l application Lumiere Studio avec plan principal, vue isometrique secondaire et mesures">
+  <meta property="og:image:alt" content="Capture de l application LITE Studio avec plan principal, vue isometrique secondaire et mesures">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Lumiere Studio App | Plan de studio photo pour PC et tablette">
+  <meta name="twitter:title" content="LITE Studio App | Plan de studio photo pour PC et tablette">
   <meta name="twitter:description"
     content="Preparez un set photo sur PC ou tablette, basculez entre plan et vue iso, copiez l image et exportez en PNG ou PDF.">
   <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta name="twitter:image:alt" content="Capture de l application Lumiere Studio avec plan principal, vue isometrique secondaire et mesures">
+  <meta name="twitter:image:alt" content="Capture de l application LITE Studio avec plan principal, vue isometrique secondaire et mesures">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "Lumiere Studio App",
+      "name": "LITE Studio App",
       "applicationCategory": "PhotographyApplication",
       "applicationSubCategory": "Photo Studio Planner",
       "operatingSystem": "Web",
@@ -52,12 +52,12 @@
       }
     }
   </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="css/simple-studio.css">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0c'/%3E%3Crect x='14' y='14' width='36' height='36' rx='8' fill='none' stroke='%2338bdf8' stroke-width='5'/%3E%3Ccircle cx='40' cy='40' r='8' fill='%23fbbf24'/%3E%3C/svg%3E">
+  <link rel="preload" href="fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css?v=3.0">
+  <link rel="stylesheet" href="css/simple-studio.css?v=3.0">
+  <link rel="stylesheet" href="css/photo-lab.css?v=3.0">
 </head>
 
 <body>
@@ -152,6 +152,11 @@
         </div>
       </nav>
 
+      <div class="app-mode-switch" aria-label="Choisir l'espace de travail">
+        <button class="app-mode-button active" type="button" data-app-mode-target="planner" aria-pressed="true">Plan</button>
+        <button class="app-mode-button" type="button" data-app-mode-target="photo-lab" aria-pressed="false">Labo photo</button>
+      </div>
+
       <div class="appbar-status">
         <span class="status-pill" id="studioBadge"></span>
         <span class="status-pill" id="countBadge"></span>
@@ -159,15 +164,18 @@
     </header>
 
     <div class="workspace">
-      <aside class="library-panel">
+      <aside class="library-panel" id="libraryPanel" aria-label="Bibliotheque d'elements">
         <div class="panel-top panel-top-compact">
-          <p class="panel-eyebrow" id="libraryEyebrow">Bibliotheque</p>
+          <div class="drawer-head">
+            <p class="panel-eyebrow" id="libraryEyebrow">Bibliotheque</p>
+            <button class="drawer-close" id="libraryClose" type="button" aria-label="Fermer la bibliotheque">Fermer</button>
+          </div>
         </div>
 
         <label class="search-field" for="librarySearch">
-          <span class="search-icon" aria-hidden="true">⌕</span>
+          <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.6 12.6 17 17"/></svg>
           <input id="librarySearch" type="search" autocomplete="off" spellcheck="false"
-            placeholder="Rechercher un element">
+            placeholder="Element, taille ou type">
         </label>
 
         <div class="category-tabs" id="categoryTabs"></div>
@@ -176,6 +184,8 @@
 
         <div class="palette-panel" id="palettePanel"></div>
       </aside>
+
+      <button class="library-backdrop" id="libraryBackdrop" type="button" aria-label="Fermer la bibliotheque" tabindex="-1" hidden></button>
 
       <main class="stage-panel">
         <div class="stage-topbar">
@@ -187,14 +197,14 @@
           </div>
           <div class="stage-toolbar">
             <div class="stage-zoom-tools is-active" id="planZoomTools" data-zoom-controls="plan" aria-label="Zoom plan">
-              <button class="stage-zoom-tool" id="planZoomOut" type="button" aria-label="Zoom out">-</button>
+              <button class="stage-zoom-tool" id="planZoomOut" type="button" aria-label="Zoom arriere">&minus;</button>
               <button class="stage-zoom-tool stage-zoom-value" id="planZoomReset" type="button">100%</button>
-              <button class="stage-zoom-tool" id="planZoomIn" type="button" aria-label="Zoom in">+</button>
+              <button class="stage-zoom-tool" id="planZoomIn" type="button" aria-label="Zoom avant">+</button>
             </div>
             <div class="stage-zoom-tools" id="isoZoomTools" data-zoom-controls="iso" aria-label="Zoom isometrique">
-              <button class="stage-zoom-tool" id="isoZoomOut" type="button" aria-label="Zoom out">-</button>
+              <button class="stage-zoom-tool" id="isoZoomOut" type="button" aria-label="Zoom arriere">&minus;</button>
               <button class="stage-zoom-tool stage-zoom-value" id="isoZoomReset" type="button">100%</button>
-              <button class="stage-zoom-tool" id="isoZoomIn" type="button" aria-label="Zoom in">+</button>
+              <button class="stage-zoom-tool" id="isoZoomIn" type="button" aria-label="Zoom avant">+</button>
             </div>
             <button class="hint-pill stage-tool library-toggle" id="libraryToggle" type="button" aria-expanded="true"
               aria-controls="libraryPanel">Bibliotheque</button>
@@ -209,13 +219,112 @@
           <section class="stage-view stage-view-iso is-secondary" id="isoViewPane" data-stage-view-pane="iso">
             <canvas id="isoCanvas" aria-label="Vue isometrique du studio photo"></canvas>
           </section>
+          <button class="inset-toggle" id="insetToggle" type="button" aria-pressed="false"
+            aria-label="Reduire l apercu" title="Reduire l apercu">
+            <span class="inset-toggle-icon" aria-hidden="true"></span>
+            <span class="inset-toggle-label" id="insetToggleLabel">Apercu iso</span>
+          </button>
         </div>
       </main>
     </div>
+
+    <section class="photo-lab-shell" id="photoLabShell" aria-labelledby="photoLabTitle" data-compare-mode="single">
+      <div class="photo-lab-stage">
+        <div class="photo-lab-topline">
+          <div>
+            <p class="photo-lab-eyebrow">Laboratoire photographique interactif</p>
+            <h2 id="photoLabTitle"><span>Reglages photo,</span> <span>consequences visibles.</span></h2>
+          </div>
+          <div class="photo-lab-compare-controls" aria-label="Mode de comparaison">
+            <button class="photo-lab-chip active" type="button" data-photo-compare="single" aria-pressed="true">Vue seule</button>
+            <button class="photo-lab-chip" type="button" data-photo-compare="split" aria-pressed="false">Compare</button>
+          </div>
+        </div>
+
+        <div class="photo-lab-canvas-frame">
+          <div class="photo-lab-viewfinder-hud" aria-hidden="true">
+            <span>LIVE VIEW</span>
+            <span id="photoLabHudSettings">ISO 100 · f/2.8 · 50 mm</span>
+          </div>
+          <canvas id="photoLabCanvas" aria-label="Simulation photographique interactive"></canvas>
+          <div class="photo-lab-loading" id="photoLabLoading">Chargement de la scene photographique...</div>
+        </div>
+
+        <div class="photo-lab-compare" id="photoLabCompare" aria-label="Comparaison reference et reglage courant">
+          <figure>
+            <canvas id="photoLabReferenceCanvas" aria-label="Reglage de reference"></canvas>
+            <figcaption>Reference</figcaption>
+          </figure>
+          <figure>
+            <canvas id="photoLabCurrentCanvas" aria-label="Reglage courant"></canvas>
+            <figcaption>Courant</figcaption>
+          </figure>
+        </div>
+
+        <div class="photo-lab-reading" aria-live="polite">
+          <p id="photoLabExplanation"></p>
+          <p class="photo-lab-warning" id="photoLabWarning" data-level="balanced"></p>
+          <div class="photo-lab-metrics" id="photoLabMetrics"></div>
+        </div>
+      </div>
+
+      <button class="photo-lab-controls-toggle" id="photoLabControlsToggle" type="button" aria-expanded="false" aria-controls="photoLabControls">
+        Reglages photo
+      </button>
+      <aside class="photo-lab-controls" id="photoLabControls" aria-label="Commandes du laboratoire photographique">
+        <div class="photo-lab-camera-deck" aria-label="Materiel photographie actuellement simule">
+          <div class="photo-lab-lens-visual" aria-hidden="true">
+            <span class="photo-lab-lens-glass"></span>
+          </div>
+          <div>
+            <p>Configuration optique</p>
+            <strong id="photoLabLensName">24-70 mm f/2.8</strong>
+            <span id="photoLabLensSpec">Plein format · 9 lamelles</span>
+          </div>
+        </div>
+
+        <section class="photo-lab-control-group">
+          <div class="photo-lab-control-head">
+            <span>Molette ISO</span>
+            <small>Bruit et sensibilite</small>
+          </div>
+          <div class="photo-lab-dial-grid photo-lab-mechanical-dial photo-lab-mechanical-dial--iso" id="photoLabIsoControls"></div>
+        </section>
+
+        <section class="photo-lab-control-group">
+          <div class="photo-lab-control-head">
+            <span>Bague d'ouverture</span>
+            <small>Lumiere et profondeur de champ</small>
+          </div>
+          <div class="photo-lab-dial-grid photo-lab-lens-ring photo-lab-lens-ring--aperture" id="photoLabApertureControls"></div>
+        </section>
+
+        <section class="photo-lab-control-group">
+          <div class="photo-lab-control-head">
+            <span>Bague de focale</span>
+            <small>Angle de champ et cadrage</small>
+          </div>
+          <div class="photo-lab-dial-grid focal photo-lab-lens-ring photo-lab-lens-ring--focal" id="photoLabFocalControls"></div>
+        </section>
+
+        <section class="photo-lab-control-group">
+          <div class="photo-lab-control-head">
+            <span>Experience focale</span>
+            <small>Perspective correctement distinguee</small>
+          </div>
+          <div class="photo-lab-segmented">
+            <button class="photo-lab-chip active" type="button" data-focal-mode="same-position" aria-pressed="true">Meme position</button>
+            <button class="photo-lab-chip" type="button" data-focal-mode="subject-size" aria-pressed="false">Sujet constant</button>
+          </div>
+        </section>
+      </aside>
+    </section>
   </div>
 
-  <script src="js/studio-locales.js" defer></script>
-  <script src="js/simple-studio.js" defer></script>
+  <script src="js/studio-locales.js?v=3.0" defer></script>
+  <script src="js/studio-models.js?v=3.0" defer></script>
+  <script src="js/simple-studio.js?v=3.0" defer></script>
+  <script type="module" src="js/photo-lab-ui.mjs?v=3.0"></script>
 </body>
 
 </html>
