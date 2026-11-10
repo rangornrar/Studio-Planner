@@ -114,11 +114,11 @@
     woodLight: material("#d7b48a", { edges: true }),
     woodDark: material("#6e4b31", { edges: true }),
     canvas: material("#3b3f45", { doubleSided: true }),
-    leather: material("#6b4a35"),
-    velvet: material("#8c6e8a"),
-    fabricBeige: material("#c8b9a3"),
-    fabricGray: material("#7d838b"),
-    sandbag: material("#a0262b"),
+    leather: material("#6b4a35", { edges: true }),
+    velvet: material("#8c6e8a", { edges: true }),
+    fabricBeige: material("#c8b9a3", { edges: true }),
+    fabricGray: material("#7d838b", { edges: true }),
+    sandbag: material("#a3292c"),
     sandbagStrap: material("#1d1f22"),
     bulb: material("#fff3d6", { emissive: 0.9 }),
     cable: material("#15171a"),
@@ -204,6 +204,17 @@
     return points;
   }
 
+  // Superellipse dans le plan horizontal : rectangle aux coins arrondis (n = 4).
+  function superRing(center, rx, ry, n, segments) {
+    const points = [];
+    for (let i = 0; i < segments; i += 1) {
+      const t = (i / segments) * Math.PI * 2;
+      const c = Math.cos(t); const s = Math.sin(t);
+      points.push(add(center, [rx * Math.sign(c) * Math.pow(Math.abs(c), 2 / n), ry * Math.sign(s) * Math.pow(Math.abs(s), 2 / n), 0]));
+    }
+    return points;
+  }
+
   function rectRing(center, u, v, halfU, halfV) {
     return [
       add(center, add(mul(u, -halfU), mul(v, -halfV))),
@@ -273,6 +284,27 @@
       const j = (i + 1) % seg;
       this.face([bottom, rings[0][j], rings[0][i]], mat, center);
       this.face([top, rings[rings.length - 1][i], rings[rings.length - 1][j]], mat, center);
+    }
+    return this;
+  };
+
+  // Coussin : contour rectangulaire arrondi, dessus et dessous bombes.
+  Builder.prototype.pillow = function (center, rx, ry, rz, mat) {
+    const rings = [];
+    const stacks = 6;
+    for (let i = 1; i < stacks; i += 1) {
+      const phi = -Math.PI / 2 + (i / stacks) * Math.PI;
+      const r = Math.pow(Math.cos(phi), 0.45);
+      rings.push(superRing(add(center, [0, 0, Math.sin(phi) * rz]), rx * r, ry * r, 4, 20));
+    }
+    this.loft(rings, mat, {});
+    const bottom = add(center, [0, 0, -rz]);
+    const top = add(center, [0, 0, rz]);
+    const first = rings[0]; const last = rings[rings.length - 1];
+    for (let i = 0; i < first.length; i += 1) {
+      const j = (i + 1) % first.length;
+      this.face([bottom, first[j], first[i]], mat, center);
+      this.face([top, last[i], last[j]], mat, center);
     }
     return this;
   };
@@ -402,6 +434,12 @@
   // Personnages
   // ---------------------------------------------------------------------------
   // Personnage tourne vers -x (face a la camera dans les presets), centre en (ox, oy).
+  // Chaussure : semelle plate et dessus arrondi, pointe vers -x (avant du sujet).
+  function shoe(b, at, s) {
+    b.block(at[0] - 0.105 * s, at[1] - 0.046 * s, 0, at[0] + 0.1 * s, at[1] + 0.046 * s, 0.018, MAT.rubber);
+    b.ellipsoid([at[0] - 0.005 * s, at[1], 0.03], 0.1 * s, 0.045 * s, 0.045, MAT.shoes, 10, 6);
+  }
+
   function person(b, height, options) {
     const opts = options || {};
     const s = height / 1.75;
@@ -433,12 +471,12 @@
         const foot = p(-thigh - 0.04, y * 1.15, ankleZ);
         b.frustum(p(0, y, hipZ), 0.078 * s, knee, 0.056 * s, legsMat, 8, true);
         b.frustum(knee, 0.052 * s, foot, 0.04 * s, legsMat, 8, true);
-        b.block(foot[0] - 0.15 * s, foot[1] - 0.045 * s, 0, foot[0] + 0.05 * s, foot[1] + 0.045 * s, 0.075, MAT.shoes);
+        shoe(b, [foot[0] - 0.05 * s, foot[1], 0], s);
         return;
       }
       b.frustum(p(0, y, hipZ), 0.075 * s, p(0.005, y * 0.95, H * 0.27), 0.055 * s, legsMat, 8, true);
       b.frustum(p(0.005, y * 0.95, H * 0.27), 0.05 * s, p(0.01, y * 0.92, 0.07), 0.04 * s, legsMat, 8, true);
-      b.block(-0.13 * s, y - 0.045 * s, 0, 0.06 * s, y + 0.045 * s, 0.075, MAT.shoes);
+      shoe(b, p(-0.035 * s, y, 0), s);
     });
     // Buste : bassin -> taille -> poitrine -> epaules
     const torsoRings = [
@@ -635,7 +673,7 @@
     const cz = spec.height - d / 2;
     lightStand(b, cz - d / 2 - 0.1, 0.42);
     b.cylinder([0, 0, cz - d / 2 - 0.12], [0, 0, cz - d / 2 + 0.02], 0.06, MAT.darkGray, 12);
-    b.ellipsoid([0, 0, cz], d / 2, d / 2, d / 2 * 0.92, MAT.diffuserWarm, 16, 10);
+    b.ellipsoid([0, 0, cz], d / 2, d / 2, d / 2 * 0.92, MAT.diffuserWarm, 24, 12);
     b.cylinder([0, 0, cz - d / 2 * 0.95], [0, 0, cz - d / 2 * 0.8], d * 0.12, MAT.blackFabric, 12);
   };
 
@@ -854,21 +892,23 @@
     b.cylinder([-0.55, 0, z - 0.32], [-0.38, 0, z - 0.2], 0.07, MAT.darkGray, 10); // contrepoids
     b.box(add(tip, [0, 0, -0.06]), [0.05, 0.05, 0.08], MAT.blackMetal);
   };
+
   BUILDERS.sandbag = function (b, spec) {
-    // Sac de sable : boudins arrondis relies par une sangle.
-    const pouch = function (y, length) {
-      b.ellipsoid([0, y, 0.055], length / 2, 0.075, 0.055, MAT.sandbag, 16, 8);
+    // Sac de sable : coussins en toile epaisse, sangle et poignee.
+    const pouch = function (y, length, width) {
+      b.pillow([0, y, 0.05], length / 2, width / 2, 0.05, MAT.sandbag);
     };
     if (spec.id === "sandbag-double") {
-      pouch(-0.1, 0.36);
-      pouch(0.1, 0.36);
-      b.block(-0.035, -0.11, 0.075, 0.035, 0.11, 0.09, MAT.sandbagStrap);
-      b.rod([-0.03, -0.02, 0.09], [-0.03, 0.02, 0.13], 0.008, MAT.sandbagStrap);
-      b.rod([0.03, -0.02, 0.09], [0.03, 0.02, 0.13], 0.008, MAT.sandbagStrap);
+      // Sac « selle » : deux coussins relies par une bande, a cheval sur les pieds.
+      pouch(-0.105, 0.34, 0.15);
+      pouch(0.105, 0.34, 0.15);
+      // Bande centrale entre les deux coussins, poignee au-dessus.
+      b.block(-0.05, -0.04, 0.045, 0.05, 0.04, 0.06, MAT.sandbagStrap);
+      b.torus([0, 0, 0.06], [1, 0, 0], 0.04, 0.008, MAT.sandbagStrap, 12, 5);
       return;
     }
-    pouch(0, 0.3);
-    b.rod([-0.06, 0, 0.1], [0.06, 0, 0.1], 0.009, MAT.sandbagStrap);
+    pouch(0, 0.3, 0.17);
+    b.torus([0, 0, 0.1], [1, 0, 0], 0.04, 0.008, MAT.sandbagStrap, 12, 5);
   };
 
 
@@ -1080,6 +1120,60 @@
   };
 
   // ---------------------------------------------------------------------------
+  // Ombrage lisse
+  // ---------------------------------------------------------------------------
+  // Normales par sommet : moyenne des faces voisines (meme matiere) dont l'angle
+  // reste sous le seuil d'arete vive. Les surfaces courbes (corps, cylindres,
+  // coussins) sont ainsi ombrees en degrade au lieu d'apparaitre en facettes ;
+  // les aretes vives des boites restent nettes.
+  const CREASE_COS = Math.cos(48 * Math.PI / 180);
+
+  function vertexKey(p) {
+    return Math.round(p[0] * 2000) + "," + Math.round(p[1] * 2000) + "," + Math.round(p[2] * 2000);
+  }
+
+  function computeSmoothNormals(faces) {
+    const byVertex = new Map();
+    faces.forEach(function (f, index) {
+      if (f.doubleSided || f.mat.flat) return;
+      f.points.forEach(function (p) {
+        const key = vertexKey(p);
+        let list = byVertex.get(key);
+        if (!list) { list = []; byVertex.set(key, list); }
+        list.push(index);
+      });
+    });
+    faces.forEach(function (f) {
+      f.vnormals = null;
+      if (f.doubleSided || f.mat.flat) return;
+      let smooth = false;
+      const normals = f.points.map(function (p) {
+        let sum = [0, 0, 0];
+        (byVertex.get(vertexKey(p)) || []).forEach(function (i) {
+          const other = faces[i];
+          if (other.mat !== f.mat) return;
+          if (dot(other.normal, f.normal) < CREASE_COS) return;
+          // Pondere par l'aire approchee : les petites faces de raccord pesent peu.
+          const w = Math.max(1e-6, polygonArea(other.points));
+          sum = add(sum, mul(other.normal, w));
+        });
+        const n = length(sum) > 0 ? normalize(sum) : f.normal;
+        if (dot(n, f.normal) < 0.9994) smooth = true;
+        return n;
+      });
+      if (smooth) f.vnormals = normals;
+    });
+  }
+
+  function polygonArea(points) {
+    let total = [0, 0, 0];
+    for (let i = 1; i < points.length - 1; i += 1) {
+      total = add(total, cross(sub(points[i], points[0]), sub(points[i + 1], points[0])));
+    }
+    return length(total) / 2;
+  }
+
+  // ---------------------------------------------------------------------------
   // Construction et cache des modeles
   // ---------------------------------------------------------------------------
   const modelCache = new Map();
@@ -1106,6 +1200,7 @@
     const cx = opts.seatZ ? 0 : (minX + maxX) / 2;
     const cy = opts.seatZ ? 0 : (minY + maxY) / 2;
     builder.translateSince(0, [-cx, -cy, 0]);
+    computeSmoothNormals(builder.faces);
     const model = {
       faces: builder.faces,
       width: maxX - minX,
@@ -1143,7 +1238,9 @@
         out.push({
           points: f.points.map(tr),
           normal: [f.normal[0] * c - f.normal[1] * s, f.normal[0] * s + f.normal[1] * c, f.normal[2]],
+          vnormals: f.vnormals ? f.vnormals.map(function (n) { return [n[0] * c - n[1] * s, n[0] * s + n[1] * c, n[2]]; }) : null,
           center: tr(f.center),
+          minZ: f.points.reduce(function (m, p) { return Math.min(m, p[2]); }, Infinity),
           mat: f.mat,
           doubleSided: f.doubleSided,
           dim: inst.dim || 0
@@ -1153,11 +1250,14 @@
     return out;
   }
 
-  function shadeColor(mat, normal, view, dim) {
+  function shadeColor(mat, normal, view, dim, z) {
     const rgb = hexToRgb(mat.color);
     const light = view.light;
     const diffuse = Math.max(0, dot(normal, light));
-    let k = view.ambient + view.diffuse * diffuse;
+    // Ambiance hemispherique : le haut des volumes recoit le ciel du studio,
+    // le dessous reste dans la penombre. Donne du relief meme cote ombre.
+    const hemi = 0.84 + 0.16 * normal[2];
+    let k = view.ambient * hemi + view.diffuse * diffuse;
     let spec = 0;
     if (mat.spec) {
       // Reflet : demi-vecteur lumiere / observateur.
@@ -1166,44 +1266,151 @@
     }
     if (mat.emissive) k = k * (1 - mat.emissive) + 1.08 * mat.emissive;
     if (dim) k *= 1 - dim;
+    // Vue de dessus : plus une surface est basse, plus elle est sombre. Les
+    // differents niveaux d'un meuble (assise, accoudoirs, dossier) se distinguent.
+    if (view.heightShade && z !== undefined) k *= 1 - view.heightShade * (1 - Math.min(1, Math.max(0, z) / 1.2));
     const r = Math.min(255, Math.round(rgb[0] * k + spec));
     const g = Math.min(255, Math.round(rgb[1] * k + spec));
     const b = Math.min(255, Math.round(rgb[2] * k + spec));
     return { r: r, g: g, b: b };
   }
 
-  function drawShadows(ctx, faces, view) {
-    if (!view.shadowDir) return;
-    const canvas = ctx.canvas;
-    if (!shadowCanvas) shadowCanvas = document.createElement("canvas");
-    if (shadowCanvas.width !== canvas.width || shadowCanvas.height !== canvas.height) {
-      shadowCanvas.width = canvas.width;
-      shadowCanvas.height = canvas.height;
+  // Les ombres sont floues : on les calcule a mi-resolution (4 fois moins de
+  // pixels a flouter), puis on les agrandit sur le canvas principal.
+  const SHADOW_SCALE = 0.5;
+  let shadowBlurCanvas = null;
+
+  function sizedCanvas(existing, width, height) {
+    const c = existing || document.createElement("canvas");
+    if (c.width !== width || c.height !== height) {
+      c.width = width;
+      c.height = height;
     }
+    return c;
+  }
+
+  // Projette au sol les faces retenues, selon le decalage sd (par metre de hauteur),
+  // puis compose le masque flou sur le canvas principal.
+  function shadowPass(ctx, faces, view, sd, alpha, blur, filter) {
+    const w = Math.max(1, Math.ceil(ctx.canvas.width * SHADOW_SCALE));
+    const h = Math.max(1, Math.ceil(ctx.canvas.height * SHADOW_SCALE));
+    shadowCanvas = sizedCanvas(shadowCanvas, w, h);
+    shadowBlurCanvas = sizedCanvas(shadowBlurCanvas, w, h);
     const sctx = shadowCanvas.getContext("2d");
     sctx.setTransform(1, 0, 0, 1, 0, 0);
-    sctx.clearRect(0, 0, shadowCanvas.width, shadowCanvas.height);
-    const transform = ctx.getTransform ? ctx.getTransform() : null;
-    if (transform) sctx.setTransform(transform);
+    sctx.clearRect(0, 0, w, h);
+    const t = ctx.getTransform ? ctx.getTransform() : { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
+    const k = SHADOW_SCALE;
+    sctx.setTransform(t.a * k, t.b * k, t.c * k, t.d * k, t.e * k, t.f * k);
     sctx.fillStyle = "#000";
-    const sd = view.shadowDir;
+    // Emprise des ombres, en pixels du masque.
+    let x0 = Infinity; let y0 = Infinity; let x1 = -Infinity; let y1 = -Infinity;
     faces.forEach(function (f) {
-      if (!f.mat.shadow) return;
+      if (!f.mat.shadow || (filter && !filter(f))) return;
       sctx.beginPath();
       f.points.forEach(function (p, i) {
         const q = view.project([p[0] + sd[0] * p[2], p[1] + sd[1] * p[2], 0]);
+        const dx = (t.a * q[0] + t.c * q[1] + t.e) * k;
+        const dy = (t.b * q[0] + t.d * q[1] + t.f) * k;
+        if (dx < x0) x0 = dx;
+        if (dx > x1) x1 = dx;
+        if (dy < y0) y0 = dy;
+        if (dy > y1) y1 = dy;
         if (i === 0) sctx.moveTo(q[0], q[1]);
         else sctx.lineTo(q[0], q[1]);
       });
       sctx.closePath();
       sctx.fill();
     });
+    const radius = (blur || 0) * k;
+    const margin = Math.ceil(radius * 3) + 2;
+    x0 = Math.max(0, Math.floor(x0) - margin);
+    y0 = Math.max(0, Math.floor(y0) - margin);
+    x1 = Math.min(w, Math.ceil(x1) + margin);
+    y1 = Math.min(h, Math.ceil(y1) + margin);
+    if (!(x1 > x0 && y1 > y0)) return;
+    const rw = x1 - x0; const rh = y1 - y0;
+    let source = shadowCanvas;
+    if (radius > 0.05 && "filter" in sctx) {
+      const bctx = shadowBlurCanvas.getContext("2d");
+      bctx.setTransform(1, 0, 0, 1, 0, 0);
+      // Effacement complet : le reechantillonnage lit aussi les pixels voisins du cadre.
+      bctx.clearRect(0, 0, w, h);
+      bctx.filter = `blur(${radius}px)`;
+      bctx.drawImage(shadowCanvas, x0, y0, rw, rh, x0, y0, rw, rh);
+      bctx.filter = "none";
+      source = shadowBlurCanvas;
+    }
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.globalAlpha = view.shadowAlpha || 0.22;
-    if ("filter" in ctx && view.shadowBlur) ctx.filter = `blur(${view.shadowBlur}px)`;
-    ctx.drawImage(shadowCanvas, 0, 0);
+    ctx.globalAlpha = alpha;
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(source, x0, y0, rw, rh, x0 / k, y0 / k, rw / k, rh / k);
     ctx.restore();
+  }
+
+  function drawShadows(ctx, faces, view) {
+    if (!view.shadowDir) return;
+    const sd = view.shadowDir;
+    // Ombre portee douce.
+    shadowPass(ctx, faces, view, sd, view.shadowAlpha || 0.22, view.shadowBlur, null);
+    // Ombre de contact : plus sombre et serree au pied des objets, elle les pose au sol.
+    if (view.contactAlpha) {
+      shadowPass(ctx, faces, view, [sd[0] * 0.3, sd[1] * 0.3], view.contactAlpha, view.contactBlur || 1, function (f) {
+        return f.minZ < 0.18;
+      });
+    }
+  }
+
+  // Couleur lineaire ajustee sur les sommets projetes (moindres carres) :
+  // approximation d'un ombrage de Gouraud par un degrade lineaire.
+  function smoothFill(ctx, screen, colors) {
+    const n = screen.length;
+    let mx = 0; let my = 0;
+    for (let i = 0; i < n; i += 1) { mx += screen[i][0]; my += screen[i][1]; }
+    mx /= n; my /= n;
+    let sxx = 0; let sxy = 0; let syy = 0;
+    for (let i = 0; i < n; i += 1) {
+      const dx = screen[i][0] - mx; const dy = screen[i][1] - my;
+      sxx += dx * dx; sxy += dx * dy; syy += dy * dy;
+    }
+    const det = sxx * syy - sxy * sxy;
+    if (Math.abs(det) < 1e-6) return null;
+    const fit = function (channel) {
+      let mean = 0;
+      for (let i = 0; i < n; i += 1) mean += colors[i][channel];
+      mean /= n;
+      let sxc = 0; let syc = 0;
+      for (let i = 0; i < n; i += 1) {
+        const dv = colors[i][channel] - mean;
+        sxc += (screen[i][0] - mx) * dv;
+        syc += (screen[i][1] - my) * dv;
+      }
+      return { a: (syy * sxc - sxy * syc) / det, b: (sxx * syc - sxy * sxc) / det, c: mean };
+    };
+    const fr = fit("r"); const fg = fit("g"); const fb = fit("b");
+    // Direction du degrade : celle de la luminance.
+    const ga = fr.a * 0.3 + fg.a * 0.59 + fb.a * 0.11;
+    const gb = fr.b * 0.3 + fg.b * 0.59 + fb.b * 0.11;
+    const glen = Math.hypot(ga, gb);
+    if (glen < 1e-4) return null;
+    const ux = ga / glen; const uy = gb / glen;
+    let tmin = Infinity; let tmax = -Infinity;
+    for (let i = 0; i < n; i += 1) {
+      const t = (screen[i][0] - mx) * ux + (screen[i][1] - my) * uy;
+      if (t < tmin) tmin = t;
+      if (t > tmax) tmax = t;
+    }
+    if (tmax - tmin < 0.5) return null;
+    const at = function (t, f) {
+      return Math.max(0, Math.min(255, Math.round(f.c + (f.a * ux + f.b * uy) * t)));
+    };
+    const x0 = mx + ux * tmin; const y0 = my + uy * tmin;
+    const x1 = mx + ux * tmax; const y1 = my + uy * tmax;
+    const grad = ctx.createLinearGradient(x0, y0, x1, y1);
+    grad.addColorStop(0, `rgb(${at(tmin, fr)},${at(tmin, fg)},${at(tmin, fb)})`);
+    grad.addColorStop(1, `rgb(${at(tmax, fr)},${at(tmax, fg)},${at(tmax, fb)})`);
+    return grad;
   }
 
   function render(ctx, instances, view) {
@@ -1213,35 +1420,65 @@
     const visible = [];
     faces.forEach(function (f) {
       let n = f.normal;
+      let flip = false;
       const facing = dot(n, V);
       if (facing < 0) {
         if (!f.doubleSided) return;
         n = mul(n, -1);
+        flip = true;
       }
-      visible.push({ face: f, normal: n, depth: dot(f.center, V) });
+      visible.push({ face: f, normal: n, flip: flip, depth: dot(f.center, V) });
     });
     visible.sort(function (a, b) { return a.depth - b.depth; });
     const lineWidth = view.lineWidth || 1;
     ctx.save();
     ctx.lineJoin = "round";
-    visible.forEach(function (entry) {
-      const f = entry.face;
-      const col = shadeColor(f.mat, entry.normal, view, f.dim);
-      const alpha = f.mat.alpha;
+    const projected = visible.map(function (entry) {
+      return entry.face.points.map(function (p) { return view.project(p); });
+    });
+    const trace = function (pts) {
       ctx.beginPath();
-      f.points.forEach(function (p, i) {
-        const q = view.project(p);
+      pts.forEach(function (q, i) {
         if (i === 0) ctx.moveTo(q[0], q[1]);
         else ctx.lineTo(q[0], q[1]);
       });
       ctx.closePath();
-      ctx.fillStyle = `rgba(${col.r},${col.g},${col.b},${alpha})`;
+    };
+    // Silhouette : un trait sombre sous toutes les faces opaques. Les faces
+    // peintes ensuite recouvrent l'interieur ; seul le contour exterieur reste,
+    // ce qui detache les objets clairs d'un sol clair (et les fins tubes du plan).
+    if (view.outline) {
+      ctx.strokeStyle = view.outline;
+      ctx.lineWidth = lineWidth * (view.outlineWidth || 1.8);
+      visible.forEach(function (entry, index) {
+        if (entry.face.mat.alpha < 0.9 || entry.face.mat.noOutline) return;
+        trace(projected[index]);
+        ctx.stroke();
+      });
+    }
+    visible.forEach(function (entry, index) {
+      const f = entry.face;
+      const pts = projected[index];
+      const col = shadeColor(f.mat, entry.normal, view, f.dim, f.center[2]);
+      const alpha = f.mat.alpha;
+      let style = `rgba(${col.r},${col.g},${col.b},${alpha})`;
+      let smooth = false;
+      if (f.vnormals && alpha >= 1 && !entry.flip) {
+        const colors = f.vnormals.map(function (vn, i) { return shadeColor(f.mat, vn, view, f.dim, f.points[i][2]); });
+        const grad = smoothFill(ctx, pts, colors);
+        if (grad) style = grad;
+        smooth = true;
+      }
+      trace(pts);
+      ctx.fillStyle = style;
       ctx.fill();
       // Un trait de la meme couleur bouche les micro-fentes entre faces voisines.
-      ctx.lineWidth = f.mat.edges ? lineWidth : lineWidth * 0.6;
-      ctx.strokeStyle = f.mat.edges
+      // Les surfaces lissees n'ont pas d'aretes : pas de trait de contour interne.
+      const edges = f.mat.edges && !smooth;
+      ctx.lineWidth = edges ? lineWidth : lineWidth * 0.6;
+      ctx.strokeStyle = edges
         ? `rgba(${Math.round(col.r * 0.55)},${Math.round(col.g * 0.55)},${Math.round(col.b * 0.55)},${0.55 * alpha})`
-        : `rgba(${col.r},${col.g},${col.b},${alpha})`;
+        : style;
       ctx.stroke();
     });
     ctx.restore();
@@ -1262,8 +1499,12 @@
       shadowDir: SHADOW_DIR,
       shadowAlpha: 0.2,
       shadowBlur: 1.5,
-      ambient: 0.58,
+      contactAlpha: 0.3,
+      contactBlur: 1,
+      ambient: 0.64,
       diffuse: 0.5,
+      outline: "rgba(12, 16, 22, 0.4)",
+      outlineWidth: 1.7,
       lineWidth: lineWidth
     };
   }
@@ -1276,8 +1517,13 @@
       shadowDir: SHADOW_DIR,
       shadowAlpha: 0.13,
       shadowBlur: 2,
-      ambient: 0.62,
+      contactAlpha: 0.16,
+      contactBlur: 1.2,
+      heightShade: 0.3,
+      ambient: 0.7,
       diffuse: 0.45,
+      outline: "rgba(12, 16, 22, 0.45)",
+      outlineWidth: 1.8,
       lineWidth: lineWidth
     };
   }
@@ -1297,6 +1543,18 @@
     "dimmer-desk": Math.PI
   };
 
+  // Vignettes des petites tetes sur pied : on cadre la partie haute (tete + haut
+  // de colonne) sur cette hauteur en metres, le pied s'efface vers le bas.
+  // Sinon la tete ne fait que quelques pixels et tous les projecteurs se ressemblent.
+  const THUMB_FOCUS = {
+    "spot-head": 0.8,
+    "spot-projector": 0.8,
+    camera: 0.75,
+    ringlight: 0.9,
+    "beauty-dish": 1.05,
+    "led-panel": 1.15
+  };
+
   // Vignette de bibliotheque : vue 3/4 ajustee au cadre, mise en cache.
   const thumbCache = new Map();
   function thumbnail(kind, variantId, variant, width, height, ratio) {
@@ -1314,8 +1572,11 @@
     };
     let minX = Infinity; let maxX = -Infinity; let minY = Infinity; let maxY = -Infinity;
     const inst = { model: model, x: 0, y: 0, rotation: turn };
+    const focus = THUMB_FOCUS[kind];
+    const minZ = focus ? model.height - focus : -Infinity;
     worldFaces([inst]).forEach(function (f) {
       f.points.forEach(function (p) {
+        if (p[2] < minZ) return;
         const q = raw(p);
         minX = Math.min(minX, q[0]); maxX = Math.max(maxX, q[0]);
         minY = Math.min(minY, q[1]); maxY = Math.max(maxY, q[1]);
@@ -1332,6 +1593,17 @@
     view.shadowBlur = 1;
     view.shadowAlpha = 0.3;
     render(ctx, [inst], view);
+    if (focus) {
+      // Fondu du pied coupe par le cadre.
+      const fade = ctx.createLinearGradient(0, canvas.height * 0.68, 0, canvas.height);
+      fade.addColorStop(0, "rgba(0,0,0,0)");
+      fade.addColorStop(1, "rgba(0,0,0,1)");
+      ctx.save();
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = fade;
+      ctx.fillRect(0, canvas.height * 0.68, canvas.width, canvas.height * 0.32);
+      ctx.restore();
+    }
     const url = canvas.toDataURL("image/png");
     thumbCache.set(key, url);
     return url;

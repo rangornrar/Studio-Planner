@@ -115,7 +115,7 @@ function rewriteAttributeValue(value, languageId, prefix) {
     return value;
   }
 
-  if (value.startsWith("css/") || value.startsWith("docs/")) {
+  if (value.startsWith("css/") || value.startsWith("docs/") || value.startsWith("assets/") || value.startsWith("fonts/")) {
     return `${prefix}${value}`;
   }
 
@@ -148,7 +148,7 @@ function rewriteAttributeValue(value, languageId, prefix) {
 
 function rewriteInlineHtml(html, languageId) {
   const prefix = relativePrefix(languageId);
-  return String(html).replace(/(href|src)="([^"]+)"/g, function (_, attribute, value) {
+  return String(html).replace(/(href|src|srcset)="([^"]+)"/g, function (_, attribute, value) {
     return `${attribute}="${rewriteAttributeValue(value, languageId, prefix)}"`;
   });
 }
@@ -348,9 +348,8 @@ function renderHead(copy, page, config, languageId) {
   <meta name="twitter:description" content="${escapeHtml(twitterDescription)}">
   <meta name="twitter:image" content="${imageUrl}">
   <meta name="twitter:image:alt" content="${escapeHtml(imageAlt)}">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" href="${relativePrefix(languageId)}fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="${relativePrefix(languageId)}css/fonts.css">
   <link rel="stylesheet" href="${cssHref}">
   <script src="${relativePrefix(languageId)}js/site-nav.js" defer></script>
   <script type="application/ld+json">
@@ -417,44 +416,54 @@ function renderFooter(copy, page, languageId, fileName) {
 }
 
 function renderIndexMain(page, languageId) {
+  const html = function (key) {
+    return rewriteInlineHtml(page.sections[key] || "", languageId);
+  };
+  // Parcours de la page d'accueil : promesse, fonctionnement, atouts illustres,
+  // presets, appel a l'action, puis ressources pour aller plus loin.
   return `<main>
-    <section class="hero">
-      <div class="site-shell">
-        <article class="hero-copy hero-panel">
-          <div class="hero-panel-main" id="heroCopyContent">${rewriteInlineHtml(page.sections.heroCopyContent, languageId)}</div>
-          <div class="hero-inline-media" id="heroVisualContent">${rewriteInlineHtml(page.sections.heroVisualContent, languageId)}</div>
-        </article>
+    <section class="hero hero-landing">
+      <div class="site-shell hero-landing-grid">
+        <div class="hero-landing-copy" id="heroCopyContent">${html("heroCopyContent")}</div>
+        <div class="hero-landing-shot" id="heroVisualContent">${html("heroVisualContent")}</div>
       </div>
     </section>
-    <section class="section section-tight">
-      <div class="site-shell">
-        <div class="intro-panel" id="introPanelContent">${rewriteInlineHtml(page.sections.introPanelContent, languageId)}</div>
+    <section class="section landing-steps" id="how">
+      <div class="site-shell" data-reveal>
+        <div class="section-head is-centered" id="stepsHeadContent">${html("stepsHeadContent")}</div>
+        <ol class="step-list" id="stepsContent">${html("stepsContent")}</ol>
       </div>
     </section>
-    <section class="section">
+    <section class="section landing-features">
       <div class="site-shell">
-        <div class="section-head" id="featuresHeadContent">${rewriteInlineHtml(page.sections.featuresHeadContent, languageId)}</div>
-        <div class="card-grid" id="featureCardsContent">${rewriteInlineHtml(page.sections.featureCardsContent, languageId)}</div>
-      </div>
-    </section>
-    <section class="section">
-      <div class="site-shell">
-        <div class="section-head" id="capturesHeadContent">${rewriteInlineHtml(page.sections.capturesHeadContent, languageId)}</div>
-        <div class="screenshot-grid" id="screenshotGridContent">${rewriteInlineHtml(page.sections.screenshotGridContent, languageId)}</div>
+        <div class="section-head is-centered" id="featuresHeadContent" data-reveal>${html("featuresHeadContent")}</div>
+        <div class="feature-row" id="featureModelsContent" data-reveal>${html("featureModelsContent")}</div>
+        <div class="feature-row is-reversed" id="featureMeasureContent" data-reveal>${html("featureMeasureContent")}</div>
+        <div class="feature-row" id="featureLabContent" data-reveal>${html("featureLabContent")}</div>
+        <div class="feature-row is-reversed feature-row-mobile" id="featureMobileContent" data-reveal>${html("featureMobileContent")}</div>
       </div>
     </section>
     <section class="section">
-      <div class="site-shell article-grid" id="resourcesGridContent">${rewriteInlineHtml(page.sections.resourcesGridContent, languageId)}</div>
-    </section>
-    <section class="section">
-      <div class="site-shell">
-        <div class="cta-panel" id="ctaPanelContent">${rewriteInlineHtml(page.sections.ctaPanelContent, languageId)}</div>
+      <div class="site-shell" data-reveal>
+        <div class="section-head" id="presetsHeadContent">${html("presetsHeadContent")}</div>
+        <div class="preset-showcase" id="presetsShowcaseContent">${html("presetsShowcaseContent")}</div>
       </div>
     </section>
     <section class="section">
-      <div class="site-shell">
-        <div class="section-head" id="seoPagesHeadContent">${rewriteInlineHtml(page.sections.seoPagesHeadContent, languageId)}</div>
-        <div class="card-grid" id="seoPagesCardsContent">${rewriteInlineHtml(page.sections.seoPagesCardsContent, languageId)}</div>
+      <div class="site-shell" data-reveal>
+        <div class="cta-panel cta-landing" id="ctaPanelContent">${html("ctaPanelContent")}</div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="site-shell" data-reveal>
+        <div class="section-head" id="resourcesHeadContent">${html("resourcesHeadContent")}</div>
+        <div class="resource-grid" id="resourcesGridContent">${html("resourcesGridContent")}</div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="site-shell" data-reveal>
+        <div class="section-head" id="seoPagesHeadContent">${html("seoPagesHeadContent")}</div>
+        <div class="card-grid" id="seoPagesCardsContent">${html("seoPagesCardsContent")}</div>
       </div>
     </section>
   </main>`;
