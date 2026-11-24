@@ -1,6 +1,6 @@
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D21VSKW5)
 
-اللغات: [Français](README.md) · [FR](README.fr.md) · [English](README.en.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [العربية](README.ar.md)
+اللغات: [Français](README.md) · [English](README.en.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [العربية](README.ar.md)
 
 # LITE Studio
 
@@ -26,6 +26,8 @@ LITE Studio هو تطبيق ويب مستقل لتخطيط إعدادات است
 
 - واجهة responsive مناسبة للجوال والكمبيوتر.
 - منظر علوي مع تكبير، وعجلة ماوس على الكمبيوتر، و pinch-to-zoom على الجوال، ومعاينة أيزومترية قابلة للتكبير.
+- عناصر مرسومة بالأبعاد الثلاثية بمقاساتها الحقيقية، متطابقة في المكتبة والمخطط والمنظر الأيزومتري.
+- مختبر الصور: محاكاة تأثير ISO وفتحة العدسة والبعد البؤري على الصورة (الضجيج، التعريض، عمق الميدان، التأطير).
 - مكتبة عناصر مع بحث حسب النوع أو المقاس أو الفئة.
 - قياسات تلقائية بين الهدف والكاميرا والخلفية ومصادر الضوء، بالإضافة إلى وضع قياس يدوي.
 - إعدادات للعناصر ومعلومات عملية مثل الارتفاع والاتجاه وقدرة الضوء وقراءة f-stop تقديرية عند ISO 100.
@@ -36,6 +38,8 @@ LITE Studio هو تطبيق ويب مستقل لتخطيط إعدادات است
 ## البدء السريع
 
 لا حاجة إلى أي تثبيت.
+
+يستخدم مختبر الصور وحدات JavaScript ترفض المتصفحات تحميلها من ملف مفتوح بنقرة مزدوجة. لاستخدامه محليًا، شغّل `npm run serve` (Node.js 18 أو أحدث) ثم افتح http://127.0.0.1:4177/app.html.
 
 1. افتح [app.html](app.html) في متصفح حديث لتشغيل التطبيق، أو [index.html](index.html) لعرض صفحة الهبوط العامة.
 2. أضف العناصر من المكتبة.
@@ -52,6 +56,13 @@ LITE Studio هو تطبيق ويب مستقل لتخطيط إعدادات است
 - `css/simple-studio.css`: التصميم والـ responsive والتخطيط وأنماط الطباعة.
 - `css/site.css`: أنماط صفحة الهبوط والصفحات التحريرية.
 - `js/simple-studio.js`: منطق الاستوديو ورسم الـ canvas واللغات والإعدادات الجاهزة والقياسات والتفاعلات.
+- `js/studio-locales.js`: ثوابت توطين التطبيق.
+- `js/studio-models.js`: نماذج ثلاثية الأبعاد للعناصر (بمقاساتها الحقيقية) وعرضها كصورة مصغرة ومخطط ومنظر أيزومتري.
+- `js/photo-lab-*.mjs` و `css/photo-lab.css`: مختبر الصور (بيانات بصرية، حسابات، مشهد، واجهة).
+- `js/site-nav.js`: قائمة التنقل للجوال في الصفحات العامة.
+- `scripts/generate-static-locales.mjs`: توليد الصفحات العامة المترجمة (`npm run build:locales`).
+- `scripts/serve-static.mjs`: خادم محلي صغير (`npm run serve`).
+- `tests/`: اختبارات الوحدات (`npm test`) والتحقق المرئي الآلي (`npm run test:visual`).
 - `js/site-i18n.js` و `js/site-copy-*.js`: محتوى الصفحات العامة وتوطينها.
 - `guide.html` و `presets.html` و `faq.html`: صفحات شرح ومرافقة.
 - `schema-eclairage-portrait.html` و `plan-studio-boudoir.html` و `lighting-diagram-interview.html`: صفحات SEO مرتبطة بالتطبيق.
