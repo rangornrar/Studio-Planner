@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#07111f">
-  <title>Fotostudio-Planer fur Desktop, Tablet und Mobil | LITE Studio</title>
-  <meta name="description" content="Bereite einen Fotostudio-Plan auf Desktop, Tablet oder Mobil vor, mit einklappbarer Bibliothek, umschaltbarer Plan- und Iso-Ansicht, automatischen Messwerten, Bildkopie, PNG- oder PDF-Export und Presets.">
+  <title>Kostenloser 3D-Fotostudio-Planer im Browser | LITE Studio</title>
+  <meta name="description" content="Plane dein Studio-Lichtsetup im Browser: Equipment in 3D und echter Größe, automatisch berechnete Abstände, 46 Presets, ein Fotolabor für ISO, Blende und Brennweite sowie Export als PNG oder PDF. Kostenlos, ohne Anmeldung.">
   <link rel="canonical" href="https://lumierestudio.archi-it.fr/de/">
   <link rel="alternate" hreflang="fr" href="https://lumierestudio.archi-it.fr/">
   <link rel="alternate" hreflang="en" href="https://lumierestudio.archi-it.fr/en/">
@@ -17,19 +17,18 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="de_DE">
   <meta property="og:site_name" content="LITE Studio">
-  <meta property="og:title" content="LITE Studio - Fotostudio-Planer fur Desktop, Tablet und Mobil">
-  <meta property="og:description" content="Eine Web-App, um ein Set auf Desktop aufzubauen, auf Tablet oder Mobil anzupassen, zwischen Plan und Iso zu wechseln und ein sauberes Diagramm zu teilen.">
+  <meta property="og:title" content="LITE Studio – Plane dein Set vor dem Shooting">
+  <meta property="og:description" content="Platziere Model, Kamera und Licht auf einem maßstabsgetreuen Grundriss, prüfe die Abstände, sieh die Szene in 3D und exportiere ein klares Schema für dein Team.">
   <meta property="og:url" content="https://lumierestudio.archi-it.fr/de/">
   <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta property="og:image:alt" content="Screenshot von LITE Studio mit Bibliothek, umschaltbarer Hauptansicht und sichtbaren Messwerten">
+  <meta property="og:image:alt" content="LITE Studio: Studio-Grundriss mit Softbox, Reflektor, Model und Kamera sowie 3D-Vorschau">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="LITE Studio - Fotostudio-Planer fur Desktop, Tablet und Mobil">
-  <meta name="twitter:description" content="Einklappbare Bibliothek, umschaltbare Plan- und Iso-Ansicht, nutzliche Messwerte und schnelle Bild-, PNG- oder PDF-Ausgabe.">
+  <meta name="twitter:title" content="LITE Studio – Kostenloser 3D-Fotostudio-Planer">
+  <meta name="twitter:description" content="Equipment in echter Größe, berechnete Abstände, 46 Presets, Fotolabor und Export als PNG / PDF, direkt im Browser.">
   <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
-  <meta name="twitter:image:alt" content="Screenshot von LITE Studio mit Bibliothek, umschaltbarer Hauptansicht und sichtbaren Messwerten">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <meta name="twitter:image:alt" content="LITE Studio: Studio-Grundriss mit Softbox, Reflektor, Model und Kamera sowie 3D-Vorschau">
+  <link rel="preload" href="../fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/site.css">
   <script src="../js/site-nav.js" defer></script>
   <script type="application/ld+json">
@@ -42,7 +41,7 @@
   "operatingSystem": "Web",
   "url": "https://lumierestudio.archi-it.fr/de/",
   "image": "https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png",
-  "description": "Eine Web-App, um ein Set auf Desktop aufzubauen, auf Tablet oder Mobil anzupassen, zwischen Plan und Iso zu wechseln und ein sauberes Diagramm zu teilen.",
+  "description": "Platziere Model, Kamera und Licht auf einem maßstabsgetreuen Grundriss, prüfe die Abstände, sieh die Szene in 3D und exportiere ein klares Schema für dein Team.",
   "inLanguage": "de",
   "offers": {
     "@type": "Offer",
@@ -55,7 +54,7 @@
 <body>
   <div class="top-strip">
     <div class="site-shell top-strip-inner">
-      <div class="top-copy" id="topCopy">Die aktuelle Version funktioniert auf Desktop, Tablet und Mobil. Wenn sie hilft, unterstutze ihre Weiterentwicklung.</div>
+      <div class="top-copy" id="topCopy">Kostenlos und ohne Anmeldung. Wenn LITE Studio dir hilft, kannst du die Weiterentwicklung unterstützen.</div>
       <a class="top-kofi" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">
         <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="LITE Studio auf Ko-fi unterstutzen">
       </a>
@@ -67,7 +66,7 @@
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-copy">
           <strong>LITE Studio</strong>
-          <span id="brandTagline">Fotostudio-Planer</span>
+          <span id="brandTagline">Photo Studio Planner</span>
         </span>
       </a>
       <a class="site-primary-cta" href="../app.html?lang=de">App</a>
@@ -102,41 +101,46 @@
     </div>
   </header>
   <main>
-    <section class="hero">
-      <div class="site-shell">
-        <article class="hero-copy hero-panel">
-          <div class="hero-panel-main" id="heroCopyContent"><p class="eyebrow">Fotostudio-Planer fur Desktop, Tablet und Mobil</p><h1>Baue dein Set auf Desktop auf, passe es auf Tablet oder Mobil an und teile in Sekunden einen sauberen Plan.</h1><p>LITE Studio folgt jetzt dem echten Vorbereitungsrhythmus: volle Bibliothek bei genug Platz, kompakte Bedienelemente am Set und immer dieselbe Szene, dieselben Messwerte und dieselben Exporte.</p><div class="hero-actions"><a class="button-link primary" href="../app.html?lang=de">App offnen</a><a class="button-link secondary" href="guide.html">Guide lesen</a></div><div class="hero-points"><div class="point-chip"><strong>Eine App</strong>Dieselbe Szene funktioniert auf Desktop, Tablet und Mobil, ohne das Produkt in mehrere Versionen aufzuteilen.</div><div class="point-chip"><strong>Einklappbare Bibliothek</strong>Auf kompakten Bildschirmen kannst du die Bibliothek ein- oder ausblenden und die ganze Arbeitsflache zuruckholen.</div><div class="point-chip"><strong>Plan / Iso umschaltbar</strong>Du wahlst, welche Ansicht die Hauptansicht sein soll, und zoomst dann per Rad oder Pinch.</div><div class="point-chip"><strong>Messwerte + Export</strong>Prufe wichtige Distanzen, kopiere das Bild, exportiere PNG oder PDF und behalte deine eigenen Presets.</div></div></div>
-          <div class="hero-inline-media" id="heroVisualContent"><figure><img src="../docs/screenshots/studio-portrait.png" alt="Beispiel eines Studio-Plans mit Bibliothek, umschaltbarer Hauptansicht und Messwerten in LITE Studio"><figcaption class="hero-caption">Umschaltbare Hauptansicht, einklappbare Bibliothek in kompakten Layouts, lesbare Messwerte und schnelle Bildausgabe.</figcaption><div class="meta-list hero-media-meta"><span>Dichter Desktop</span><span>Kompaktes Tablet</span><span>Touch Mobil</span><span>PNG / PDF</span></div></figure></div>
-        </article>
+    <section class="hero hero-landing">
+      <div class="site-shell hero-landing-grid">
+        <div class="hero-landing-copy" id="heroCopyContent"><p class="eyebrow">Fotostudio-Planer</p><h1>Plane dein Set, bevor das erste Licht angeht.</h1><p class="hero-lead">Platziere Model, Kamera, Licht und Zubehör auf einem maßstabsgetreuen Grundriss. LITE Studio berechnet die Abstände, zeigt die Szene in 3D und exportiert ein klares Schema für dein Team.</p><div class="hero-actions"><a class="button-link primary" href="../app.html?lang=de">App öffnen</a><a class="button-link secondary" href="#how">So funktioniert es</a></div><ul class="hero-trust"><li>Kostenlos, ohne Anmeldung</li><li>Computer, Tablet und Smartphone</li><li>5 Sprachen</li></ul></div>
+        <div class="hero-landing-shot" id="heroVisualContent"><figure class="shot-frame"><picture><source media="(max-width: 720px)" srcset="../assets/landing/mobile-de.webp" width="900" height="988"><img src="../assets/landing/hero-de.webp" width="1600" height="935" alt="LITE Studio: Equipment-Bibliothek links, Studio-Grundriss mit Softbox, Flag, Reflektor, Model und Kamera, angezeigte Abstände und 3D-Vorschau" fetchpriority="high" decoding="async"></picture></figure></div>
       </div>
     </section>
-    <section class="section section-tight">
-      <div class="site-shell">
-        <div class="intro-panel" id="introPanelContent"><p class="eyebrow">Drei Kontexte, eine Logik</p><h2>Desktop fur breite Vorbereitung, Tablet und Mobil fur schnelles Arbeiten ohne Kontextverlust.</h2><p>Die aktuelle App behalt auf dem Rechner viel Platz und verdichtet die Steuerung auf Touch-Geraten mit einklappbarer Bibliothek, Pinch-Zoom und den wichtigsten Aktionen in Reichweite.</p><p>Das Ergebnis ist nicht nur ein schones Diagramm. Es ist ein lesbarer Set-Plan, der sauber von der Vorbereitung ins Briefing und an das Set wechselt.</p><div class="keyword-list"><span class="keyword-chip">Dichter Desktop</span><span class="keyword-chip">Kompaktes Tablet</span><span class="keyword-chip">Touch Mobil</span><span class="keyword-chip">Einklappbare Bibliothek</span><span class="keyword-chip">Auto-Messung</span></div></div>
+    <section class="section landing-steps" id="how">
+      <div class="site-shell" data-reveal>
+        <div class="section-head is-centered" id="stepsHeadContent"><p class="eyebrow">So funktioniert es</p><h2>In drei Schritten zum teilbaren Plan.</h2></div>
+        <ol class="step-list" id="stepsContent"><li class="step-card"><span class="step-number" aria-hidden="true">1</span><h3>Mit einem Preset starten</h3><p>Wähle eine von 46 fertigen Szenen (Porträt, Beauty, Produkt, Boudoir, Interview…) oder beginne in einem leeren Studio von 8 × 6 m.</p></li><li class="step-card"><span class="step-number" aria-hidden="true">2</span><h3>Platzieren und ausrichten</h3><p>Füge Equipment aus der Bibliothek hinzu, verschiebe es mit Maus oder Finger und drehe es mit dem orangefarbenen Griff. Jedes Element hat seine echten Maße.</p></li><li class="step-card"><span class="step-number" aria-hidden="true">3</span><h3>Prüfen und exportieren</h3><p>Der Messmodus zeigt die wichtigen Abstände. Danach exportierst du den Plan als PNG oder PDF oder kopierst das Bild, um es direkt zu verschicken.</p></li></ol>
       </div>
     </section>
-    <section class="section">
+    <section class="section landing-features">
       <div class="site-shell">
-        <div class="section-head" id="featuresHeadContent"><p class="eyebrow">Was am Set zahlt</p><h2>Die Landingpage beschreibt jetzt die echte App statt eines generischen Versprechens.</h2><p>Du kannst schnell suchen, zwischen Plan und Iso wechseln, die wichtigen Distanzen prufen, die Bibliothek in kompakten Layouts einklappen und ein sauberes Bild ans Team schicken.</p></div>
-        <div class="card-grid" id="featureCardsContent"><article class="info-card"><h3>Anpassbare Arbeitsflache</h3><p>Desktop gibt dir Platz zum Bauen, wahrend Tablet und Mobil nur die Bedienelemente zeigen, die wirklich wichtig bleiben.</p><div class="meta-list"><span>Desktop</span><span>Tablet</span><span>Mobil</span></div></article><article class="info-card"><h3>Sofort lesbar</h3><p>Der Messmodus hebt Motiv, Kamera, Hintergrund und Lichtquellen hervor, wahrend Labels lesbar bleiben und die Hauptansicht zwischen Plan und Iso wechseln kann.</p><div class="meta-list"><span>Messwerte</span><span>Plan / Iso</span><span>Klare Labels</span></div></article><article class="info-card"><h3>Briefing-fertige Ausgabe</h3><p>Bild kopieren, PNG laden, PDF exportieren und eigene Presets behalten ist jetzt Teil des echten Workflows statt eines versteckten Extras.</p><div class="meta-list"><span>Bild kopieren</span><span>PNG / PDF</span><span>Eigene Presets</span></div></article></div>
-      </div>
-    </section>
-    <section class="section">
-      <div class="site-shell">
-        <div class="section-head" id="capturesHeadContent"><p class="eyebrow">Screenshots</p><h2>Die aktuelle App mit ihrer Desktop-, Tablet- und Mobil-Logik, wie sie heute wirklich funktioniert.</h2><p>Die Screenshots zeigen die echte Version: umschaltbare Hauptansicht, lesbare Messwerte, kontrastreiche Labels und eine kompakte Oberflache, wenn der Platz knapper wird.</p></div>
-        <div class="screenshot-grid" id="screenshotGridContent"><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-portrait.png" alt="Portrait-Preset mit wichtigen Messwerten und umschaltbarer Hauptansicht in LITE Studio"><figcaption>Portrait-Preset mit den relevanten Distanzen, der passenden Hauptansicht fur den Moment und sauberer Ausgabe fur das Briefing.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-boudoir.png" alt="Boudoir-Preset mit Mobiliar, farbigem Hintergrund und aktueller LITE Studio Oberflache"><figcaption>Boudoir-Preset mit Mobiliar, farbigem Hintergrund und einer kompakten Logik, die auf Desktop und Tablet stimmig bleibt.</figcaption></figure></article><article class="shot-card hero-copy"><figure><img src="../docs/screenshots/studio-video.png" alt="Interview-Preset mit Kamera, LED-Panels und aktueller LITE Studio Oberflache"><figcaption>Interview-Preset mit lesbarer Kameraachse, LED-Panels, schnellen Messwerten und sofortigem Export fur das Team.</figcaption></figure></article></div>
+        <div class="section-head is-centered" id="featuresHeadContent" data-reveal><p class="eyebrow">Was LITE Studio kann</p><h2>Alles, was du für die Vorbereitung brauchst, und nicht mehr.</h2></div>
+        <div class="feature-row" id="featureModelsContent" data-reveal><div class="feature-copy"><p class="eyebrow">Grundriss und 3D-Ansicht</p><h3>Dein Equipment in echter Größe</h3><p>Softboxen, Schirme, C-Stands, Reflektoren, Möbel: Alle 80 Elemente der Bibliothek sind in ihren echten Maßen modelliert. Wechsle von der Draufsicht in die 3D-Ansicht, um Volumen und Platz rund um das Model zu beurteilen.</p><ul class="check-list"><li>80 Equipment- und Möbelstücke</li><li>Draufsicht und 3D-Ansicht immer synchron</li><li>Ein Model auf einem Sitz setzt sich automatisch hin</li></ul></div><figure class="feature-media shot-frame"><img src="../assets/landing/iso-hero.webp" width="1200" height="790" alt="3D-Ansicht eines Fashion-Sets: große Parabol-Softbox, Striplight, schwarze Paneele, Kamera auf Stativ und Model vor weißem Hintergrund" loading="lazy" decoding="async"></figure></div>
+        <div class="feature-row is-reversed" id="featureMeasureContent" data-reveal><div class="feature-copy"><p class="eyebrow">Messen</p><h3>Die richtigen Abstände, ohne Maßband</h3><p>Aktiviere den Messmodus: LITE Studio zeigt den Abstand vom Model zum Hintergrund, zur Kamera und zu jeder Lichtquelle, dazu eine geschätzte Blende bei ISO 100 für das Hauptlicht. Eigene Messungen von Punkt zu Punkt sind ebenfalls möglich.</p><ul class="check-list"><li>Model ↔ Hintergrund, Kamera und Licht</li><li>Geschätzte Blende bei ISO 100</li><li>Freie manuelle Messung</li></ul></div><figure class="feature-media shot-frame"><img src="../assets/landing/measure-de.webp" width="1200" height="791" alt="Messmodus: Abstände zwischen Model, Hintergrund, Softbox, Flag, Reflektor und Kamera im Grundriss" loading="lazy" decoding="async"></figure></div>
+        <div class="feature-row" id="featureLabContent" data-reveal><div class="feature-copy"><p class="eyebrow">Fotolabor</p><h3>Sieh, was deine Einstellungen bewirken</h3><p>Ändere ISO, Blende und Brennweite und sieh das Ergebnis sofort an einem Foto: Rauschen, Belichtung, Schärfentiefe und Bildausschnitt. Der Vergleichsmodus zeigt das Referenzbild neben deiner Einstellung.</p><ul class="check-list"><li>Vollformat, APS-C und Micro Four Thirds</li><li>Berechnete Belichtung und Schärfentiefe</li><li>Vorher-Nachher-Vergleich</li></ul></div><figure class="feature-media shot-frame"><img src="../assets/landing/labo.webp" width="1400" height="723" alt="Fotolabor: zwei Porträts nebeneinander, eines bei f/2.8 mit unscharfem Hintergrund, eines bei f/16 schärfer, mit ISO-Rad und Blendenring (französische Oberfläche)" loading="lazy" decoding="async"></figure></div>
+        <div class="feature-row is-reversed feature-row-mobile" id="featureMobileContent" data-reveal><div class="feature-copy"><p class="eyebrow">Am Set</p><h3>Derselbe Plan, in deiner Tasche</h3><p>Auf Tablet und Smartphone wird die Oberfläche kompakt: Die Bibliothek öffnet sich als Panel, der Plan wird mit zwei Fingern gezoomt und alle Schaltflächen bleiben gut antippbar. Deine eigenen Presets bleiben im Browser gespeichert.</p><ul class="check-list"><li>Zoom mit zwei Fingern</li><li>Bibliothek als ausziehbares Panel</li><li>Eigene Presets gespeichert</li></ul></div><figure class="feature-media feature-media-phones"><img src="../assets/landing/mobile-de.webp" width="900" height="988" alt="LITE Studio auf dem Smartphone: der Plan eines Boudoir-Sets, dann die als Panel geöffnete Bibliothek" loading="lazy" decoding="async"></figure></div>
       </div>
     </section>
     <section class="section">
-      <div class="site-shell article-grid" id="resourcesGridContent"><article class="article-card"><p class="eyebrow">Praxis-Guide</p><h2>Wie du ein Studio-Setup vorbereitest, ohne den Kontext zu verlieren</h2><p>Eine schnelle Methode, um Motiv, Kamera und Hauptlicht zu setzen und dann die relevanten Distanzen zu prufen, bevor du den Plan teilst.</p><ul><li>Schnell einen lesbaren Plan bauen</li><li>Zwischen Plan und Iso wechseln, ohne neu anzufangen</li></ul><p><a class="button-link secondary" href="guide.html">Guide lesen</a></p></article><article class="article-card"><p class="eyebrow">Preset-Bibliothek</p><h2>Glaubwurdige Startpunkte und personliche Varianten, die bleiben</h2><p>Lade ein Preset, passe es an dein Set an, klappe bei Bedarf die Bibliothek ein und speichere deine eigene Version im Browser.</p><ul><li>Portrait, Boudoir, Corporate, Produkt und Video</li><li>Basis-Preset und danach eigene Variante</li></ul><p><a class="button-link secondary" href="presets.html">Presets entdecken</a></p></article><article class="article-card"><p class="eyebrow">FAQ</p><h2>Die Antworten, die du brauchst, bevor du ans Set gehst</h2><p>Desktop, Tablet, Mobil, einklappbare Bibliothek, Plan/Iso-Wechsel, Messwerte und Bildausgaben sind hier zusammengefasst.</p><ul><li>Die relevanten Distanzen prufen</li><li>Ein sauberes Bild kopieren oder ein PNG laden</li></ul><p><a class="button-link secondary" href="faq.html">FAQ offnen</a></p></article></div>
-    </section>
-    <section class="section">
-      <div class="site-shell">
-        <div class="cta-panel" id="ctaPanelContent"><p class="eyebrow">Bereit fur die aktuelle Version</p><h2>Lade ein Preset, klappe bei Bedarf die Bibliothek ein und lass die richtige Ansicht deine Szene fuhren.</h2><p>Desktop, Tablet oder Mobil: dieselbe App behalt deine Presets, deine Distanzen und deine Bildausgaben, ohne den Workflow mitten im Prozess zu wechseln.</p><div class="cta-actions"><a class="button-link primary" href="../app.html?lang=de">LITE Studio starten</a><a class="button-link secondary" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">Projekt unterstutzen</a></div></div>
+      <div class="site-shell" data-reveal>
+        <div class="section-head" id="presetsHeadContent"><p class="eyebrow">Presets</p><h2>46 Szenen, sofort ladbar</h2><p>Jedes Preset ist ein glaubwürdiger Ausgangspunkt: laden, an dein Studio anpassen und als eigene Version speichern.</p></div>
+        <div class="preset-showcase" id="presetsShowcaseContent"><a class="preset-tile" href="../app.html?preset=portrait-soft-45&lang=de"><img src="../assets/landing/preset-portrait.webp" width="800" height="527" alt="" loading="lazy" decoding="async"><span class="preset-tile-cat">Porträt</span><strong>Weiches Porträt in 45°</strong></a><a class="preset-tile" href="../app.html?preset=beauty-clamshell&lang=de"><img src="../assets/landing/preset-beauty.webp" width="800" height="527" alt="" loading="lazy" decoding="async"><span class="preset-tile-cat">Beauty</span><strong>Beauty-Clamshell</strong></a><a class="preset-tile" href="../app.html?preset=packshot-tabletop&lang=de"><img src="../assets/landing/preset-packshot.webp" width="800" height="527" alt="" loading="lazy" decoding="async"><span class="preset-tile-cat">Produkt</span><strong>Packshot auf dem Tisch</strong></a><a class="preset-tile" href="../app.html?preset=boudoir-armchair-lowkey&lang=de"><img src="../assets/landing/preset-boudoir.webp" width="800" height="527" alt="" loading="lazy" decoding="async"><span class="preset-tile-cat">Boudoir</span><strong>Sessel in Low Key</strong></a><a class="preset-tile" href="../app.html?preset=interview-led&lang=de"><img src="../assets/landing/preset-interview.webp" width="800" height="527" alt="" loading="lazy" decoding="async"><span class="preset-tile-cat">Video</span><strong>Interview mit LED</strong></a><a class="preset-tile preset-tile-more" href="presets.html"><span class="preset-tile-cat">Außerdem</span><strong>Fashion, Gruppen, Aktfotografie, Kreatives…</strong><span class="preset-tile-link">Alle Presets ansehen</span></a></div>
       </div>
     </section>
     <section class="section">
-      <div class="site-shell">
+      <div class="site-shell" data-reveal>
+        <div class="cta-panel cta-landing" id="ctaPanelContent"><h2>Dein nächstes Set beginnt hier.</h2><p>Kostenlos, ohne Konto, ohne Installation. Öffne die App und lade ein Preset zum Ausprobieren.</p><div class="cta-actions"><a class="button-link primary" href="../app.html?lang=de">LITE Studio öffnen</a><a class="button-link secondary" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">Projekt unterstützen</a></div></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="site-shell" data-reveal>
+        <div class="section-head" id="resourcesHeadContent"><p class="eyebrow">Weiterführend</p><h2>Anleitung, Presets und Antworten</h2></div>
+        <div class="resource-grid" id="resourcesGridContent"><a class="resource-card" href="guide.html"><strong>Schritt-für-Schritt-Anleitung</strong><span>Hintergrund, Model, Kameraachse und Hauptlicht setzen, dann prüfen und teilen.</span></a><a class="resource-card" href="presets.html"><strong>Preset-Katalog</strong><span>Porträt, Beauty, Fashion, Produkt, Gruppen, Boudoir und Video: wofür jede Basis gedacht ist.</span></a><a class="resource-card" href="faq.html"><strong>Häufige Fragen</strong><span>Smartphone, Messungen, 3D-Ansicht, eigene Presets, Export und Sprachen.</span></a></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="site-shell" data-reveal>
         <div class="section-head" id="seoPagesHeadContent"><p class="eyebrow">SEO-Seiten</p><h2>Drei fokussierte Seiten fur Suchanfragen mit klarer Absicht.</h2><p>Diese Seiten beantworten konkrete Bedurfnisse und fuhren direkt in die App mit dem passenden Preset.</p></div>
         <div class="card-grid" id="seoPagesCardsContent"><article class="info-card"><h3>Portrait-Lichtdiagramm</h3><p>Eine einfache Basis fur Studio-Portraits mit 45-Grad-Keylight, Fill-Control und druckbarem Plan.</p><div class="quick-links"><a href="schema-eclairage-portrait.html">Seite lesen</a><a href="../app.html?preset=portrait-soft-45&lang=de">Preset offnen</a></div></article><article class="info-card"><h3>Boudoir-Studioplan</h3><p>Mobiliar, Stimmung, Hintergrund, Wege und Licht fur ein Boudoir-Shooting im Studio.</p><div class="quick-links"><a href="plan-studio-boudoir.html">Seite lesen</a><a href="../app.html?preset=boudoir-parabolic&lang=de">Preset offnen</a></div></article><article class="info-card"><h3>Interview-Lighting-Diagram</h3><p>Ein klares Video-Studio-Setup fur Interviews, gefilmte Podcasts und Corporate-Drehs.</p><div class="quick-links"><a href="lighting-diagram-interview.html">Seite lesen</a><a href="../app.html?preset=interview-led&lang=de">Preset offnen</a></div></article></div>
       </div>
@@ -168,7 +172,7 @@
     </nav>
   </div>
     <div class="site-shell footer-inner">
-      <div id="footerCopy">LITE Studio · Fotostudio-Planer fur Desktop, Tablet und Mobil mit umschaltbaren Plan/Iso-Ansichten, Messwerten und Exporten.</div>
+      <div id="footerCopy">LITE Studio · kostenloser Fotostudio-Planer: Grundriss und 3D-Ansicht, Messungen, Fotolabor, Presets und Export als PNG / PDF.</div>
       <div class="footer-links" id="footerLinks">
         <a href="../app.html?lang=de">App</a><a href="guide.html">Guide</a><a href="presets.html">Presets</a><a href="faq.html">FAQ</a>
       </div>

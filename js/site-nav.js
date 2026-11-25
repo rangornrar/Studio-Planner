@@ -57,4 +57,20 @@
 
   mobileQuery.addEventListener("change", syncResponsiveState);
   syncResponsiveState();
+
+  // Apparition douce des sections au defilement. Sans IntersectionObserver ou si
+  // l'utilisateur limite les animations, tout reste simplement visible.
+  const revealTargets = document.querySelectorAll("[data-reveal]");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (revealTargets.length && "IntersectionObserver" in window && !reduceMotion) {
+    document.documentElement.classList.add("js-reveal");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px -10% 0px", threshold: 0.08 });
+    revealTargets.forEach((target) => observer.observe(target));
+  }
 }());
