@@ -7,7 +7,7 @@
   <title>LITE Studio App | Plan de studio photo pour PC et tablette</title>
   <meta name="description"
     content="Ouvrez l application LITE Studio pour preparer un set photo sur PC ou tablette, basculer entre plan et vue isometrique, mesurer les distances cle, copier l image et telecharger en PNG ou PDF.">
-  <meta name="theme-color" content="#120f16">
+  <meta name="theme-color" content="#0e0d0c">
   <link rel="canonical" href="https://lumierestudio.archi-it.fr/app.html">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta property="og:type" content="website">
@@ -17,13 +17,13 @@
   <meta property="og:description"
     content="Application web pour placer lumieres, cameras et sujets, basculer entre plan et vue isometrique, afficher les mesures automatiques et sortir un visuel propre en PNG ou PDF.">
   <meta property="og:url" content="https://lumierestudio.archi-it.fr/app.html">
-  <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
+  <meta property="og:image" content="https://lumierestudio.archi-it.fr/assets/og/lite-studio.jpg">
   <meta property="og:image:alt" content="Capture de l application LITE Studio avec plan principal, vue isometrique secondaire et mesures">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="LITE Studio App | Plan de studio photo pour PC et tablette">
   <meta name="twitter:description"
     content="Preparez un set photo sur PC ou tablette, basculez entre plan et vue iso, copiez l image et exportez en PNG ou PDF.">
-  <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
+  <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/assets/og/lite-studio.jpg">
   <meta name="twitter:image:alt" content="Capture de l application LITE Studio avec plan principal, vue isometrique secondaire et mesures">
   <script type="application/ld+json">
     {
@@ -34,7 +34,7 @@
       "applicationSubCategory": "Photo Studio Planner",
       "operatingSystem": "Web",
       "url": "https://lumierestudio.archi-it.fr/app.html",
-      "image": "https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png",
+      "image": "https://lumierestudio.archi-it.fr/assets/og/lite-studio.jpg",
       "description": "Application web pour préparer un plan de studio photo sur PC ou tablette, passer du plan à la vue isométrique, afficher les mesures utiles et sortir un visuel propre en PNG ou PDF.",
       "featureList": [
         "Vue plan et vue isométrique commutables",
@@ -52,12 +52,14 @@
       }
     }
   </script>
-  <link rel="icon"
-    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0c'/%3E%3Crect x='14' y='14' width='36' height='36' rx='8' fill='none' stroke='%2338bdf8' stroke-width='5'/%3E%3Ccircle cx='40' cy='40' r='8' fill='%23fbbf24'/%3E%3C/svg%3E">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
   <link rel="preload" href="fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=3.2">
-  <link rel="stylesheet" href="css/simple-studio.css?v=3.3">
-  <link rel="stylesheet" href="css/photo-lab.css?v=3.3">
+  <link rel="stylesheet" href="css/fonts.css?v=4.1">
+  <link rel="stylesheet" href="css/simple-studio.css?v=4.1">
+  <link rel="stylesheet" href="css/photo-lab.css?v=4.1">
 </head>
 
 <body>
@@ -87,10 +89,15 @@
         <div class="menu" data-menu="file">
           <button class="menu-trigger" id="menuFileTrigger" type="button" data-menu-trigger="file">Fichier</button>
         <div class="menu-panel file-panel">
-            <button class="menu-item" id="actionShareLink" type="button" data-menu-action="share-link">Copier le lien de partage</button>
+            <button class="menu-item" id="actionProjects" type="button" data-menu-action="projects">Mes plateaux</button>
+            <button class="menu-item" id="actionNewProject" type="button" data-menu-action="new-project">Nouveau plateau</button>
+            <hr class="menu-separator">
+            <button class="menu-item" id="actionShare" type="button" data-menu-action="share">Partager…</button>
+            <button class="menu-item" id="actionShareLink" type="button" data-menu-action="share-link">Copier le lien</button>
             <button class="menu-item" id="actionSaveProject" type="button" data-menu-action="save-project">Enregistrer le projet (.json)</button>
             <button class="menu-item" id="actionOpenProject" type="button" data-menu-action="open-project">Ouvrir un projet…</button>
             <hr class="menu-separator">
+            <button class="menu-item" id="actionSheet" type="button" data-menu-action="sheet">Feuille de plateau (A4)</button>
             <button class="menu-item" id="actionCopyImage" type="button" data-menu-action="copy-image">Copier
               l'image</button>
             <button class="menu-item" id="actionExportPng" type="button" data-menu-action="export-png">Télécharger
@@ -101,7 +108,9 @@
             <hr class="menu-separator">
             <button class="menu-item" id="actionGearList" type="button" data-menu-action="gear-list">Liste du matériel</button>
             <hr class="menu-separator">
+            <button class="menu-item" id="actionOnboarding" type="button" data-menu-action="onboarding">Guide de démarrage</button>
             <button class="menu-item menu-item-danger" id="actionReset" type="button" data-menu-action="reset">Vider le plateau</button>
+            <button class="menu-item" id="actionInstall" type="button" data-menu-action="install" hidden>Installer l'application</button>
           </div>
         </div>
 
@@ -185,6 +194,8 @@
             placeholder="Élément, taille ou type">
         </label>
 
+        <p class="library-hint" id="libraryHint">Touchez un élément pour l'ajouter au plateau, puis faites-le glisser sur le plan.</p>
+
         <div class="category-tabs" id="categoryTabs"></div>
 
         <div class="selection-panel empty is-hidden" id="selectionPanel"></div>
@@ -202,6 +213,10 @@
             <button class="stage-view-toggle" id="viewIsoToggle" type="button" data-stage-view-toggle="iso"
               aria-pressed="false">Iso</button>
           </div>
+          <button class="project-title" id="projectTitle" type="button" title="Renommer le plateau">
+            <span class="project-title-name" id="projectTitleName">Nouveau plateau</span>
+            <span class="project-title-state" id="projectTitleState"></span>
+          </button>
           <div class="stage-toolbar">
             <div class="stage-history-tools" role="group">
               <button class="stage-zoom-tool" id="undoButton" type="button" aria-label="Annuler" title="Annuler (Ctrl+Z)" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M4.5 12H14a5 5 0 0 1 0 10h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 -3)"/></svg></button>
@@ -220,6 +235,7 @@
             <button class="hint-pill stage-tool library-toggle" id="libraryToggle" type="button" aria-expanded="true"
               aria-controls="libraryPanel">Bibliothèque</button>
             <button class="hint-pill stage-tool" id="measureToggle" type="button" aria-pressed="false">Mesure</button>
+            <button class="stage-share" id="shareButton" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3m0 0L7.5 7.5M12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="shareButtonLabel">Partager</span></button>
           </div>
         </div>
 
@@ -256,6 +272,7 @@
           <div>
             <p class="photo-lab-eyebrow" data-lab-text="eyebrow">Laboratoire photographique interactif</p>
             <h2 id="photoLabTitle"><span data-lab-text="titleA">Réglages photo,</span> <span data-lab-text="titleB">conséquences visibles.</span></h2>
+            <p class="photo-lab-intro" data-lab-text="intro">Une photo type, indépendante de votre plateau : changez ISO, ouverture et focale pour voir leur effet.</p>
           </div>
           <div class="photo-lab-compare-controls" role="group" aria-label="Mode de comparaison" data-lab-aria="compareAria">
             <button class="photo-lab-chip active" type="button" data-photo-compare="single" aria-pressed="true" data-lab-text="single">Vue seule</button>
@@ -341,9 +358,9 @@
     </section>
   </div>
 
-  <script src="js/studio-locales.js?v=3.3" defer></script>
+  <script src="js/studio-locales.js?v=4.1" defer></script>
   <script src="js/studio-models.js?v=3.1" defer></script>
-  <script src="js/simple-studio.js?v=3.3" defer></script>
+  <script src="js/simple-studio.js?v=4.1" defer></script>
   <script type="module" src="js/photo-lab-ui.mjs?v=3.3"></script>
   <dialog class="gear-dialog" id="gearDialog" aria-labelledby="gearDialogTitle">
     <div class="gear-dialog-head">
@@ -354,6 +371,49 @@
     <div class="gear-dialog-actions">
       <button class="stage-empty-button is-primary" id="gearCopyButton" type="button">Copier la liste</button>
       <button class="stage-empty-button" type="button" data-gear-close id="gearCloseButton">Fermer</button>
+    </div>
+  </dialog>
+  <dialog class="gear-dialog onboarding-dialog" id="onboardingDialog" aria-labelledby="onboardingTitle">
+    <div class="gear-dialog-head">
+      <h2 id="onboardingTitle">Bienvenue dans LITE Studio</h2>
+      <button class="gear-dialog-close" type="button" data-dialog-close aria-label="Fermer">&times;</button>
+    </div>
+    <div class="onboarding-body">
+      <p class="onboarding-intro" id="onboardingIntro">Préparez votre éclairage en trois étapes.</p>
+      <ol class="onboarding-steps">
+        <li><span class="onboarding-number" aria-hidden="true">1</span><div><h3 id="onb1Title">Partez d'un preset</h3><p id="onb1Text"></p></div></li>
+        <li><span class="onboarding-number" aria-hidden="true">2</span><div><h3 id="onb2Title">Placez le matériel</h3><p id="onb2Text"></p></div></li>
+        <li><span class="onboarding-number" aria-hidden="true">3</span><div><h3 id="onb3Title">Vérifiez et partagez</h3><p id="onb3Text"></p></div></li>
+      </ol>
+    </div>
+    <div class="gear-dialog-actions">
+      <button class="stage-empty-button is-primary" id="onboardingPreset" type="button">Choisir un preset</button>
+      <button class="stage-empty-button" type="button" data-dialog-close id="onboardingStart">Commencer</button>
+    </div>
+  </dialog>
+  <dialog class="gear-dialog projects-dialog" id="projectsDialog" aria-labelledby="projectsDialogTitle">
+    <div class="gear-dialog-head">
+      <h2 id="projectsDialogTitle">Mes plateaux</h2>
+      <button class="gear-dialog-close" type="button" data-dialog-close aria-label="Fermer">&times;</button>
+    </div>
+    <p class="projects-note" id="projectsNote"></p>
+    <ul class="projects-list" id="projectsList"></ul>
+    <div class="gear-dialog-actions">
+      <button class="stage-empty-button is-primary" id="projectsNewButton" type="button">Nouveau plateau</button>
+      <button class="stage-empty-button" type="button" data-dialog-close id="projectsCloseButton">Fermer</button>
+    </div>
+  </dialog>
+  <dialog class="gear-dialog sheet-dialog" id="sheetDialog" aria-labelledby="sheetDialogTitle">
+    <div class="gear-dialog-head">
+      <h2 id="sheetDialogTitle">Feuille de plateau</h2>
+      <button class="gear-dialog-close" type="button" data-dialog-close aria-label="Fermer">&times;</button>
+    </div>
+    <div class="sheet-preview-wrap">
+      <article class="set-sheet" id="setSheet"></article>
+    </div>
+    <div class="gear-dialog-actions">
+      <button class="stage-empty-button is-primary" id="sheetPrintButton" type="button">Imprimer ou enregistrer en PDF</button>
+      <button class="stage-empty-button" type="button" data-dialog-close id="sheetCloseButton">Fermer</button>
     </div>
   </dialog>
 </body>

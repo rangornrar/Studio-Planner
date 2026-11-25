@@ -1959,6 +1959,22 @@
     appModeButtons: Array.from(document.querySelectorAll("[data-app-mode-target]")),
     projectFileInput: document.getElementById("projectFileInput"),
     gearDialog: document.getElementById("gearDialog"),
+    projectsDialog: document.getElementById("projectsDialog"),
+    projectsList: document.getElementById("projectsList"),
+    projectsNote: document.getElementById("projectsNote"),
+    projectsNewButton: document.getElementById("projectsNewButton"),
+    projectTitle: document.getElementById("projectTitle"),
+    projectTitleName: document.getElementById("projectTitleName"),
+    projectTitleState: document.getElementById("projectTitleState"),
+    shareButton: document.getElementById("shareButton"),
+    shareButtonLabel: document.getElementById("shareButtonLabel"),
+    sheetDialog: document.getElementById("sheetDialog"),
+    setSheet: document.getElementById("setSheet"),
+    sheetPrintButton: document.getElementById("sheetPrintButton"),
+    installAction: document.getElementById("actionInstall"),
+    onboardingDialog: document.getElementById("onboardingDialog"),
+    onboardingPreset: document.getElementById("onboardingPreset"),
+    libraryHint: document.getElementById("libraryHint"),
     gearDialogBody: document.getElementById("gearDialogBody"),
     gearCopyButton: document.getElementById("gearCopyButton"),
     printGearList: document.getElementById("printGearList"),
@@ -2344,7 +2360,9 @@
     if (metaTwitterDescription) metaTwitterDescription.setAttribute("content", localizedMetaDescription);
 
     refs.appModeButtons.forEach(function (button) {
-      button.textContent = getUiCopy(button.getAttribute("data-app-mode-target") === "photo-lab" ? "modeLab" : "modeStudio");
+      const isLab = button.getAttribute("data-app-mode-target") === "photo-lab";
+      button.textContent = getUiCopy(isLab ? "modeLab" : "modeStudio");
+      button.title = getUiCopy(isLab ? "modeLabHint" : "modeStudioHint");
     });
     if (refs.undoButton) {
       refs.undoButton.setAttribute("aria-label", getUiCopy("undo"));
@@ -2354,12 +2372,14 @@
       refs.redoButton.setAttribute("aria-label", getUiCopy("redo"));
       refs.redoButton.title = getUiCopy("redoTitle");
     }
-    [["actionShareLink", "shareLink"], ["actionSaveProject", "saveProject"], ["actionOpenProject", "openProject"], ["actionGearList", "gearList"], ["gearCloseButton", "gearClose"]].forEach(function (pair) {
+    [["actionShareLink", "copyLink"], ["actionShare", "shareMenu"], ["actionProjects", "myProjects"], ["actionNewProject", "newProject"], ["actionSheet", "sheet"], ["actionInstall", "install"], ["projectsDialogTitle", "myProjects"], ["projectsNewButton", "newProject"], ["projectsCloseButton", "dialogClose"], ["sheetDialogTitle", "sheetTitle"], ["sheetPrintButton", "sheetPrint"], ["sheetCloseButton", "dialogClose"], ["shareButtonLabel", "share"], ["libraryHint", "libraryHint"], ["actionOnboarding", "onbMenu"], ["onboardingTitle", "onbTitle"], ["onboardingIntro", "onbIntro"], ["onb1Title", "onb1Title"], ["onb1Text", "onb1Text"], ["onb2Title", "onb2Title"], ["onb2Text", "onb2Text"], ["onb3Title", "onb3Title"], ["onb3Text", "onb3Text"], ["onboardingPreset", "onbPreset"], ["onboardingStart", "onbStart"], ["actionSaveProject", "saveProject"], ["actionOpenProject", "openProject"], ["actionGearList", "gearList"], ["gearCloseButton", "gearClose"]].forEach(function (pair) {
       const element = document.getElementById(pair[0]);
       if (element) element.textContent = getUiCopy(pair[1]);
     });
-    const gearDialogClose = document.querySelector(".gear-dialog-close");
-    if (gearDialogClose) gearDialogClose.setAttribute("aria-label", getUiCopy("gearClose"));
+    document.querySelectorAll(".gear-dialog-close").forEach(function (button) {
+      button.setAttribute("aria-label", getUiCopy("dialogClose"));
+    });
+    if (typeof syncProjectUi === "function" && refs.projectTitleName) syncProjectUi();
     if (refs.emptyState) {
       const title = refs.emptyState.querySelector("[data-empty-title]");
       const text = refs.emptyState.querySelector("[data-empty-text]");
@@ -2844,14 +2864,38 @@
     bindEvents();
     applyLanguage(state.language, false);
 
-    if (launchOptions.preset) {
+    let migrateLegacyScene = false;
+    const openProjectsOnLaunch = new URLSearchParams(window.location.search).get("view") === "projects";
+    const requestedProject = new URLSearchParams(window.location.search).get("project");
+    const requestedEntry = requestedProject ? readProjects().find(function (entry) { return entry.id === requestedProject; }) : null;
+    if (requestedEntry && applyProject(requestedEntry)) {
+      renderAll();
+    } else if (launchOptions.preset && findPreset(launchOptions.preset)) {
       loadPreset(launchOptions.preset);
+      startProject(getLocalizedPresetName(findPreset(launchOptions.preset)));
     } else {
-      restoreSavedScene();
+      migrateLegacyScene = restoreSavedScene();
     }
     history.current = snapshotScene();
     syncHistoryUi();
+    if (migrateLegacyScene) saveCurrentProject();
+    // Le preset ou le plateau demande dans l'adresse ne doit pas revenir au rechargement.
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.has("preset") || url.searchParams.has("project") || url.searchParams.has("view")) {
+        ["preset", "project", "view"].forEach(function (key) { url.searchParams.delete(key); });
+        window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+      }
+    } catch (error) {
+      // Adresse non modifiable : sans consequence.
+    }
+    syncProjectUi();
+    bindInstallPrompt();
     void loadSceneFromLink();
+    if (openProjectsOnLaunch) openProjectsDialog();
+    else if (!hasFlag(STORAGE_KEY_ONBOARDED) && !readProjects().length && !/scene=/.test(window.location.hash || "")) openOnboarding();
+    hintsReady = true;
+
 
     // Les etiquettes du canvas utilisent la police de l'interface : on redessine
     // une fois les polices chargees pour que leur largeur soit mesuree correctement.
@@ -2944,6 +2988,61 @@
         void openProjectFile(file);
       });
     }
+    if (refs.onboardingDialog) {
+      refs.onboardingDialog.addEventListener("close", markOnboarded);
+    }
+    if (refs.onboardingPreset) {
+      refs.onboardingPreset.addEventListener("click", function (event) {
+        event.stopPropagation();
+        refs.onboardingDialog.close();
+        toggleMenu("presets");
+      });
+    }
+
+    [refs.onboardingDialog, refs.projectsDialog, refs.sheetDialog].forEach(function (dialog) {
+      if (!dialog) return;
+      dialog.addEventListener("click", function (event) {
+        if (event.target === dialog || event.target.closest("[data-dialog-close]")) dialog.close();
+      });
+    });
+    if (refs.projectsList) {
+      refs.projectsList.addEventListener("click", function (event) {
+        const open = event.target.closest("[data-project-open]");
+        const rename = event.target.closest("[data-project-rename]");
+        const remove = event.target.closest("[data-project-delete]");
+        if (open) {
+          if (openProjectById(open.getAttribute("data-project-open"))) refs.projectsDialog.close();
+        } else if (rename) {
+          renameProject(rename.getAttribute("data-project-rename"));
+        } else if (remove) {
+          deleteProject(remove.getAttribute("data-project-delete"));
+        }
+      });
+    }
+    if (refs.projectsNewButton) {
+      refs.projectsNewButton.addEventListener("click", function () {
+        refs.projectsDialog.close();
+        createNewProject();
+      });
+    }
+    if (refs.projectTitle) {
+      refs.projectTitle.addEventListener("click", function () {
+        renameProject(project.id);
+      });
+    }
+    if (refs.shareButton) {
+      refs.shareButton.addEventListener("click", function () {
+        void shareScene();
+      });
+    }
+    if (refs.sheetPrintButton) {
+      refs.sheetPrintButton.addEventListener("click", printSetSheet);
+    }
+    window.addEventListener("pagehide", function () {
+      flushHistory();
+      flushProjectSave();
+    });
+
     if (refs.gearDialog) {
       refs.gearDialog.addEventListener("click", function (event) {
         // Clic sur le voile (hors contenu) ou sur un bouton Fermer.
@@ -2994,6 +3093,12 @@
         closeMenus();
         if (action === "reset") handleReset();
         if (action === "share-link") void copyShareLink();
+        if (action === "share") void shareScene();
+        if (action === "projects") openProjectsDialog();
+        if (action === "new-project") createNewProject();
+        if (action === "sheet") openSetSheet();
+        if (action === "install") void promptInstall();
+        if (action === "onboarding") openOnboarding();
         if (action === "save-project") saveProjectFile();
         if (action === "open-project" && refs.projectFileInput) refs.projectFileInput.click();
         if (action === "gear-list") openGearList();
@@ -3008,7 +3113,14 @@
       refs.presetMenuList.addEventListener("click", function (event) {
         const button = event.target.closest("[data-preset-id]");
         if (!button) return;
-        loadPreset(button.getAttribute("data-preset-id"));
+        const presetId = button.getAttribute("data-preset-id");
+        const preset = findPreset(presetId);
+        flushHistory();
+        flushProjectSave();
+        loadPreset(presetId);
+        if (preset) startProject(getLocalizedPresetName(preset));
+        rememberCurrentProject(null);
+        resetHistoryToCurrent();
         closeMenus();
       });
     }
@@ -3996,6 +4108,7 @@
     drawPlanView();
     drawIsoView();
     syncEmptyState();
+    maybeShowRotateHint();
     scheduleHistoryCommit();
   }
 
@@ -4080,7 +4193,7 @@
     return true;
   }
 
-  function persistScene(json) {
+  function persistSceneOnly(json) {
     try {
       window.localStorage.setItem(STORAGE_KEY_SCENE, json);
     } catch (error) {
@@ -4088,14 +4201,38 @@
     }
   }
 
+  function persistScene(json) {
+    persistSceneOnly(json);
+    scheduleProjectSave();
+  }
+
   function restoreSavedScene() {
+    const list = readProjects();
+    let currentId = null;
+    try {
+      currentId = window.localStorage.getItem(STORAGE_KEY_CURRENT_PROJECT);
+    } catch (error) {
+      currentId = null;
+    }
+    const entry = list.find(function (candidate) { return candidate.id === currentId; }) || list.slice().sort(function (a, b) {
+      return (b.updatedAt || 0) - (a.updatedAt || 0);
+    })[0];
+    if (entry && applyProject(entry)) {
+      renderAll();
+      return false;
+    }
     let json = null;
     try {
       json = window.localStorage.getItem(STORAGE_KEY_SCENE);
     } catch (error) {
-      return;
+      return false;
     }
-    if (json && applySceneSnapshot(json)) renderAll();
+    if (json && applySceneSnapshot(json)) {
+      renderAll();
+      // Ancienne sauvegarde unique : elle devient le premier plateau de la liste.
+      return state.items.length > 0;
+    }
+    return false;
   }
 
   // Appele apres chaque rendu : enregistre l'etat une fois la scene stable
@@ -4261,13 +4398,7 @@
       showToast(getUiCopy("toastShareEmpty"), false);
       return;
     }
-    const link = await buildShareLink();
-    try {
-      await navigator.clipboard.writeText(link);
-      showToast(getUiCopy("toastLinkCopied"), false);
-    } catch (error) {
-      window.prompt(getUiCopy("shareLinkPrompt"), link);
-    }
+    await copyLinkText(await buildShareLink());
   }
 
   // Une scene recue par lien prime sur le preset et sur la sauvegarde locale.
@@ -4286,17 +4417,17 @@
     } catch (error) {
       // Adresse non modifiable : sans consequence.
     }
+    flushHistory();
+    flushProjectSave();
     if (!snapshot || !applySceneSnapshot(snapshot)) {
       showToast(getUiCopy("toastLinkInvalid"), false);
       return;
     }
     state.selectedId = null;
+    startProject(getUiCopy("projectSharedName"));
     renderAll();
-    window.clearTimeout(history.timer);
-    history.current = snapshotScene();
-    history.undo.length = 0;
-    history.redo.length = 0;
-    syncHistoryUi();
+    resetHistoryToCurrent();
+    saveCurrentProject();
     showToast(getUiCopy("toastSceneFromLink"), false);
   }
 
@@ -4339,6 +4470,454 @@
     renderAll();
     flushHistory();
     showToast(getUiCopy("toastProjectOpened", { name: file.name }), true);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Premiere visite : guide en trois etapes et astuce sur la poignee de rotation
+  // ---------------------------------------------------------------------------
+
+  const STORAGE_KEY_ONBOARDED = "lite-studio-onboarded";
+  const STORAGE_KEY_ROTATE_HINT = "lite-studio-rotate-hint";
+  let hintsReady = false;
+
+  function hasFlag(key) {
+    try {
+      return window.localStorage.getItem(key) === "1";
+    } catch (error) {
+      return true;
+    }
+  }
+
+  function setFlag(key) {
+    try {
+      window.localStorage.setItem(key, "1");
+    } catch (error) {
+      // Sans stockage, l'aide reapparaitra a la prochaine visite.
+    }
+  }
+
+  function markOnboarded() {
+    setFlag(STORAGE_KEY_ONBOARDED);
+    maybeShowRotateHint();
+  }
+
+  function openOnboarding() {
+    if (!refs.onboardingDialog || refs.onboardingDialog.open) return;
+    showDialog(refs.onboardingDialog);
+  }
+
+  // Une seule fois : la premiere fois qu'un element est selectionne hors de toute fenetre.
+  function maybeShowRotateHint() {
+    if (!hintsReady || !state.selectedId || state.interaction || hasFlag(STORAGE_KEY_ROTATE_HINT)) return;
+    if (document.querySelector("dialog[open]")) return;
+    setFlag(STORAGE_KEY_ROTATE_HINT);
+    window.setTimeout(function () {
+      showToast(getUiCopy("rotateHint"), false);
+    }, 400);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Mes plateaux : plusieurs scenes enregistrees dans ce navigateur
+  // ---------------------------------------------------------------------------
+
+  const STORAGE_KEY_PROJECTS = "lite-studio-projects";
+  const STORAGE_KEY_CURRENT_PROJECT = "lite-studio-current-project";
+  const PROJECT_LIMIT = 40;
+  const project = { id: null, name: "", notes: "", timer: 0 };
+
+  function readProjects() {
+    try {
+      const list = JSON.parse(window.localStorage.getItem(STORAGE_KEY_PROJECTS) || "[]");
+      return Array.isArray(list) ? list.filter(function (entry) { return entry && entry.id && entry.scene; }) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  // Stockage plein : on retire d'abord les vignettes des plus anciens, puis les plus anciens.
+  function writeProjects(list) {
+    list.sort(function (a, b) { return (b.updatedAt || 0) - (a.updatedAt || 0); });
+    let entries = list.slice(0, PROJECT_LIMIT);
+    for (let attempt = 0; attempt < entries.length + 2; attempt += 1) {
+      try {
+        window.localStorage.setItem(STORAGE_KEY_PROJECTS, JSON.stringify(entries));
+        return true;
+      } catch (error) {
+        const withThumb = entries.slice(1).reverse().find(function (entry) { return entry.thumb; });
+        if (withThumb) withThumb.thumb = "";
+        else if (entries.length > 1) entries = entries.slice(0, -1);
+        else return false;
+      }
+    }
+    return false;
+  }
+
+  function rememberCurrentProject(id) {
+    try {
+      if (id) window.localStorage.setItem(STORAGE_KEY_CURRENT_PROJECT, id);
+      else window.localStorage.removeItem(STORAGE_KEY_CURRENT_PROJECT);
+    } catch (error) {
+      // Sans stockage, le plateau reste en memoire.
+    }
+  }
+
+  function newProjectId() {
+    return `p${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+  }
+
+  function formatProjectDate(timestamp) {
+    try {
+      return new Intl.DateTimeFormat(getLocaleCode(), { dateStyle: "medium", timeStyle: "short" }).format(new Date(timestamp));
+    } catch (error) {
+      return new Date(timestamp).toLocaleString();
+    }
+  }
+
+  function defaultProjectName() {
+    let date;
+    try {
+      date = new Intl.DateTimeFormat(getLocaleCode(), { day: "numeric", month: "long" }).format(new Date());
+    } catch (error) {
+      date = new Date().toLocaleDateString();
+    }
+    return getUiCopy("projectDefaultName", { date: date });
+  }
+
+  function renderStageImage(view, width, height) {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const selectedId = state.selectedId;
+    state.selectedId = null;
+    try {
+      drawStageView(view === "plan" ? "plan" : "iso", canvas.getContext("2d"), width, height, { compact: false });
+    } finally {
+      state.selectedId = selectedId;
+    }
+    return canvas;
+  }
+
+  function projectThumbnail() {
+    if (!state.items.length) return "";
+    try {
+      const canvas = renderStageImage("iso", 320, 200);
+      const webp = canvas.toDataURL("image/webp", 0.72);
+      return webp.indexOf("data:image/webp") === 0 ? webp : canvas.toDataURL("image/jpeg", 0.75);
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function resetHistoryToCurrent() {
+    window.clearTimeout(history.timer);
+    history.current = snapshotScene();
+    history.undo.length = 0;
+    history.redo.length = 0;
+    syncHistoryUi();
+  }
+
+  // Un plateau n'est enregistre qu'a sa premiere modification (sauf reprise explicite).
+  function startProject(name) {
+    flushProjectSave();
+    project.id = null;
+    project.name = name || "";
+    project.notes = "";
+    syncProjectUi();
+  }
+
+  function scheduleProjectSave() {
+    window.clearTimeout(project.timer);
+    project.timer = window.setTimeout(saveCurrentProject, 900);
+  }
+
+  function flushProjectSave() {
+    if (!project.timer) return;
+    window.clearTimeout(project.timer);
+    saveCurrentProject();
+  }
+
+  function saveCurrentProject() {
+    project.timer = 0;
+    if (!state.items.length && !project.id) return;
+    const list = readProjects();
+    const now = Date.now();
+    let entry = project.id ? list.find(function (candidate) { return candidate.id === project.id; }) : null;
+    if (!entry) {
+      entry = { id: project.id || newProjectId(), createdAt: now };
+      list.push(entry);
+      project.id = entry.id;
+    }
+    if (!project.name) project.name = defaultProjectName();
+    entry.name = project.name;
+    entry.notes = project.notes;
+    entry.scene = history.current || snapshotScene();
+    entry.count = state.items.length;
+    entry.updatedAt = now;
+    entry.thumb = projectThumbnail();
+    writeProjects(list);
+    rememberCurrentProject(entry.id);
+    syncProjectUi();
+  }
+
+  function applyProject(entry) {
+    if (!entry || !applySceneSnapshot(entry.scene)) return false;
+    project.id = entry.id;
+    project.name = entry.name || defaultProjectName();
+    project.notes = entry.notes || "";
+    state.selectedId = null;
+    rememberCurrentProject(entry.id);
+    persistSceneOnly(entry.scene);
+    return true;
+  }
+
+  function openProjectById(id) {
+    flushHistory();
+    flushProjectSave();
+    const entry = readProjects().find(function (candidate) { return candidate.id === id; });
+    if (!applyProject(entry)) return false;
+    renderAll();
+    resetHistoryToCurrent();
+    syncProjectUi();
+    return true;
+  }
+
+  function createNewProject() {
+    flushHistory();
+    startProject("");
+    state.items = [];
+    state.selectedId = null;
+    state.interaction = null;
+    state.floorId = FLOOR_COLORS[0].id;
+    state.backdropId = BACKDROP_COLORS[3].id;
+    rememberCurrentProject(null);
+    renderAll();
+    resetHistoryToCurrent();
+    showToast(getUiCopy("toastProjectCreated"), false);
+  }
+
+  function renameProject(id) {
+    const list = readProjects();
+    const entry = id ? list.find(function (candidate) { return candidate.id === id; }) : null;
+    const current = entry ? entry.name : (project.name || defaultProjectName());
+    const name = window.prompt(getUiCopy("projectRenamePrompt"), current);
+    if (name === null) return;
+    const clean = name.trim().slice(0, 80);
+    if (!clean) return;
+    if (!entry || entry.id === project.id) project.name = clean;
+    if (entry) {
+      entry.name = clean;
+      writeProjects(list);
+    } else if (state.items.length) {
+      saveCurrentProject();
+    }
+    syncProjectUi();
+    if (refs.projectsDialog && refs.projectsDialog.open) renderProjectsList();
+  }
+
+  function deleteProject(id) {
+    const list = readProjects();
+    const entry = list.find(function (candidate) { return candidate.id === id; });
+    if (!entry) return;
+    if (!window.confirm(getUiCopy("projectDeleteConfirm", { name: entry.name }))) return;
+    writeProjects(list.filter(function (candidate) { return candidate.id !== id; }));
+    if (id === project.id) {
+      project.id = null;
+      project.timer && window.clearTimeout(project.timer);
+      project.timer = 0;
+      createNewProject();
+    }
+    showToast(getUiCopy("toastProjectDeleted", { name: entry.name }), false);
+    renderProjectsList();
+  }
+
+  function renderProjectsList() {
+    if (!refs.projectsList) return;
+    const list = readProjects();
+    if (refs.projectsNote) refs.projectsNote.textContent = getUiCopy("projectsNote");
+    if (!list.length) {
+      refs.projectsList.innerHTML = `<li class="projects-empty">${escapeHtml(getUiCopy("projectsEmpty"))}</li>`;
+      return;
+    }
+    refs.projectsList.innerHTML = list.map(function (entry) {
+      const isCurrent = entry.id === project.id;
+      const thumb = entry.thumb
+        ? `<img src="${escapeHtml(entry.thumb)}" alt="" width="160" height="100">`
+        : `<span class="project-thumb-empty" aria-hidden="true"></span>`;
+      return `
+        <li class="project-row${isCurrent ? " is-current" : ""}">
+          <button class="project-open" type="button" data-project-open="${escapeHtml(entry.id)}">
+            ${thumb}
+            <span class="project-meta">
+              <strong>${escapeHtml(entry.name)}</strong>
+              <span>${escapeHtml(getUiCopy("projectEdited", { date: formatProjectDate(entry.updatedAt) }))} · ${escapeHtml(getUiCopy("sheetItems", { count: entry.count || 0 }))}</span>
+              ${isCurrent ? `<span class="project-badge">${escapeHtml(getUiCopy("projectCurrent"))}</span>` : ""}
+            </span>
+          </button>
+          <span class="project-actions">
+            <button type="button" data-project-rename="${escapeHtml(entry.id)}">${escapeHtml(getUiCopy("projectRename"))}</button>
+            <button type="button" class="is-danger" data-project-delete="${escapeHtml(entry.id)}">${escapeHtml(getUiCopy("projectDelete"))}</button>
+          </span>
+        </li>
+      `;
+    }).join("");
+  }
+
+  function openProjectsDialog() {
+    if (!refs.projectsDialog) return;
+    flushHistory();
+    flushProjectSave();
+    renderProjectsList();
+    showDialog(refs.projectsDialog);
+  }
+
+  function showDialog(dialog) {
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
+  }
+
+  function syncProjectUi() {
+    if (refs.projectTitleName) refs.projectTitleName.textContent = project.name || getUiCopy("newProject");
+    if (refs.projectTitleState) refs.projectTitleState.textContent = project.id ? getUiCopy("projectSaved") : "";
+    if (refs.projectTitle) {
+      refs.projectTitle.title = getUiCopy("projectTitleHint");
+      refs.projectTitle.setAttribute("aria-label", `${project.name || getUiCopy("newProject")} – ${getUiCopy("projectTitleHint")}`);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Partage natif (menu du telephone) avec repli sur la copie du lien
+  // ---------------------------------------------------------------------------
+
+  async function copyLinkText(link) {
+    try {
+      await navigator.clipboard.writeText(link);
+      showToast(getUiCopy("toastLinkCopied"), false);
+    } catch (error) {
+      window.prompt(getUiCopy("shareLinkPrompt"), link);
+    }
+  }
+
+  async function shareScene() {
+    if (!state.items.length) {
+      showToast(getUiCopy("toastShareEmpty"), false);
+      return;
+    }
+    const link = await buildShareLink();
+    const data = { title: `${project.name || "LITE Studio"} · LITE Studio`, text: getUiCopy("shareText"), url: link };
+    if (typeof navigator.share === "function" && (typeof navigator.canShare !== "function" || navigator.canShare(data))) {
+      try {
+        await navigator.share(data);
+        return;
+      } catch (error) {
+        if (error && error.name === "AbortError") return;
+      }
+    }
+    await copyLinkText(link);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Installation de l'application (navigateurs qui proposent l'installation)
+  // ---------------------------------------------------------------------------
+
+  let deferredInstallPrompt = null;
+
+  function bindInstallPrompt() {
+    window.addEventListener("beforeinstallprompt", function (event) {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      if (refs.installAction) refs.installAction.hidden = false;
+    });
+    window.addEventListener("appinstalled", function () {
+      deferredInstallPrompt = null;
+      if (refs.installAction) refs.installAction.hidden = true;
+    });
+  }
+
+  async function promptInstall() {
+    if (!deferredInstallPrompt) return;
+    const promptEvent = deferredInstallPrompt;
+    deferredInstallPrompt = null;
+    if (refs.installAction) refs.installAction.hidden = true;
+    try {
+      await promptEvent.prompt();
+    } catch (error) {
+      // L'utilisateur peut toujours installer depuis le menu du navigateur.
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Feuille de plateau A4, claire et imprimable
+  // ---------------------------------------------------------------------------
+
+  function buildSetSheet() {
+    if (!refs.setSheet) return;
+    const groups = computeGearList();
+    const name = project.name || defaultProjectName();
+    let date;
+    try {
+      date = new Intl.DateTimeFormat(getLocaleCode(), { dateStyle: "long" }).format(new Date());
+    } catch (error) {
+      date = new Date().toLocaleDateString();
+    }
+    const plan = renderStageImage("plan", 1500, 1040).toDataURL("image/png");
+    const iso = renderStageImage("iso", 1100, 720).toDataURL("image/jpeg", 0.9);
+    const studio = getUiCopy("studio", { width: STUDIO.width, depth: STUDIO.depth });
+    refs.setSheet.innerHTML = `
+      <header class="sheet-head">
+        <span class="sheet-brand"><span class="sheet-logo" aria-hidden="true"></span>LITE Studio</span>
+        <div class="sheet-title">
+          <h3>${escapeHtml(name)}</h3>
+          <p>${escapeHtml(date)} · ${escapeHtml(studio)} · ${escapeHtml(getUiCopy("sheetItems", { count: state.items.length }))}</p>
+        </div>
+      </header>
+      <figure class="sheet-plan"><img src="${plan}" alt="${escapeHtml(getUiCopy("sheetPlan"))}"><figcaption>${escapeHtml(getUiCopy("sheetPlan"))}</figcaption></figure>
+      <div class="sheet-row">
+        <figure class="sheet-iso"><img src="${iso}" alt="${escapeHtml(getUiCopy("sheetScene"))}"><figcaption>${escapeHtml(getUiCopy("sheetScene"))}</figcaption></figure>
+        <section class="sheet-gear">
+          <h4>${escapeHtml(getUiCopy("gearTitle"))} · ${countGear(groups)}</h4>
+          ${gearListMarkup(groups)}
+        </section>
+      </div>
+      <section class="sheet-notes">
+        <label for="sheetNotesInput">${escapeHtml(getUiCopy("sheetNotes"))}</label>
+        <textarea id="sheetNotesInput" rows="4" placeholder="${escapeHtml(getUiCopy("sheetNotesPlaceholder"))}">${escapeHtml(project.notes)}</textarea>
+        <div class="sheet-notes-print" id="sheetNotesPrint">${escapeHtml(project.notes)}</div>
+      </section>
+      <footer class="sheet-foot">${escapeHtml(getUiCopy("sheetFooter"))}</footer>
+    `;
+    const notes = refs.setSheet.querySelector("#sheetNotesInput");
+    const notesPrint = refs.setSheet.querySelector("#sheetNotesPrint");
+    if (notes) {
+      notes.addEventListener("input", function () {
+        project.notes = notes.value.slice(0, 2000);
+        if (notesPrint) notesPrint.textContent = project.notes;
+        if (project.id || state.items.length) scheduleProjectSave();
+      });
+    }
+  }
+
+  function openSetSheet() {
+    if (!refs.sheetDialog) return;
+    flushHistory();
+    buildSetSheet();
+    showDialog(refs.sheetDialog);
+  }
+
+  // La feuille sort de la boite de dialogue le temps de l'impression.
+  function printSetSheet() {
+    if (!refs.setSheet || !refs.sheetDialog) return;
+    const home = refs.setSheet.parentNode;
+    const restore = function () {
+      document.body.classList.remove("is-printing-sheet");
+      if (refs.setSheet.parentNode !== home) home.appendChild(refs.setSheet);
+      window.removeEventListener("afterprint", restore);
+    };
+    refs.sheetDialog.close();
+    document.body.appendChild(refs.setSheet);
+    document.body.classList.add("is-printing-sheet");
+    window.addEventListener("afterprint", restore);
+    window.print();
+    window.setTimeout(restore, 0);
   }
 
   // ---------------------------------------------------------------------------
@@ -5513,7 +6092,7 @@
     ctx.lineWidth = 3 * metrics.unit;
     if (item.shape === "circle" || item.shape === "ellipse") {
       ctx.beginPath();
-      ctx.ellipse(0, 0, width * 0.7, depth * 0.7, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 0, Math.max(0, width * 0.7), Math.max(0, depth * 0.7), 0, 0, Math.PI * 2);
       ctx.stroke();
     } else {
       roundRect(ctx, -width / 2 - 8 * metrics.unit, -depth / 2 - 8 * metrics.unit, width + 16 * metrics.unit, depth + 16 * metrics.unit, 18 * metrics.unit);
@@ -6319,6 +6898,15 @@
             })
           };
         });
+      } finally {
+        state.language = previous;
+      }
+    },
+    gearList: function (language) {
+      const previous = state.language;
+      state.language = LANGUAGE_OPTIONS.some(function (option) { return option.id === language; }) ? language : previous;
+      try {
+        return computeGearList();
       } finally {
         state.language = previous;
       }

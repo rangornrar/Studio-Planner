@@ -103,6 +103,8 @@ try {
         hasTouch: viewport.hasTouch
       });
       const page = await context.newPage();
+      // Le guide de premiere visite masquerait l'interface controlee.
+      await page.addInitScript(function () { localStorage.setItem("lite-studio-onboarded", "1"); });
       const errors = [];
       page.on("pageerror", (error) => errors.push(error.message));
       await page.goto(`${base}?lang=fr&preset=${preset}`);
