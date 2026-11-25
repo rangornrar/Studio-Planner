@@ -14,6 +14,11 @@
   const STORAGE_KEY_LANGUAGE = "lite-studio-language";
   const STORAGE_KEY_CUSTOM_PRESETS = "lite-studio-custom-presets";
   const STORAGE_KEY_INSET_COLLAPSED = "lite-studio-inset-collapsed";
+  const STORAGE_KEY_SCENE = "lite-studio-scene";
+  const HISTORY_LIMIT = 100;
+  // Historique de la scene : chaque etat stable (hors glisser en cours) est un
+  // instantane JSON. Il sert a annuler / retablir et a la sauvegarde automatique.
+  const history = { undo: [], redo: [], current: null, timer: 0 };
 
 
   const FLOOR_COLORS = [
@@ -22,7 +27,7 @@
     { id: "neutral-gray", label: "Gris neutre", color: "#a4aab2" },
     { id: "charcoal", label: "Anthracite", color: "#525963" },
     { id: "black", label: "Noir", color: "#181b20" },
-    { id: "cream", label: "Creme", color: "#ece2d2" },
+    { id: "cream", label: "Crème", color: "#ece2d2" },
     { id: "sand", label: "Sable", color: "#c9af8f" },
     { id: "slate", label: "Bleu ardoise", color: "#60728a" }
   ];
@@ -39,7 +44,7 @@
     { id: "charcoal", label: "Anthracite", color: "#32373f" },
     { id: "stone", label: "Pierre", color: "#c6beb4" },
     { id: "pebble", label: "Galet", color: "#a89f95" },
-    { id: "cream", label: "Creme", color: "#efe4d4" },
+    { id: "cream", label: "Crème", color: "#efe4d4" },
     { id: "ivory", label: "Ivoire", color: "#f2ede1" },
     { id: "vanilla", label: "Vanille", color: "#efe1bf" },
     { id: "oat", label: "Avoine", color: "#d7ccb8" },
@@ -50,7 +55,7 @@
     { id: "caramel", label: "Caramel", color: "#b8784f" },
     { id: "mocha", label: "Moka", color: "#7a5f50" },
     { id: "cocoa", label: "Cacao", color: "#6b4f41" },
-    { id: "chestnut", label: "Chataigne", color: "#8a5b46" },
+    { id: "chestnut", label: "Châtaigne", color: "#8a5b46" },
     { id: "chocolate", label: "Chocolat", color: "#4e352e" },
     { id: "clay", label: "Argile", color: "#b2876a" },
     { id: "terracotta", label: "Terracotta", color: "#b66649" },
@@ -59,7 +64,7 @@
     { id: "burgundy", label: "Bordeaux", color: "#6d2431" },
     { id: "red", label: "Rouge", color: "#b83335" },
     { id: "coral", label: "Corail", color: "#d77967" },
-    { id: "peach", label: "Peche", color: "#e6b391" },
+    { id: "peach", label: "Pêche", color: "#e6b391" },
     { id: "blush", label: "Rose poudre", color: "#d5b5bc" },
     { id: "dusty-rose", label: "Rose nude", color: "#bf8f95" },
     { id: "lavender", label: "Lavande", color: "#a39bbc" },
@@ -76,8 +81,8 @@
     { id: "mint", label: "Menthe", color: "#bcd8c9" },
     { id: "sage", label: "Sauge", color: "#95a08a" },
     { id: "olive", label: "Olive", color: "#737a58" },
-    { id: "forest", label: "Vert foret", color: "#375542" },
-    { id: "emerald", label: "Emeraude", color: "#1f7a62" },
+    { id: "forest", label: "Vert forêt", color: "#375542" },
+    { id: "emerald", label: "Émeraude", color: "#1f7a62" },
     { id: "mustard", label: "Moutarde", color: "#bf9240" },
     { id: "sunflower", label: "Jaune studio", color: "#ddb64f" },
     { id: "chroma", label: "Vert chroma", color: "#41a54c" },
@@ -114,7 +119,7 @@
       shortLabel: "Couple serre",
       sizeLabel: "95 x 65 cm",
       heightLabel: "H 1.75 m",
-      description: "2 personnes rapprochees",
+      description: "2 personnes rapprochées",
       width: 0.95,
       depth: 0.65,
       height: 1.75,
@@ -123,10 +128,10 @@
     "camera-standard": {
       family: "camera",
       typeLabel: "Appareil",
-      shortLabel: "Trepied standard",
+      shortLabel: "Trépied standard",
       sizeLabel: "70 x 86 cm",
       heightLabel: "H 1.62 m",
-      description: "Boitier sur trepied",
+      description: "Boîtier sur trépied",
       width: 0.7,
       depth: 0.86,
       height: 1.62,
@@ -135,7 +140,7 @@
     "camera-high": {
       family: "camera",
       typeLabel: "Appareil",
-      shortLabel: "Trepied haut",
+      shortLabel: "Trépied haut",
       sizeLabel: "70 x 86 cm",
       heightLabel: "H 1.90 m",
       description: "Appareil pour prise haute",
@@ -146,11 +151,11 @@
     },
     "camera-video": {
       family: "camera",
-      typeLabel: "Camera video",
-      shortLabel: "Trepied video",
+      typeLabel: "Caméra vidéo",
+      shortLabel: "Trépied vidéo",
       sizeLabel: "78 x 92 cm",
       heightLabel: "H 1.72 m",
-      description: "Camera cinema ou interview",
+      description: "Caméra cinéma ou interview",
       width: 0.78,
       depth: 0.92,
       height: 1.72,
@@ -282,7 +287,7 @@
       shortLabel: "1 x 1",
       sizeLabel: "30 x 30 cm",
       heightLabel: "H 1.95 m",
-      description: "Panneau LED carre",
+      description: "Panneau LED carré",
       width: 0.42,
       depth: 0.38,
       height: 1.95,
@@ -306,7 +311,7 @@
       shortLabel: "55 cm",
       sizeLabel: "55 cm",
       heightLabel: "H 2.00 m",
-      description: "Dish beaute compact",
+      description: "Dish beauté compact",
       width: 0.6,
       depth: 0.6,
       height: 2.0,
@@ -318,7 +323,7 @@
       shortLabel: "70 cm",
       sizeLabel: "70 cm",
       heightLabel: "H 2.05 m",
-      description: "Dish beaute standard",
+      description: "Dish beauté standard",
       width: 0.74,
       depth: 0.74,
       height: 2.05,
@@ -390,7 +395,7 @@
       shortLabel: "45 cm",
       sizeLabel: "45 cm",
       heightLabel: "H 1.85 m",
-      description: "Lumiere frontale circulaire",
+      description: "Lumière frontale circulaire",
       width: 0.5,
       depth: 0.5,
       height: 1.85,
@@ -402,7 +407,7 @@
       shortLabel: "200 W",
       sizeLabel: "40 cm",
       heightLabel: "H 1.95 m",
-      description: "Fresnel petite tete",
+      description: "Fresnel petite tête",
       width: 0.42,
       depth: 0.42,
       height: 1.95,
@@ -423,7 +428,7 @@
     "projector-19": {
       family: "camera",
       typeLabel: "Projecteur optique",
-      shortLabel: "19 deg",
+      shortLabel: "19°",
       sizeLabel: "45 x 50 cm",
       heightLabel: "H 2.00 m",
       description: "Optical spot faisceau serre",
@@ -435,7 +440,7 @@
     "projector-36": {
       family: "camera",
       typeLabel: "Projecteur optique",
-      shortLabel: "36 deg",
+      shortLabel: "36°",
       sizeLabel: "45 x 50 cm",
       heightLabel: "H 2.00 m",
       description: "Optical spot faisceau moyen",
@@ -446,11 +451,11 @@
     },
     "reflector-80": {
       family: "reflector",
-      typeLabel: "Reflecteur",
+      typeLabel: "Réflecteur",
       shortLabel: "80 cm",
       sizeLabel: "80 cm",
       heightLabel: "H 1.70 m",
-      description: "Reflecteur compact",
+      description: "Réflecteur compact",
       width: 0.8,
       depth: 0.8,
       height: 1.7,
@@ -458,11 +463,11 @@
     },
     "reflector-110": {
       family: "reflector",
-      typeLabel: "Reflecteur",
+      typeLabel: "Réflecteur",
       shortLabel: "110 cm",
       sizeLabel: "110 cm",
       heightLabel: "H 1.84 m",
-      description: "Reflecteur grand format",
+      description: "Réflecteur grand format",
       width: 1.1,
       depth: 1.1,
       height: 1.84,
@@ -470,7 +475,7 @@
     },
     "reflector-panel": {
       family: "vflat",
-      typeLabel: "Reflecteur panneau",
+      typeLabel: "Réflecteur panneau",
       shortLabel: "120 x 180",
       sizeLabel: "120 x 180 cm",
       heightLabel: "H 1.80 m",
@@ -510,7 +515,7 @@
       shortLabel: "45 x 120",
       sizeLabel: "45 x 120 cm",
       heightLabel: "H 2.05 m",
-      description: "Coupe-flux etroit",
+      description: "Coupe-flux étroit",
       width: 0.45,
       depth: 0.14,
       height: 2.05,
@@ -534,7 +539,7 @@
       shortLabel: "100 x 100",
       sizeLabel: "100 x 100 cm",
       heightLabel: "H 2.00 m",
-      description: "Cadre diffusion legere",
+      description: "Cadre diffusion légère",
       width: 1.0,
       depth: 0.12,
       height: 2.0,
@@ -582,7 +587,7 @@
       shortLabel: "100 x 200",
       sizeLabel: "100 x 200 cm",
       heightLabel: "H 2.00 m",
-      description: "Panneau de controle compact",
+      description: "Panneau de contrôle compact",
       width: 1.0,
       depth: 0.2,
       height: 2.0,
@@ -606,7 +611,7 @@
       shortLabel: "100 x 150",
       sizeLabel: "100 x 150 cm",
       heightLabel: "H 1.85 m",
-      description: "Panneau mousse leger",
+      description: "Panneau mousse léger",
       width: 1.0,
       depth: 0.08,
       height: 1.85,
@@ -618,7 +623,7 @@
       shortLabel: "120 x 200",
       sizeLabel: "120 x 200 cm",
       heightLabel: "H 2.00 m",
-      description: "Absorption de lumiere",
+      description: "Absorption de lumière",
       width: 1.2,
       depth: 0.1,
       height: 2.0,
@@ -662,7 +667,7 @@
     },
     "chair-director": {
       family: "stool",
-      typeLabel: "Chaise realisateur",
+      typeLabel: "Chaise réalisateur",
       shortLabel: "Plateau",
       sizeLabel: "58 x 58 cm",
       heightLabel: "H 1.10 m",
@@ -686,11 +691,11 @@
     },
     "sofa-180": {
       family: "table",
-      typeLabel: "Canape",
+      typeLabel: "Canapé",
       shortLabel: "180 cm",
       sizeLabel: "180 x 80 cm",
       heightLabel: "H 88 cm",
-      description: "Canape lifestyle",
+      description: "Canapé lifestyle",
       width: 1.8,
       depth: 0.8,
       height: 0.88,
@@ -806,7 +811,7 @@
     },
     "flash-head-compact": {
       family: "reflector",
-      typeLabel: "Tete flash",
+      typeLabel: "Tête flash",
       shortLabel: "Compacte",
       sizeLabel: "24 x 24 cm",
       heightLabel: "H 2.10 m",
@@ -818,7 +823,7 @@
     },
     "flash-head-pro": {
       family: "reflector",
-      typeLabel: "Tete flash",
+      typeLabel: "Tête flash",
       shortLabel: "Pro",
       sizeLabel: "28 x 28 cm",
       heightLabel: "H 2.20 m",
@@ -906,7 +911,7 @@
       shortLabel: "Low base",
       sizeLabel: "88 x 88 cm",
       heightLabel: "H 2.90 m",
-      description: "Pied a roulettes pour sources lourdes",
+      description: "Pied à roulettes pour sources lourdes",
       width: 0.88,
       depth: 0.88,
       height: 2.9,
@@ -930,7 +935,7 @@
       shortLabel: "Simple",
       sizeLabel: "30 x 18 cm",
       heightLabel: "H 10 cm",
-      description: "Lest pour securiser un pied",
+      description: "Lest pour sécuriser un pied",
       width: 0.3,
       depth: 0.18,
       height: 0.1,
@@ -954,7 +959,7 @@
       shortLabel: "Laptop",
       sizeLabel: "60 x 40 cm",
       heightLabel: "H 1.05 m",
-      description: "Station de controle capture",
+      description: "Station de contrôle capture",
       width: 0.6,
       depth: 0.4,
       height: 1.05,
@@ -962,7 +967,7 @@
     },
     "monitor-station": {
       family: "table",
-      typeLabel: "Moniteur controle",
+      typeLabel: "Moniteur contrôle",
       shortLabel: "24 pouces",
       sizeLabel: "70 x 45 cm",
       heightLabel: "H 1.40 m",
@@ -978,7 +983,7 @@
       shortLabel: "Desk",
       sizeLabel: "100 x 50 cm",
       heightLabel: "H 1.05 m",
-      description: "Commande intensite et DMX",
+      description: "Commande intensité et DMX",
       width: 1,
       depth: 0.5,
       height: 1.05,
@@ -1063,15 +1068,15 @@
       label: "Capture",
       groups: [
         {
-          title: "Camera",
-          description: "Prise de vue photo ou video.",
+          title: "Caméra",
+          description: "Prise de vue photo ou vidéo.",
           variants: ["camera-standard", "camera-high", "camera-video"]
         }
       ]
     },
     {
       id: "lights",
-      label: "Lumieres",
+      label: "Lumières",
       groups: [
         {
           title: "Sources diffuses",
@@ -1079,8 +1084,8 @@
           variants: ["softbox-octa90", "softbox-octa120", "softbox-rect60x90", "softbox-rect90x120", "softbox-parabolic150", "umbrella-shoot-105", "umbrella-deep-135", "umbrella-silver-150", "lantern-65", "lantern-90"]
         },
         {
-          title: "Sources dirigees",
-          description: "Modeleurs plus precis, flashs et projecteurs.",
+          title: "Sources dirigées",
+          description: "Modeleurs plus précis, flashs et projecteurs.",
           variants: ["strip-30x120", "strip-40x140", "beauty-dish-55", "beauty-dish-70", "flash-head-compact", "flash-head-pro", "cob-led-300", "cob-led-600", "hmi-1200", "fresnel-200", "fresnel-650", "projector-19", "projector-36"]
         },
         {
@@ -1092,11 +1097,11 @@
     },
     {
       id: "control",
-      label: "Controle",
+      label: "Contrôle",
       groups: [
         {
-          title: "Reflecteurs et rebond",
-          description: "Controle doux et relance de lumiere.",
+          title: "Réflecteurs et rebond",
+          description: "Contrôle doux et relance de lumière.",
           variants: ["reflector-80", "reflector-110", "reflector-panel"]
         },
         {
@@ -1115,7 +1120,7 @@
           variants: ["cstand-grip", "cstand-arm", "combo-stand", "roller-stand", "boom-stand", "sandbag-single", "sandbag-double"]
         },
         {
-          title: "Controle plateau",
+          title: "Contrôle plateau",
           description: "Stations tether, moniteurs et dimmer.",
           variants: ["tether-station", "monitor-station", "dimmer-desk"]
         }
@@ -1127,12 +1132,12 @@
       groups: [
         {
           title: "Assises",
-          description: "Sieges et pose des sujets.",
+          description: "Sièges et pose des sujets.",
           variants: ["stool-low", "stool-high", "chair-standard", "chair-director", "armchair-90", "ottoman-80", "bench-120", "sofa-180"]
         },
         {
           title: "Supports",
-          description: "Tables, cubes, postes maquillage et boites.",
+          description: "Tables, cubes, postes maquillage et boîtes.",
           variants: ["cube-50", "applebox-full", "applebox-half", "applebox-quarter", "table-120", "table-160", "table-round", "desk-140", "makeup-station"]
         },
         {
@@ -1147,12 +1152,12 @@
     {
       id: "portrait",
       label: "Portrait",
-      description: "Headshots, book comedien et portraits editoriaux polyvalents.",
+      description: "Headshots, book comédien et portraits éditoriaux polyvalents.",
       presets: [
         {
           id: "portrait-soft-45",
-          name: "Portrait doux 45 deg",
-          summary: "Octa principale, reflecteur oppose et drapeau de contour.",
+          name: "Portrait doux 45°",
+          summary: "Octa principale, réflecteur opposé et drapeau de contour.",
           floorId: "white",
           backdropId: "neutral-gray",
           items: [
@@ -1166,7 +1171,7 @@
         {
           id: "headshot-corporate-clean",
           name: "Headshot corporate clean",
-          summary: "Grande recta, rebond controle et station tether laterale.",
+          summary: "Grande recta, rebond contrôle et station tether latérale.",
           floorId: "cream",
           backdropId: "light-gray",
           items: [
@@ -1180,7 +1185,7 @@
         },
         {
           id: "actor-low-key",
-          name: "Book comedien low key",
+          name: "Book comédien low key",
           summary: "Petite source douce, neg fill et contre de Fresnel.",
           floorId: "charcoal",
           backdropId: "charcoal",
@@ -1196,7 +1201,7 @@
         {
           id: "daylight-vflat",
           name: "Portrait daylight V-flat",
-          summary: "Diffusion large type fenetre, source COB et V-flat de retour.",
+          summary: "Diffusion large type fenêtre, source COB et V-flat de retour.",
           floorId: "cream",
           backdropId: "ivory",
           items: [
@@ -1213,12 +1218,12 @@
     {
       id: "beauty",
       label: "Beauty",
-      description: "Schemas propres pour peau, maquillage et glamour studio.",
+      description: "Schémas propres pour peau, maquillage et glamour studio.",
       presets: [
         {
           id: "beauty-clamshell",
           name: "Beauty clamshell",
-          summary: "Beauty dish frontal, reflecteur sous visage et fond propre.",
+          summary: "Beauty dish frontal, réflecteur sous visage et fond propre.",
           floorId: "cream",
           backdropId: "light-gray",
           items: [
@@ -1233,7 +1238,7 @@
         {
           id: "beauty-ring-clean",
           name: "Beauty ring clean",
-          summary: "Ring light axial avec coupe laterale et rebond frontal.",
+          summary: "Ring light axial avec coupe latérale et rebond frontal.",
           floorId: "cream",
           backdropId: "super-white",
           items: [
@@ -1248,7 +1253,7 @@
         {
           id: "beauty-gloss-strips",
           name: "Beauty glossy strips",
-          summary: "Dish central et deux strips pour les accroches laterales.",
+          summary: "Dish central et deux strips pour les accroches latérales.",
           floorId: "white",
           backdropId: "light-gray",
           items: [
@@ -1262,7 +1267,7 @@
         },
         {
           id: "makeup-editorial",
-          name: "Makeup editorial",
+          name: "Makeup éditorial",
           summary: "Double LED douce avec station maquillage et miroir.",
           floorId: "cream",
           backdropId: "blush",
@@ -1281,12 +1286,12 @@
     {
       id: "corporate",
       label: "Corporate",
-      description: "Portrait business, dirigeant et communication d entreprise.",
+      description: "Portrait business, dirigeant et communication d'entreprise.",
       presets: [
         {
           id: "corporate-gray-clean",
           name: "Corporate gris propre",
-          summary: "Recta cle, rebond doux et tether pour flux rapide.",
+          summary: "Recta clé, rebond doux et tether pour flux rapide.",
           floorId: "light-gray",
           backdropId: "neutral-gray",
           items: [
@@ -1301,7 +1306,7 @@
         {
           id: "executive-desk",
           name: "Portrait dirigeant bureau",
-          summary: "Bureau hero, LED cle et fond structure video corporate.",
+          summary: "Bureau hero, LED clé et fond structuré vidéo corporate.",
           floorId: "sand",
           backdropId: "steel",
           items: [
@@ -1333,12 +1338,12 @@
     {
       id: "mode",
       label: "Mode",
-      description: "Silhouettes, plein pied et eclairage editoriale plus contraste.",
+      description: "Silhouettes, plein pied et éclairage éditorial plus contrasté.",
       presets: [
         {
           id: "fashion-parabolic",
           name: "Mode parabolique plus strips",
-          summary: "Grande source cle, deux strips d accent et neg fill lateral.",
+          summary: "Grande source clé, deux strips d'accent et neg fill latéral.",
           floorId: "light-gray",
           backdropId: "white",
           items: [
@@ -1353,7 +1358,7 @@
         {
           id: "catalog-clean",
           name: "Plein pied catalogue",
-          summary: "Deux grandes rectas croisees et grand rebond frontal.",
+          summary: "Deux grandes rectas croisées et grand rebond frontal.",
           floorId: "white",
           backdropId: "cream",
           items: [
@@ -1367,7 +1372,7 @@
         {
           id: "fashion-silhouette-strips",
           name: "Silhouette strips",
-          summary: "Deux bandes laterales pour detacher la silhouette sur fond dense.",
+          summary: "Deux bandes latérales pour détacher la silhouette sur fond dense.",
           floorId: "charcoal",
           backdropId: "dark-gray",
           items: [
@@ -1380,8 +1385,8 @@
         },
         {
           id: "editorial-projector",
-          name: "Editorial projector",
-          summary: "Projecteur optique, fill doux et coupe laterale pour texture mode.",
+          name: "Éditorial projector",
+          summary: "Projecteur optique, fill doux et coupe latérale pour texture mode.",
           floorId: "charcoal",
           backdropId: "clay",
           items: [
@@ -1415,7 +1420,7 @@
     {
       id: "product",
       label: "Produit",
-      description: "Packshots, table-top et plateaux publicitaires controles.",
+      description: "Packshots, table-top et plateaux publicitaires contrôles.",
       presets: [
         {
           id: "packshot-tabletop",
@@ -1435,8 +1440,8 @@
         },
         {
           id: "bottle-specular",
-          name: "Bouteille speculaire",
-          summary: "Deux strips, grande diffusion frontale et coupe noire laterale.",
+          name: "Bouteille spéculaire",
+          summary: "Deux strips, grande diffusion frontale et coupe noire latérale.",
           floorId: "white",
           backdropId: "white",
           items: [
@@ -1467,7 +1472,7 @@
         },
         {
           id: "food-editorial",
-          name: "Food editorial top light",
+          name: "Food éditorial top light",
           summary: "Lantern haute, retours mousse et chariot de styling.",
           floorId: "cream",
           backdropId: "oat",
@@ -1482,8 +1487,8 @@
         },
         {
           id: "flatlay-clothing",
-          name: "Flatlay vetement",
-          summary: "Camera haute, double grande recta et echelle de prise de vue.",
+          name: "Flatlay vêtement",
+          summary: "Caméra haute, double grande recta et échelle de prise de vue.",
           floorId: "white",
           backdropId: "super-white",
           items: [
@@ -1500,12 +1505,12 @@
     {
       id: "group",
       label: "Groupe",
-      description: "Duo, famille, enfants et petites equipes en studio.",
+      description: "Duo, famille, enfants et petites équipes en studio.",
       presets: [
         {
           id: "duo-soft-wide",
           name: "Duo source large",
-          summary: "Grande octa cle, panel d appoint et drapeaux lateraux.",
+          summary: "Grande octa clé, panel d'appoint et drapeaux latéraux.",
           floorId: "light-gray",
           backdropId: "dark-gray",
           items: [
@@ -1521,7 +1526,7 @@
         {
           id: "family-soft-daylight",
           name: "Famille soft daylight",
-          summary: "Grande source type fenetre, banc et retour frontal doux.",
+          summary: "Grande source type fenêtre, banc et retour frontal doux.",
           floorId: "cream",
           backdropId: "vanilla",
           items: [
@@ -1537,7 +1542,7 @@
         {
           id: "trio-corporate",
           name: "Trio corporate",
-          summary: "Double recta propre pour equipe ou associes.",
+          summary: "Double recta propre pour équipe ou associés.",
           floorId: "light-gray",
           backdropId: "steel",
           items: [
@@ -1571,12 +1576,12 @@
     {
       id: "boudoir",
       label: "Boudoir",
-      description: "Ambiances intimes, douces ou luxueuses pour series boudoir.",
+      description: "Ambiances intimes, douces ou luxueuses pour séries boudoir.",
       presets: [
         {
           id: "boudoir-window-soft",
-          name: "Boudoir fenetre douce",
-          summary: "Grande diffusion laterale, sofa et retour naturel type hotel.",
+          name: "Boudoir fenêtre douce",
+          summary: "Grande diffusion latérale, sofa et retour naturel type hôtel.",
           floorId: "cream",
           backdropId: "ivory",
           items: [
@@ -1607,7 +1612,7 @@
         {
           id: "boudoir-lantern-lounge",
           name: "Boudoir lantern lounge",
-          summary: "Lantern haute, fill lateral et petit salon editorial.",
+          summary: "Lantern haute, fill latéral et petit salon éditorial.",
           floorId: "sand",
           backdropId: "blush",
           items: [
@@ -1623,7 +1628,7 @@
         {
           id: "boudoir-parabolic",
           name: "Boudoir parabolic",
-          summary: "Grande source enveloppante, accent vertical et miroir d ambiance.",
+          summary: "Grande source enveloppante, accent vertical et miroir d'ambiance.",
           floorId: "cream",
           backdropId: "dusty-rose",
           items: [
@@ -1639,12 +1644,12 @@
     },
     {
       id: "erotique",
-      label: "Erotique",
-      description: "Setups sensuels, low key ou graphiques, sans surcharge de scene.",
+      label: "Érotique",
+      description: "Setups sensuels, low key ou graphiques, sans surcharge de scène.",
       presets: [
         {
           id: "erotique-silhouette-burgundy",
-          name: "Erotique silhouette bordeaux",
+          name: "Érotique silhouette bordeaux",
           summary: "Deux strips de contour et fond bordeaux pour lignes plus denses.",
           floorId: "charcoal",
           backdropId: "burgundy",
@@ -1658,8 +1663,8 @@
         },
         {
           id: "erotique-projector-shadow",
-          name: "Erotique shadow projector",
-          summary: "Projecteur optique, rim Fresnel et neg fill tres controle.",
+          name: "Érotique shadow projector",
+          summary: "Projecteur optique, rim Fresnel et neg fill très contrôle.",
           floorId: "black",
           backdropId: "charcoal",
           items: [
@@ -1672,8 +1677,8 @@
         },
         {
           id: "erotique-neon-tubes",
-          name: "Erotique neon tubes",
-          summary: "Deux tubes longs et un COB frontal pour ambiance neon studio.",
+          name: "Érotique néon tubes",
+          summary: "Deux tubes longs et un COB frontal pour ambiance néon studio.",
           floorId: "charcoal",
           backdropId: "plum",
           items: [
@@ -1686,8 +1691,8 @@
         },
         {
           id: "erotique-sofa-contrast",
-          name: "Erotique sofa contrast",
-          summary: "Sofa central, parapluie argent et bande laterale de separation.",
+          name: "Érotique sofa contrast",
+          summary: "Sofa central, parapluie argent et bande latérale de séparation.",
           floorId: "charcoal",
           backdropId: "brick",
           items: [
@@ -1704,12 +1709,12 @@
     {
       id: "nu",
       label: "Nu artistique",
-      description: "Eclairages sculpturaux, high key ou graphiques pour nu d art.",
+      description: "Éclairages sculpturaux, high key ou graphiques pour nu d'art.",
       presets: [
         {
           id: "nu-sculptural-hard",
           name: "Nu sculptural hard",
-          summary: "Fresnel dur, petit fill et coupe laterale pour volumes marques.",
+          summary: "Fresnel dur, petit fill et coupe latérale pour volumes marqués.",
           floorId: "charcoal",
           backdropId: "charcoal",
           items: [
@@ -1737,7 +1742,7 @@
         {
           id: "nu-outline-backlight",
           name: "Nu outline backlight",
-          summary: "Deux bandes arriere et neg fill frontal pour contour pur.",
+          summary: "Deux bandes arrière et neg fill frontal pour contour pur.",
           floorId: "black",
           backdropId: "black",
           items: [
@@ -1766,13 +1771,13 @@
     },
     {
       id: "video",
-      label: "Video",
+      label: "Vidéo",
       description: "Interviews, podcast, greenscreen et plateaux hybrides.",
       presets: [
         {
           id: "interview-led",
           name: "Interview LED 2 points",
-          summary: "Panneau cle, panneau fill, tube de separation et fauteuil.",
+          summary: "Panneau clé, panneau fill, tube de séparation et fauteuil.",
           floorId: "sand",
           backdropId: "steel",
           items: [
@@ -1787,7 +1792,7 @@
         {
           id: "podcast-desk",
           name: "Podcast desk",
-          summary: "Bureau, double LED, fond tube et station de controle.",
+          summary: "Bureau, double LED, fond tube et station de contrôle.",
           floorId: "sand",
           backdropId: "teal",
           items: [
@@ -1804,8 +1809,8 @@
         },
         {
           id: "greenscreen-presenter",
-          name: "Greenscreen presenter",
-          summary: "Presenter simple, double source frontale et fonds uniformises.",
+          name: "Greenscreen présenter",
+          summary: "Présenter simple, double source frontale et fonds uniformisés.",
           floorId: "neutral-gray",
           backdropId: "chroma",
           items: [
@@ -1820,7 +1825,7 @@
         {
           id: "masterclass-soft",
           name: "Masterclass soft",
-          summary: "Lantern de dessus, bureau sobre et controle video laterale.",
+          summary: "Lantern de dessus, bureau sobre et contrôle vidéo latérale.",
           floorId: "cream",
           backdropId: "steel",
           items: [
@@ -1835,7 +1840,7 @@
         },
         {
           id: "fashion-bts-video",
-          name: "Fashion BTS video",
+          name: "Fashion BTS vidéo",
           summary: "Tubes longs, panneau central et chariot de plateau pour BTS.",
           floorId: "charcoal",
           backdropId: "cobalt",
@@ -1853,13 +1858,13 @@
     },
     {
       id: "creative",
-      label: "Creatif",
-      description: "Presets de projection, miroir, chroma et ombres dessinees.",
+      label: "Créatif",
+      description: "Presets de projection, miroir, chroma et ombres dessinées.",
       presets: [
         {
           id: "cinema-gobo",
-          name: "Cinema gobo",
-          summary: "Projecteur optique, Fresnel d accent et drapeaux type cinema.",
+          name: "Cinéma gobo",
+          summary: "Projecteur optique, Fresnel d'accent et drapeaux type cinéma.",
           floorId: "charcoal",
           backdropId: "olive",
           items: [
@@ -1874,7 +1879,7 @@
         {
           id: "mirror-tubes",
           name: "Mirror tubes",
-          summary: "Miroir debout et tubes LED pour rendu editorial reflexif.",
+          summary: "Miroir debout et tubes LED pour rendu éditorial réflexif.",
           floorId: "black",
           backdropId: "cobalt",
           items: [
@@ -1888,7 +1893,7 @@
         {
           id: "chroma-pop",
           name: "Chroma pop",
-          summary: "Fond chroma bleu avec contre uniformes et cle douce.",
+          summary: "Fond chroma bleu avec contre uniformes et clé douce.",
           floorId: "neutral-gray",
           backdropId: "chroma-blue",
           items: [
@@ -1945,6 +1950,19 @@
     libraryClose: document.getElementById("libraryClose"),
     libraryBackdrop: document.getElementById("libraryBackdrop"),
     measureToggle: document.getElementById("measureToggle"),
+    undoButton: document.getElementById("undoButton"),
+    redoButton: document.getElementById("redoButton"),
+    toast: document.getElementById("stageToast"),
+    emptyState: document.getElementById("stageEmpty"),
+    emptyPresetButton: document.getElementById("emptyPresetButton"),
+    emptyLibraryButton: document.getElementById("emptyLibraryButton"),
+    appModeButtons: Array.from(document.querySelectorAll("[data-app-mode-target]")),
+    projectFileInput: document.getElementById("projectFileInput"),
+    gearDialog: document.getElementById("gearDialog"),
+    gearDialogBody: document.getElementById("gearDialogBody"),
+    gearCopyButton: document.getElementById("gearCopyButton"),
+    printGearList: document.getElementById("printGearList"),
+    stageCanvasWrap: document.getElementById("stageCanvasWrap"),
     planZoomTools: document.getElementById("planZoomTools"),
     isoZoomTools: document.getElementById("isoZoomTools"),
     planZoomOut: document.getElementById("planZoomOut"),
@@ -2325,6 +2343,32 @@
     if (metaTwitterTitle) metaTwitterTitle.setAttribute("content", t("documentTitle"));
     if (metaTwitterDescription) metaTwitterDescription.setAttribute("content", localizedMetaDescription);
 
+    refs.appModeButtons.forEach(function (button) {
+      button.textContent = getUiCopy(button.getAttribute("data-app-mode-target") === "photo-lab" ? "modeLab" : "modeStudio");
+    });
+    if (refs.undoButton) {
+      refs.undoButton.setAttribute("aria-label", getUiCopy("undo"));
+      refs.undoButton.title = getUiCopy("undoTitle");
+    }
+    if (refs.redoButton) {
+      refs.redoButton.setAttribute("aria-label", getUiCopy("redo"));
+      refs.redoButton.title = getUiCopy("redoTitle");
+    }
+    [["actionShareLink", "shareLink"], ["actionSaveProject", "saveProject"], ["actionOpenProject", "openProject"], ["actionGearList", "gearList"], ["gearCloseButton", "gearClose"]].forEach(function (pair) {
+      const element = document.getElementById(pair[0]);
+      if (element) element.textContent = getUiCopy(pair[1]);
+    });
+    const gearDialogClose = document.querySelector(".gear-dialog-close");
+    if (gearDialogClose) gearDialogClose.setAttribute("aria-label", getUiCopy("gearClose"));
+    if (refs.emptyState) {
+      const title = refs.emptyState.querySelector("[data-empty-title]");
+      const text = refs.emptyState.querySelector("[data-empty-text]");
+      if (title) title.textContent = getUiCopy("emptyTitle");
+      if (text) text.textContent = getUiCopy("emptyText");
+      if (refs.emptyPresetButton) refs.emptyPresetButton.textContent = getUiCopy("emptyPreset");
+      if (refs.emptyLibraryButton) refs.emptyLibraryButton.textContent = getUiCopy("emptyLibrary");
+    }
+
     const supportStrip = document.getElementById("supportStrip");
     const supportText = document.getElementById("supportText");
     const supportButton = document.getElementById("supportButton");
@@ -2473,9 +2517,13 @@
       refs.libraryPanel.setAttribute("aria-hidden", expanded ? "false" : "true");
       // Sur mobile, la bibliotheque ouverte est un panneau modal par-dessus le plan.
       const isSheet = window.matchMedia("(max-width: 700px)").matches;
-      refs.libraryPanel.setAttribute("aria-modal", isSheet && expanded ? "true" : "false");
-      if (isSheet) refs.libraryPanel.setAttribute("role", "dialog");
-      else refs.libraryPanel.removeAttribute("role");
+      if (isSheet) {
+        refs.libraryPanel.setAttribute("role", "dialog");
+        refs.libraryPanel.setAttribute("aria-modal", expanded ? "true" : "false");
+      } else {
+        refs.libraryPanel.removeAttribute("role");
+        refs.libraryPanel.removeAttribute("aria-modal");
+      }
     }
     if (refs.libraryBackdrop) {
       refs.libraryBackdrop.hidden = !(compact && expanded && window.matchMedia("(max-width: 700px)").matches);
@@ -2798,7 +2846,12 @@
 
     if (launchOptions.preset) {
       loadPreset(launchOptions.preset);
+    } else {
+      restoreSavedScene();
     }
+    history.current = snapshotScene();
+    syncHistoryUi();
+    void loadSceneFromLink();
 
     // Les etiquettes du canvas utilisent la police de l'interface : on redessine
     // une fois les polices chargees pour que leur largeur soit mesuree correctement.
@@ -2872,11 +2925,78 @@
       });
     });
 
+    if (refs.projectFileInput) {
+      refs.projectFileInput.addEventListener("change", function () {
+        const file = refs.projectFileInput.files && refs.projectFileInput.files[0];
+        refs.projectFileInput.value = "";
+        if (file) void openProjectFile(file);
+      });
+    }
+    // Glisser un fichier projet sur le plateau l'ouvre aussi.
+    if (refs.stageCanvasWrap) {
+      refs.stageCanvasWrap.addEventListener("dragover", function (event) {
+        if (event.dataTransfer && Array.from(event.dataTransfer.types || []).includes("Files")) event.preventDefault();
+      });
+      refs.stageCanvasWrap.addEventListener("drop", function (event) {
+        const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+        if (!file) return;
+        event.preventDefault();
+        void openProjectFile(file);
+      });
+    }
+    if (refs.gearDialog) {
+      refs.gearDialog.addEventListener("click", function (event) {
+        // Clic sur le voile (hors contenu) ou sur un bouton Fermer.
+        if (event.target === refs.gearDialog || event.target.closest("[data-gear-close]")) refs.gearDialog.close();
+      });
+    }
+    if (refs.gearCopyButton) {
+      refs.gearCopyButton.addEventListener("click", async function () {
+        try {
+          await navigator.clipboard.writeText(buildGearListText());
+          refs.gearCopyButton.textContent = getUiCopy("gearCopied");
+        } catch (error) {
+          window.prompt(getUiCopy("gearTitle"), buildGearListText());
+        }
+      });
+    }
+    window.addEventListener("beforeprint", renderPrintGearList);
+    if (refs.undoButton) refs.undoButton.addEventListener("click", undoScene);
+    if (refs.redoButton) refs.redoButton.addEventListener("click", redoScene);
+    if (refs.toast) {
+      refs.toast.addEventListener("click", function (event) {
+        if (event.target.closest("[data-toast-undo]")) {
+          undoScene();
+          hideToast();
+        }
+      });
+    }
+    if (refs.emptyPresetButton) {
+      refs.emptyPresetButton.addEventListener("click", function (event) {
+        event.stopPropagation();
+        toggleMenu("presets");
+      });
+    }
+    if (refs.emptyLibraryButton) {
+      refs.emptyLibraryButton.addEventListener("click", function () {
+        if (isCompactLibraryViewport() && state.libraryCollapsed) {
+          state.libraryCollapsed = false;
+          renderAll();
+        }
+        const search = document.querySelector(".search-field input");
+        if (search) search.focus();
+      });
+    }
+
     refs.menuActions.forEach(function (button) {
       button.addEventListener("click", function () {
         const action = button.getAttribute("data-menu-action");
         closeMenus();
         if (action === "reset") handleReset();
+        if (action === "share-link") void copyShareLink();
+        if (action === "save-project") saveProjectFile();
+        if (action === "open-project" && refs.projectFileInput) refs.projectFileInput.click();
+        if (action === "gear-list") openGearList();
         if (action === "copy-image") void copyImage();
         if (action === "export-png") exportPng();
         if (action === "export-pdf") exportPdf();
@@ -3027,6 +3147,10 @@
 
     refs.selectionPanel.addEventListener("input", handleSelectionInput);
     refs.selectionPanel.addEventListener("click", handleSelectionClick);
+    // En quittant un champ, il reprend la valeur retenue (arrondie, bornee au studio).
+    refs.selectionPanel.addEventListener("focusout", function () {
+      window.setTimeout(updateSelectionPanel, 0);
+    });
 
     refs.planCanvas.addEventListener("pointerdown", handlePointerDown);
     refs.planCanvas.addEventListener("pointermove", handlePointerMove);
@@ -3621,16 +3745,16 @@
   }
 
   function handleReset() {
-    if (!window.confirm(t("dialogs.reset"))) {
-      return;
-    }
-
+    if (!state.items.length && state.floorId === FLOOR_COLORS[0].id && state.backdropId === BACKDROP_COLORS[3].id) return;
+    flushHistory();
     state.floorId = FLOOR_COLORS[0].id;
     state.backdropId = BACKDROP_COLORS[3].id;
     state.items = [];
     state.selectedId = null;
     state.interaction = null;
     renderAll();
+    flushHistory();
+    showToast(getUiCopy("toastReset"), true);
   }
 
   function handleSelectionInput(event) {
@@ -3778,6 +3902,7 @@
     if (!item) {
       refs.selectionPanel.className = "selection-panel empty is-hidden";
       refs.selectionPanel.innerHTML = "";
+      refs.selectionPanel.dataset.renderKey = "";
       return;
     }
 
@@ -3803,6 +3928,29 @@
     }).join("");
 
     refs.selectionPanel.className = "selection-panel";
+
+    // Meme element deja affiche : mise a jour sur place, sans recreer les champs.
+    // Sinon le champ en cours de saisie serait detruit a chaque frappe (perte du focus).
+    const renderKey = `${item.id}|${state.language}|${powerMarkup ? 1 : 0}`;
+    if (refs.selectionPanel.dataset.renderKey === renderKey) {
+      const active = document.activeElement;
+      refs.selectionPanel.querySelectorAll("input[data-field]").forEach(function (input) {
+        if (input === active) return;
+        const field = input.getAttribute("data-field");
+        if (field === "x") input.value = item.x.toFixed(2);
+        else if (field === "y") input.value = item.y.toFixed(2);
+        else if (field === "rotation") input.value = item.rotation.toFixed(0);
+        else if (field === "power") input.value = item.power;
+      });
+      const readout = refs.selectionPanel.querySelector(".power-readout");
+      if (readout && isLightEmitter(item)) readout.textContent = formatPowerLabel(item.power);
+      const title = refs.selectionPanel.querySelector(".selection-copy strong");
+      if (title) title.textContent = itemLabel;
+      const metrics = refs.selectionPanel.querySelector(".selection-metrics");
+      if (metrics) metrics.innerHTML = metricMarkup;
+      return;
+    }
+    refs.selectionPanel.dataset.renderKey = renderKey;
     refs.selectionPanel.innerHTML = `
       <div class="selection-head">
         <div class="selection-copy">
@@ -3847,6 +3995,13 @@
     syncMenus();
     drawPlanView();
     drawIsoView();
+    syncEmptyState();
+    scheduleHistoryCommit();
+  }
+
+  function syncEmptyState() {
+    if (!refs.emptyState) return;
+    refs.emptyState.hidden = state.items.length > 0;
   }
 
   function getSelectedItem() {
@@ -3860,13 +4015,501 @@
   }
 
   function deleteSelectedItem() {
-    if (!state.selectedId) return;
-    state.items = state.items.filter(function (item) {
-      return item.id !== state.selectedId;
+    const item = getSelectedItem();
+    if (!item) return;
+    flushHistory();
+    state.items = state.items.filter(function (entry) {
+      return entry.id !== item.id;
     });
     state.selectedId = null;
     state.interaction = null;
     renderAll();
+    flushHistory();
+    showToast(getUiCopy("toastDeleted", { name: item.label }), true);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Historique, annulation et sauvegarde automatique
+  // ---------------------------------------------------------------------------
+
+  function snapshotScene() {
+    return JSON.stringify({
+      v: 1,
+      floorId: state.floorId,
+      backdropId: state.backdropId,
+      items: state.items.map(function (item) {
+        return {
+          id: item.id,
+          variantId: item.variantId,
+          x: Number(item.x.toFixed(3)),
+          y: Number(item.y.toFixed(3)),
+          rotation: Number(item.rotation.toFixed(1)),
+          label: item.label,
+          power: typeof item.power === "number" ? item.power : null
+        };
+      })
+    });
+  }
+
+  function applySceneSnapshot(json) {
+    let data;
+    try {
+      data = JSON.parse(json);
+    } catch (error) {
+      return false;
+    }
+    if (!data || !Array.isArray(data.items)) return false;
+    const selectedId = state.selectedId;
+    state.floorId = FLOOR_COLORS.some(function (c) { return c.id === data.floorId; }) ? data.floorId : FLOOR_COLORS[0].id;
+    state.backdropId = BACKDROP_COLORS.some(function (c) { return c.id === data.backdropId; }) ? data.backdropId : BACKDROP_COLORS[3].id;
+    state.items = [];
+    state.interaction = null;
+    let maxId = 0;
+    data.items.forEach(function (entry) {
+      const item = createPlacedItem(entry.variantId, entry);
+      if (!item) return;
+      if (entry.id) {
+        item.id = entry.id;
+        const n = parseInt(String(entry.id).replace(/\D+/g, ""), 10);
+        if (n > maxId) maxId = n;
+      }
+      state.items.push(item);
+    });
+    state.nextId = Math.max(state.nextId, maxId + 1);
+    state.selectedId = findItem(selectedId) ? selectedId : null;
+    return true;
+  }
+
+  function persistScene(json) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY_SCENE, json);
+    } catch (error) {
+      // Stockage plein ou indisponible : la scene reste en memoire.
+    }
+  }
+
+  function restoreSavedScene() {
+    let json = null;
+    try {
+      json = window.localStorage.getItem(STORAGE_KEY_SCENE);
+    } catch (error) {
+      return;
+    }
+    if (json && applySceneSnapshot(json)) renderAll();
+  }
+
+  // Appele apres chaque rendu : enregistre l'etat une fois la scene stable
+  // (pas pendant un glisser), pour qu'un deplacement ne compte que pour un pas.
+  function scheduleHistoryCommit() {
+    if (history.current === null) return;
+    window.clearTimeout(history.timer);
+    history.timer = window.setTimeout(commitHistory, 320);
+  }
+
+  function commitHistory() {
+    if (state.interaction) {
+      scheduleHistoryCommit();
+      return;
+    }
+    const snapshot = snapshotScene();
+    if (snapshot === history.current) return;
+    history.undo.push(history.current);
+    if (history.undo.length > HISTORY_LIMIT) history.undo.shift();
+    history.redo.length = 0;
+    history.current = snapshot;
+    persistScene(snapshot);
+    syncHistoryUi();
+  }
+
+  function flushHistory() {
+    window.clearTimeout(history.timer);
+    if (history.current !== null && !state.interaction) commitHistory();
+  }
+
+  function restoreHistoryState(snapshot) {
+    applySceneSnapshot(snapshot);
+    history.current = snapshot;
+    persistScene(snapshot);
+    renderAll();
+    syncHistoryUi();
+  }
+
+  function undoScene() {
+    flushHistory();
+    if (!history.undo.length) return;
+    history.redo.push(history.current);
+    restoreHistoryState(history.undo.pop());
+  }
+
+  function redoScene() {
+    flushHistory();
+    if (!history.redo.length) return;
+    history.undo.push(history.current);
+    restoreHistoryState(history.redo.pop());
+  }
+
+  function syncHistoryUi() {
+    if (refs.undoButton) refs.undoButton.disabled = !history.undo.length;
+    if (refs.redoButton) refs.redoButton.disabled = !history.redo.length;
+  }
+
+  function showToast(message, withUndo) {
+    if (!refs.toast) return;
+    window.clearTimeout(showToast.timer);
+    refs.toast.innerHTML = `<span>${escapeHtml(message)}</span>` +
+      (withUndo ? `<button type="button" data-toast-undo>${escapeHtml(getUiCopy("undo"))}</button>` : "");
+    refs.toast.hidden = false;
+    showToast.timer = window.setTimeout(hideToast, 6000);
+  }
+
+  function hideToast() {
+    if (refs.toast) refs.toast.hidden = true;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Partage par lien et fichier projet
+  // ---------------------------------------------------------------------------
+
+  const PROJECT_FORMAT = "lite-studio-project";
+  const SHARE_PARAM = "scene";
+
+  // Forme compacte pour le lien : [variante, x, y, rotation, nom, puissance].
+  function compactScene() {
+    const data = JSON.parse(snapshotScene());
+    return {
+      v: 1,
+      f: data.floorId,
+      b: data.backdropId,
+      i: data.items.map(function (item) {
+        const row = [item.variantId, item.x, item.y, item.rotation, item.label];
+        if (typeof item.power === "number") row.push(item.power);
+        return row;
+      })
+    };
+  }
+
+  function expandScene(compact) {
+    if (!compact || !Array.isArray(compact.i)) return null;
+    return JSON.stringify({
+      v: 1,
+      floorId: compact.f,
+      backdropId: compact.b,
+      items: compact.i.map(function (row, index) {
+        return {
+          id: `item-${index + 1}`,
+          variantId: row[0],
+          x: Number(row[1]),
+          y: Number(row[2]),
+          rotation: Number(row[3]),
+          label: typeof row[4] === "string" ? row[4] : undefined,
+          power: typeof row[5] === "number" ? row[5] : null
+        };
+      })
+    });
+  }
+
+  function bytesToBase64Url(bytes) {
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+
+  function base64UrlToBytes(text) {
+    const base64 = text.replace(/-/g, "+").replace(/_/g, "/");
+    const binary = atob(base64 + "===".slice((base64.length + 3) % 4));
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+  }
+
+  async function transformBytes(bytes, Stream, format) {
+    const stream = new Blob([bytes]).stream().pipeThrough(new Stream(format));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+
+  // "z." + deflate quand le navigateur sait compresser, sinon "j." + JSON brut.
+  async function encodeSceneForLink() {
+    const bytes = new TextEncoder().encode(JSON.stringify(compactScene()));
+    if (typeof CompressionStream === "function") {
+      try {
+        return "z." + bytesToBase64Url(await transformBytes(bytes, CompressionStream, "deflate-raw"));
+      } catch (error) {
+        // Repli sur le JSON brut.
+      }
+    }
+    return "j." + bytesToBase64Url(bytes);
+  }
+
+  async function decodeSceneFromLink(token) {
+    const prefix = token.slice(0, 2);
+    let bytes = base64UrlToBytes(token.slice(2));
+    if (prefix === "z.") bytes = await transformBytes(bytes, DecompressionStream, "deflate-raw");
+    else if (prefix !== "j.") return null;
+    return expandScene(JSON.parse(new TextDecoder().decode(bytes)));
+  }
+
+  async function buildShareLink() {
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.searchParams.set("lang", state.language);
+    url.hash = `${SHARE_PARAM}=${await encodeSceneForLink()}`;
+    return url.toString();
+  }
+
+  async function copyShareLink() {
+    if (!state.items.length) {
+      showToast(getUiCopy("toastShareEmpty"), false);
+      return;
+    }
+    const link = await buildShareLink();
+    try {
+      await navigator.clipboard.writeText(link);
+      showToast(getUiCopy("toastLinkCopied"), false);
+    } catch (error) {
+      window.prompt(getUiCopy("shareLinkPrompt"), link);
+    }
+  }
+
+  // Une scene recue par lien prime sur le preset et sur la sauvegarde locale.
+  // Elle n'ecrase la sauvegarde qu'a la premiere modification.
+  async function loadSceneFromLink() {
+    const match = /(?:^#|&)scene=([^&]+)/.exec(window.location.hash || "");
+    if (!match) return;
+    let snapshot = null;
+    try {
+      snapshot = await decodeSceneFromLink(decodeURIComponent(match[1]));
+    } catch (error) {
+      snapshot = null;
+    }
+    try {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    } catch (error) {
+      // Adresse non modifiable : sans consequence.
+    }
+    if (!snapshot || !applySceneSnapshot(snapshot)) {
+      showToast(getUiCopy("toastLinkInvalid"), false);
+      return;
+    }
+    state.selectedId = null;
+    renderAll();
+    window.clearTimeout(history.timer);
+    history.current = snapshotScene();
+    history.undo.length = 0;
+    history.redo.length = 0;
+    syncHistoryUi();
+    showToast(getUiCopy("toastSceneFromLink"), false);
+  }
+
+  function saveProjectFile() {
+    const scene = JSON.parse(snapshotScene());
+    const payload = {
+      format: PROJECT_FORMAT,
+      version: 1,
+      app: "LITE Studio",
+      savedAt: new Date().toISOString(),
+      studio: { width: STUDIO.width, depth: STUDIO.depth },
+      scene: scene
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `lite-studio-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    window.setTimeout(function () {
+      URL.revokeObjectURL(url);
+    }, 1200);
+  }
+
+  async function openProjectFile(file) {
+    let snapshot = null;
+    try {
+      const data = JSON.parse(await file.text());
+      const scene = data && data.format === PROJECT_FORMAT ? data.scene : data;
+      if (scene && Array.isArray(scene.items)) snapshot = JSON.stringify(scene);
+    } catch (error) {
+      snapshot = null;
+    }
+    flushHistory();
+    if (!snapshot || !applySceneSnapshot(snapshot)) {
+      showToast(getUiCopy("toastProjectInvalid"), false);
+      return;
+    }
+    state.selectedId = null;
+    renderAll();
+    flushHistory();
+    showToast(getUiCopy("toastProjectOpened", { name: file.name }), true);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Liste du materiel
+  // ---------------------------------------------------------------------------
+
+  // Materiel du plateau (hors sujets), regroupe par categorie de la bibliotheque.
+  function computeGearList() {
+    const counts = new Map();
+    state.items.forEach(function (item) {
+      if (item.family === "subject") return;
+      counts.set(item.variantId, (counts.get(item.variantId) || 0) + 1);
+    });
+    const groups = [];
+    const toRow = function (variantId) {
+      const variant = ITEM_VARIANTS[variantId];
+      const title = getLocalizedVariantTitle(variantId, variant);
+      // La taille n'est rappelee que si le nom ne la contient pas deja (« Octa 120 », « 150 cm »).
+      const numbers = String(variant.sizeLabel || "").match(/\d+(?:[.,]\d+)?/g) || [];
+      const redundant = numbers.length > 0 && numbers.every(function (n) { return title.indexOf(n) >= 0; });
+      const row = { count: counts.get(variantId), title: title, size: redundant ? "" : variant.sizeLabel };
+      counts.delete(variantId);
+      return row;
+    };
+    PALETTE_CATEGORIES.forEach(function (category) {
+      const rows = [];
+      category.groups.forEach(function (group) {
+        group.variants.forEach(function (variantId) {
+          if (counts.has(variantId)) rows.push(toRow(variantId));
+        });
+      });
+      if (rows.length) groups.push({ label: getLocalizedPaletteCategoryLabel(category), rows: rows });
+    });
+    if (counts.size) {
+      groups.push({ label: getUiCopy("gearOther"), rows: Array.from(counts.keys()).map(toRow) });
+    }
+    return groups;
+  }
+
+  function countGear(groups) {
+    return groups.reduce(function (total, group) {
+      return total + group.rows.reduce(function (sum, row) { return sum + row.count; }, 0);
+    }, 0);
+  }
+
+  function buildGearListText() {
+    const groups = computeGearList();
+    const lines = [`${getUiCopy("gearTitle")} — LITE Studio`];
+    groups.forEach(function (group) {
+      lines.push("", group.label);
+      group.rows.forEach(function (row) {
+        lines.push(`- ${row.count} × ${row.title}${row.size ? ` (${row.size})` : ""}`);
+      });
+    });
+    return lines.join("\n");
+  }
+
+  function gearListMarkup(groups) {
+    if (!groups.length) return `<p class="gear-empty">${escapeHtml(getUiCopy("gearEmpty"))}</p>`;
+    return groups.map(function (group) {
+      return `
+        <section class="gear-group">
+          <h3>${escapeHtml(group.label)}</h3>
+          <ul>
+            ${group.rows.map(function (row) {
+              return `<li><span class="gear-count">${row.count} ×</span><span class="gear-name">${escapeHtml(row.title)}</span><span class="gear-size">${escapeHtml(isolateNumbers(row.size))}</span></li>`;
+            }).join("")}
+          </ul>
+        </section>
+      `;
+    }).join("");
+  }
+
+  function openGearList() {
+    if (!refs.gearDialog || !refs.gearDialogBody) return;
+    const groups = computeGearList();
+    const title = refs.gearDialog.querySelector("#gearDialogTitle");
+    if (title) title.textContent = `${getUiCopy("gearTitle")} · ${countGear(groups)}`;
+    refs.gearDialogBody.innerHTML = gearListMarkup(groups);
+    if (refs.gearCopyButton) {
+      refs.gearCopyButton.textContent = getUiCopy("gearCopy");
+      refs.gearCopyButton.disabled = !groups.length;
+    }
+    if (typeof refs.gearDialog.showModal === "function") refs.gearDialog.showModal();
+    else refs.gearDialog.setAttribute("open", "");
+  }
+
+  function renderPrintGearList() {
+    if (!refs.printGearList) return;
+    const groups = computeGearList();
+    refs.printGearList.innerHTML = groups.length
+      ? `<h2>${escapeHtml(getUiCopy("gearTitle"))}</h2>${gearListMarkup(groups)}`
+      : "";
+  }
+
+  // Colonne de droite des exports PNG / PDF : liste du materiel sous la vignette.
+  function drawGearListOnCanvas(ctx, x, y, width, maxBottom) {
+    const groups = computeGearList();
+    if (!groups.length) return;
+    const padding = Math.round(width * 0.06);
+    const titleSize = Math.round(width * 0.062);
+    const groupSize = Math.round(width * 0.045);
+    const lineSize = Math.round(width * 0.05);
+    const lineHeight = Math.round(lineSize * 1.5);
+    const lines = [];
+    groups.forEach(function (group) {
+      lines.push({ kind: "group", text: group.label.toUpperCase() });
+      group.rows.forEach(function (row) {
+        lines.push({ kind: "row", count: `${row.count} ×`, text: row.title });
+      });
+    });
+    const titleBlock = Math.round(titleSize * 2);
+    const capacity = Math.max(1, Math.floor((maxBottom - y - titleBlock - padding * 2) / lineHeight));
+    let visible = lines;
+    let hidden = 0;
+    if (lines.length > capacity) {
+      visible = lines.slice(0, capacity - 1);
+      hidden = lines.slice(capacity - 1).filter(function (line) { return line.kind === "row"; }).length;
+    }
+    const groupGap = Math.round(lineHeight * 0.45);
+    const extraGaps = visible.filter(function (line, index) { return line.kind === "group" && index > 0; }).length * groupGap;
+    const cardHeight = padding * 2 + titleBlock + (visible.length + (hidden ? 1 : 0)) * lineHeight + extraGaps;
+
+    ctx.save();
+    ctx.fillStyle = "rgba(9, 16, 28, 0.88)";
+    roundRect(ctx, x, y, width, cardHeight, Math.round(width * 0.04));
+    ctx.fill();
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#f1f5f9";
+    ctx.font = canvasFont(titleSize, 700);
+    ctx.fillText(`${getUiCopy("gearTitle")} · ${countGear(groups)}`, x + padding, y + padding + titleSize);
+    let cursor = y + padding + titleBlock;
+    const countWidth = Math.round(lineSize * 2.6);
+    visible.forEach(function (line, index) {
+      if (line.kind === "group" && index > 0) cursor += groupGap;
+      if (line.kind === "group") {
+        ctx.fillStyle = "rgba(255, 211, 156, 0.95)";
+        ctx.font = canvasFont(groupSize, 700);
+        ctx.fillText(fitText(ctx, line.text, width - padding * 2), x + padding, cursor + groupSize);
+      } else {
+        ctx.fillStyle = "rgba(241, 245, 249, 0.7)";
+        ctx.font = canvasFont(lineSize, 600);
+        ctx.fillText(line.count, x + padding, cursor + lineSize);
+        ctx.fillStyle = "#f1f5f9";
+        ctx.font = canvasFont(lineSize, 500);
+        ctx.fillText(fitText(ctx, line.text, width - padding * 2 - countWidth), x + padding + countWidth, cursor + lineSize);
+      }
+      cursor += lineHeight;
+    });
+    if (hidden) {
+      ctx.fillStyle = "rgba(241, 245, 249, 0.6)";
+      ctx.font = canvasFont(lineSize, 500);
+      ctx.fillText(getUiCopy("gearMore", { count: hidden }), x + padding, cursor + lineSize);
+    }
+    ctx.restore();
+  }
+
+  function fitText(ctx, text, maxWidth) {
+    if (ctx.measureText(text).width <= maxWidth) return text;
+    let value = text;
+    while (value.length > 1 && ctx.measureText(value + "…").width > maxWidth) value = value.slice(0, -1);
+    return value + "…";
+  }
+
+  function isTextEntryTarget(target) {
+    if (!target || !(target instanceof Element)) return false;
+    if (target.isContentEditable) return true;
+    if (target.tagName === "TEXTAREA" || target.tagName === "SELECT") return true;
+    if (target.tagName !== "INPUT") return false;
+    const type = (target.getAttribute("type") || "text").toLowerCase();
+    return !["button", "checkbox", "radio", "range", "submit", "reset", "color"].includes(type);
   }
 
   function handleKeydown(event) {
@@ -3874,6 +4517,25 @@
       closeLibraryPanel();
       return;
     }
+
+    // Les raccourcis ne s'appliquent jamais pendant une saisie (champs X, Y,
+    // rotation, recherche) : Retour arriere y efface un caractere, pas l'element.
+    if (isTextEntryTarget(event.target)) return;
+    const page = document.querySelector(".page");
+    if (page && page.dataset.appMode === "photo-lab") return;
+
+    const key = event.key.toLowerCase();
+    if ((event.ctrlKey || event.metaKey) && !event.altKey) {
+      if (key === "z" && !event.shiftKey) {
+        event.preventDefault();
+        undoScene();
+      } else if ((key === "z" && event.shiftKey) || key === "y") {
+        event.preventDefault();
+        redoScene();
+      }
+      return;
+    }
+    if (event.altKey) return;
 
     const item = getSelectedItem();
     if (!item) return;
@@ -5141,6 +5803,11 @@
 
     const mainView = state.primaryView === "iso" ? "iso" : "plan";
     const secondaryView = getSecondaryView();
+    // Le plan exporte est un document : sans cadre de selection ni poignee.
+    const selectedId = state.selectedId;
+    const hoverItemId = state.hoverItemId;
+    state.selectedId = null;
+    state.hoverItemId = null;
 
     // Mise en page de l'export : vue principale a gauche, vignette dans une colonne
     // a droite, pour qu'elle ne recouvre jamais le plan.
@@ -5172,6 +5839,10 @@
     ctx.drawImage(insetCanvas, cardX, cardY);
     ctx.restore();
 
+    drawGearListOnCanvas(ctx, cardX - padding, cardY + insetHeight + padding * 3, insetWidth + padding * 2, height - Math.round(height * 0.04));
+
+    state.selectedId = selectedId;
+    state.hoverItemId = hoverItemId;
     return canvas;
   }
 
@@ -5283,10 +5954,94 @@
     return wasCollapsed !== state.insetCollapsed;
   }
 
+  // Le plan d'abord : il prend toute la hauteur (ou la largeur) disponible, et la
+  // vignette iso se loge dans la bande laissee libre a cote, a sa taille.
+  // Renvoie null si la bande est trop etroite pour une vignette lisible.
+  function fitInsetBesidePlan(W, H) {
+    const padding = Math.max(36, Math.min(W, H) * 0.06);
+    const sMax = Math.min((W - padding * 2) / STUDIO.width, (H - padding * 2) / STUDIO.depth);
+    const gap = 16;
+    const minW = 180;
+    const maxW = 300;
+    const ratio = 0.7;
+    // Le plan peut ceder jusqu'a 15 % de sa taille maximale pour faire de la place.
+    const minScale = sMax * 0.85;
+    const rtl = document.documentElement.dir === "rtl";
+
+    // Vignette a cote du plan (ecrans larges).
+    let scale = sMax;
+    let free = W - (STUDIO.width * scale + padding * 2) - gap;
+    if (free < minW) {
+      scale = (W - padding * 2 - gap - minW) / STUDIO.width;
+      free = minW;
+    }
+    if (scale >= minScale) {
+      const w = Math.round(Math.min(maxW, free));
+      const h = Math.round(w * ratio);
+      if (h + gap * 2 <= H) {
+        return { region: { x: rtl ? w + gap : 0, y: 0, w: W - w - gap, h: H }, inset: { w: w, h: h, top: gap, side: gap } };
+      }
+    }
+
+    // Vignette au-dessus du plan (ecrans hauts).
+    const minH = Math.round(minW * ratio);
+    scale = sMax;
+    free = H - (STUDIO.depth * scale + padding * 2) - gap;
+    if (free < minH) {
+      scale = (H - padding * 2 - gap - minH) / STUDIO.depth;
+      free = minH;
+    }
+    if (scale >= minScale) {
+      const h = Math.round(Math.min(maxW * ratio, free));
+      const w = Math.round(h / ratio);
+      if (w + gap * 2 <= W) {
+        return { region: { x: 0, y: h + gap, w: W, h: H - h - gap }, inset: { w: w, h: h, top: gap, side: gap } };
+      }
+    }
+    return null;
+  }
+
+  function setInsetGeometry(inset) {
+    const wrap = refs.stageCanvasWrap;
+    if (!wrap) return;
+    if (!inset) {
+      ["--inset-w", "--inset-h", "--inset-top", "--inset-right", "--inset-bottom"].forEach(function (name) {
+        wrap.style.removeProperty(name);
+      });
+      return;
+    }
+    wrap.style.setProperty("--inset-w", `${inset.w}px`);
+    wrap.style.setProperty("--inset-h", `${inset.h}px`);
+    wrap.style.setProperty("--inset-top", `${inset.top}px`);
+    wrap.style.setProperty("--inset-right", `${inset.side}px`);
+    wrap.style.setProperty("--inset-bottom", "auto");
+  }
+
   function computePlanRegionAvoidingInset() {
     const canvas = refs.planCanvas;
     const pane = refs.isoViewPane;
-    if (!canvas || !pane || state.primaryView === "iso") return null;
+    if (!canvas || !pane || state.primaryView === "iso") {
+      setInsetGeometry(null);
+      return null;
+    }
+
+    const fullRect = canvas.getBoundingClientRect();
+    if (fullRect.width && fullRect.height && !window.matchMedia("(max-width: 700px)").matches) {
+      const fitted = fitInsetBesidePlan(fullRect.width, fullRect.height);
+      if (fitted) {
+        setInsetGeometry(fitted.inset);
+        const k = canvas.width / fullRect.width;
+        return {
+          canvasWidth: canvas.width,
+          canvasHeight: canvas.height,
+          x: fitted.region.x * k,
+          y: fitted.region.y * k,
+          w: fitted.region.w * k,
+          h: fitted.region.h * k
+        };
+      }
+    }
+    setInsetGeometry(null);
 
     const canvasRect = canvas.getBoundingClientRect();
     const paneRect = pane.getBoundingClientRect();
@@ -5473,7 +6228,8 @@
   }
 
   function roundRect(ctx, x, y, width, height, radius) {
-    const r = Math.min(radius, width / 2, height / 2);
+    // Canvas masque (Labo photo ouvert au demarrage) : dimensions nulles ou negatives.
+    const r = Math.max(0, Math.min(radius, width / 2, height / 2));
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.arcTo(x + width, y, x + width, y + height, r);
@@ -5484,7 +6240,8 @@
   }
 
   function roundTopRect(ctx, x, y, width, height, radius) {
-    const r = Math.min(radius, width / 2, height / 2);
+    // Canvas masque (Labo photo ouvert au demarrage) : dimensions nulles ou negatives.
+    const r = Math.max(0, Math.min(radius, width / 2, height / 2));
     ctx.beginPath();
     ctx.moveTo(x, y + height);
     ctx.lineTo(x, y + r);
@@ -5543,6 +6300,40 @@
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
   }
+
+  // Acces en lecture seule pour les scripts de construction du site (vignettes et
+  // libelles de la galerie de presets) : rien ici ne modifie la scene.
+  window.LiteStudio = Object.freeze({
+    presetCatalog: function (language) {
+      const previous = state.language;
+      state.language = LANGUAGE_OPTIONS.some(function (option) { return option.id === language; }) ? language : previous;
+      try {
+        return STUDIO_PRESET_CATEGORIES.map(function (category) {
+          const copy = getLocalizedPresetCategory(category);
+          return {
+            id: category.id,
+            label: copy.label,
+            description: copy.description,
+            presets: category.presets.map(function (preset) {
+              return { id: preset.id, name: getLocalizedPresetName(preset), summary: getLocalizedPresetSummary(preset), count: preset.items.length };
+            })
+          };
+        });
+      } finally {
+        state.language = previous;
+      }
+    },
+    renderView: function (view, width, height) {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const selectedId = state.selectedId;
+      state.selectedId = null;
+      drawStageView(view === "plan" ? "plan" : "iso", canvas.getContext("2d"), width, height, { compact: false });
+      state.selectedId = selectedId;
+      return canvas;
+    }
+  });
 
   init();
 })();

@@ -1,6 +1,7 @@
 import { APERTURE_VALUES, ISO_VALUES } from "./photo-lab-data.mjs";
 import { buildPhotoLabReadout, getSupportedApertures, getSupportedFocalLengths } from "./photo-lab-engine.mjs";
 import { getPhotoLabScene } from "./photo-lab-scenes.mjs";
+import { getLabLanguage, labText } from "./photo-lab-i18n.mjs";
 
 const scene = getPhotoLabScene("portrait-loft");
 const state = {
@@ -27,14 +28,37 @@ function initPhotoLab() {
     queueRender();
   };
   sourceImage.onerror = function () {
-    refs.loading.textContent = "Image de scene indisponible.";
+    refs.loading.removeAttribute("data-lab-text");
+    refs.loading.textContent = labText("imageUnavailable");
   };
 
   bindEvents();
+  applyStaticCopy();
+  // La langue du Labo suit celle de l'appli.
+  new MutationObserver(function () {
+    applyStaticCopy();
+    renderControls();
+    queueRender();
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   renderControls();
   renderMode();
   setControlsOpen(false);
   queueRender();
+}
+
+function applyStaticCopy() {
+  if (!refs.root) return;
+  const scope = [refs.root, refs.controlsToggle].filter(Boolean);
+  scope.forEach(function (root) {
+    const nodes = [root].concat(Array.from(root.querySelectorAll("[data-lab-text], [data-lab-aria]")));
+    nodes.forEach(function (node) {
+      const textKey = node.getAttribute("data-lab-text");
+      const ariaKey = node.getAttribute("data-lab-aria");
+      if (textKey) node.textContent = labText(textKey);
+      if (ariaKey) node.setAttribute("aria-label", labText(ariaKey));
+    });
+  });
+  refs.root.setAttribute("lang", getLabLanguage());
 }
 
 function cacheRefs() {
@@ -200,19 +224,22 @@ function renderReadout(readout) {
   const exposure = readout.readout.exposureOffsetStops;
   const blurRisk = readout.readout.handheldBlurRisk.level;
   const dof = readout.readout.depthOfField.totalMeters;
-  const focalCopy = state.focalMode === "same-position"
-    ? "Ici l'appareil reste au meme endroit : la focale modifie l'angle de champ et le cadrage, pas la perspective."
-    : "Ici le sujet reste proche de la meme taille : la position camera est supposee changer, donc la perspective evolue.";
+  const focalCopy = labText(state.focalMode === "same-position" ? "focalSame" : "focalSize");
 
-  refs.explanation.textContent = `A f/${formatNumber(settings.aperture)}, la zone nette reste centree sur le sujet. ISO ${settings.iso} module la luminosite et le bruit, tandis que ${settings.focalLength} mm agit sur le cadrage. ${focalCopy}`;
+  refs.explanation.textContent = labText("explanation", {
+    aperture: formatNumber(settings.aperture),
+    iso: settings.iso,
+    focal: settings.focalLength,
+    focalCopy: focalCopy
+  });
   refs.warning.textContent = buildWarningCopy(readout);
   refs.warning.dataset.level = readout.readout.exposureWarning;
   refs.metrics.innerHTML = [
-    metricMarkup("Expo", `${exposure > 0 ? "+" : ""}${formatNumber(exposure)} IL`),
-    metricMarkup("EV100", formatNumber(readout.readout.ev100)),
-    metricMarkup("PDC approx.", Number.isFinite(dof) ? `${formatNumber(dof)} m` : "infini"),
-    metricMarkup("Eq. plein format", `${readout.readout.equivalentFocalLength} mm`),
-    metricMarkup("Bouge", translateRisk(blurRisk))
+    metricMarkup(labText("metricExposure"), `${exposure > 0 ? "+" : ""}${formatNumber(exposure)} ${labText("unitStops")}`),
+    metricMarkup(labText("metricEv"), formatNumber(readout.readout.ev100)),
+    metricMarkup(labText("metricDof"), Number.isFinite(dof) ? `${formatNumber(dof)} m` : labText("infinite")),
+    metricMarkup(labText("metricEquivalent"), `${readout.readout.equivalentFocalLength} mm`),
+    metricMarkup(labText("metricShake"), capitalize(translateRisk(blurRisk)))
   ].join("");
 
   if (refs.hudSettings) {
@@ -223,9 +250,16 @@ function renderReadout(readout) {
   }
   if (refs.lensSpec) {
     const focalRange = readout.lens.type === "prime"
-      ? `${readout.lens.minFocalLength} mm fixe`
+      ? labText("prime", { focal: readout.lens.minFocalLength })
       : `${readout.lens.minFocalLength}-${readout.lens.maxFocalLength} mm`;
-    refs.lensSpec.textContent = `${readout.body.sensorFormat} · ${focalRange} · ${readout.lens.apertureBladeCount} lamelles`;
+    const sensor = labText("sensor")[readout.body.sensorFormat] || readout.body.sensorFormat;
+    refs.lensSpec.replaceChildren();
+    [sensor, focalRange, labText("blades", { count: readout.lens.apertureBladeCount })].forEach(function (part, index) {
+      if (index) refs.lensSpec.append(" · ");
+      const bdi = document.createElement("bdi");
+      bdi.textContent = part;
+      refs.lensSpec.append(bdi);
+    });
   }
 }
 
@@ -235,12 +269,17 @@ function buildWarningCopy(readout) {
   const handheld = readout.readout.handheldBlurRisk.level;
   const warnings = [];
 
-  if (exposure === "overexposed") warnings.push("Risque de surexposition : hautes lumieres moins recuperables.");
-  if (exposure === "underexposed") warnings.push("Risque de sous-exposition : bruit plus visible dans les ombres.");
-  if (handheld !== "low") warnings.push(`Flou de bouge ${translateRisk(handheld).toLowerCase()} a main levee.`);
-  if (motion !== "low") warnings.push(`Mouvement du sujet ${translateRisk(motion).toLowerCase()} avec cette vitesse.`);
+  // En anglais le niveau ouvre la phrase (majuscule), ailleurs il est au milieu.
+  const inSentence = function (level) {
+    const text = translateRisk(level);
+    return getLabLanguage() === "en" ? capitalize(text) : text.toLowerCase();
+  };
+  if (exposure === "overexposed") warnings.push(labText("overexposed"));
+  if (exposure === "underexposed") warnings.push(labText("underexposed"));
+  if (handheld !== "low") warnings.push(labText("handheld", { level: inSentence(handheld) }));
+  if (motion !== "low") warnings.push(labText("motion", { level: inSentence(motion) }));
 
-  return warnings.length ? warnings.join(" ") : "Exposition equilibree, bruit contenu et risque de flou limite.";
+  return warnings.length ? warnings.join(" ") : labText("balanced");
 }
 
 function queueRender() {
@@ -453,7 +492,8 @@ function getDepthBlur(aperture) {
 }
 
 function metricMarkup(label, value) {
-  return `<div class="photo-lab-metric"><span>${label}</span><strong>${value}</strong></div>`;
+  // <bdi> : une valeur comme « -5 EV » garde son ordre dans une interface arabe.
+  return `<div class="photo-lab-metric"><span>${label}</span><strong><bdi>${value}</bdi></strong></div>`;
 }
 
 function setDialAngle(element, values, selectedValue, startAngle, sweepAngle) {
@@ -473,9 +513,13 @@ function formatNumber(value) {
 }
 
 function translateRisk(level) {
-  if (level === "high") return "Eleve";
-  if (level === "moderate") return "Modere";
-  return "Faible";
+  if (level === "high") return labText("riskHigh");
+  if (level === "moderate") return labText("riskModerate");
+  return labText("riskLow");
+}
+
+function capitalize(text) {
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
 }
 
 function clamp(value, min, max) {

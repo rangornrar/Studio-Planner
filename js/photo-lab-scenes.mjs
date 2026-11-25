@@ -3,7 +3,7 @@ export const PHOTO_LAB_SCENES = [
     id: "portrait-loft",
     name: "Portrait en studio daylight",
     imageSrc: "../docs/photo-lab/portrait-studio-depth-temp.png",
-    assetStatus: "Image temporaire generee pour le prototype, a remplacer par une photographie finale libre de droits.",
+    assetStatus: "Image temporaire générée pour le prototype, à remplacer par une photographie finale libre de droits.",
     focusPoint: { x: 0.43, y: 0.43 },
     subjectMask: { x: 0.43, y: 0.47, radiusX: 0.22, radiusY: 0.39 },
     foregroundMask: { x: 0.52, y: 0.82, radiusX: 0.32, radiusY: 0.19 },

@@ -31,9 +31,12 @@ Elle aide a construire rapidement un set, mesurer les distances utiles du platea
 - Bibliotheque d'elements avec recherche par type, taille ou famille.
 - Mesures automatiques entre sujet, camera, fond et sources, plus un mode de mesure manuel.
 - Reglages d'element et informations metier : hauteur, orientation, puissance source et lecture estimee a ISO 100.
-- Presets integres et presets personnalises sauvegardes dans le navigateur.
+- Presets integres et presets personnalises sauvegardes dans le navigateur ; galerie illustree des 46 presets sur la page Presets.
+- Annuler / retablir (Ctrl+Z, Ctrl+Maj+Z) et sauvegarde automatique du plateau dans le navigateur.
+- Partage : lien qui contient tout le plateau, et fichier projet `.json` a enregistrer puis rouvrir (ou glisser sur le plateau).
+- Liste du materiel generee depuis le plateau, copiable et incluse dans les exports.
 - Export PNG, export PDF et impression directe du plan.
-- Interface multilingue : francais, anglais, espagnol, allemand et arabe.
+- Interface multilingue, Labo photo compris : francais, anglais, espagnol, allemand et arabe.
 
 ## Demarrage rapide
 
@@ -47,7 +50,7 @@ Le Labo photo utilise des modules JavaScript, que les navigateurs refusent de ch
 4. Utilisez la molette sur desktop ou le pinch sur mobile pour zoomer dans la vue de dessus.
 5. Activez `Mesure` pour afficher les distances autour du sujet ou tracer une mesure manuelle.
 6. Utilisez le menu `Presets` pour charger un preset ou sauvegarder votre propre configuration.
-7. Utilisez le menu `Fichier` pour copier l'image, exporter en PNG ou PDF, ou imprimer le plan.
+7. Utilisez le menu `Fichier` pour partager un lien, enregistrer ou ouvrir un projet, afficher la liste du materiel, copier l'image, exporter en PNG ou PDF, ou imprimer le plan.
 
 ## Structure du projet
 
@@ -60,6 +63,8 @@ Le Labo photo utilise des modules JavaScript, que les navigateurs refusent de ch
 - `js/photo-lab-*.mjs` et `css/photo-lab.css` : Labo photo (donnees optiques, calculs, scene, interface).
 - `js/site-nav.js` : menu de navigation mobile des pages publiques.
 - `scripts/generate-static-locales.mjs` : generation des pages publiques traduites (`npm run build:locales`).
+- `scripts/generate-preset-gallery.mjs` : vignettes `assets/presets/*.webp` et libelles `scripts/preset-gallery.json` de la galerie de presets (`npm run build:presets`, a relancer apres une modification des presets, avant `build:locales`).
+- `js/photo-lab-i18n.mjs` : textes du Labo photo dans les cinq langues.
 - `scripts/serve-static.mjs` : petit serveur local (`npm run serve`).
 - `tests/` : tests unitaires (`npm test`) et controle visuel automatique (`npm run test:visual`).
 - `js/studio-locales.js` : constantes de localisation de l’application.

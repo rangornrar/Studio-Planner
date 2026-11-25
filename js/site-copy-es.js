@@ -2,11 +2,11 @@ window.SitePublicCopy = window.SitePublicCopy || {};
 window.SitePublicCopy.es = {
   common: {
     kofiAlt: "Apoyar LITE Studio en Ko-fi",
-    navAriaLabel: "Navegacion principal",
+    navAriaLabel: "Navegación principal",
     links: {
       home: "Inicio",
-      app: "Aplicacion",
-      guide: "Guia",
+      app: "Aplicación",
+      guide: "Guía",
       presets: "Presets",
       faq: "FAQ"
     }
@@ -46,58 +46,58 @@ window.SitePublicCopy.es = {
     },
     guide: {
       meta: {
-        title: "Guia de planificacion de estudio fotografico | LITE Studio",
-        description: "Guia rapida para preparar un plano de estudio: sujeto, camara, luz principal, control, fondos e impresion.",
-        ogTitle: "Guia de planificacion de estudio fotografico | LITE Studio",
-        ogDescription: "Un metodo simple para preparar un setup de foto o video antes de la sesion."
+        title: "Guía de planificación de estudio fotográfico | LITE Studio",
+        description: "Guía rápida para preparar un plano de estudio: sujeto, cámara, luz principal, control, fondos e impresión.",
+        ogTitle: "Guía de planificación de estudio fotográfico | LITE Studio",
+        ogDescription: "Un método simple para preparar un setup de foto o video antes de la sesión."
       },
-      topCopy: "Guia practica para preparar un plano de estudio util antes de la toma.",
-      brandTagline: "Guia de preparacion",
+      topCopy: "Guía práctica para preparar un plano de estudio útil antes de la toma.",
+      brandTagline: "Guía de preparación",
       navItems: ["home", "app", "presets", "faq"],
       footerItems: ["home", "app", "presets", "faq"],
       sections: {
-        heroCardContent: `<p class="eyebrow">Guia</p><h1>Como preparar un plano de estudio simple, legible y util para el equipo.</h1><p>Un buen lighting diagram debe mostrar donde va el sujeto, donde va la camara y de donde vienen las fuentes. El objetivo es ayudar en la preparacion, no dibujar un plano perfecto.</p>`,
-        guideFirstGridContent: `<article class="article-card"><p class="eyebrow">1. Empezar por el set</p><h2>Elige primero el fondo y la zona de toma.</h2><p>Define fondo, color del suelo y posicion del sujeto antes de colocar las luces.</p><ul><li>Elegir un fondo coherente con la intencion</li><li>Mantener un eje claro entre sujeto y camara</li></ul></article><article class="article-card"><p class="eyebrow">2. Colocar la luz principal</p><h2>Anade la fuente principal antes de los accesorios.</h2><p>Una octabox, una softbox grande, un paraguas o un Fresnel suelen bastar para construir la base del setup.</p><ul><li>Retrato suave: fuente grande a 45 grados</li><li>Beauty: fuente frontal con fill</li></ul></article><article class="article-card"><p class="eyebrow">3. Anadir control</p><h2>Reflectores, flags y V-flats mejoran la lectura del plano.</h2><p>Anade rebote, difusion y corte de luz para que el montaje sea claro para el equipo.</p><ul><li>Reflector para levantar el fill</li><li>Flag o negative fill para dar mas contraste</li></ul></article>`,
-        guideSecondGridContent: `<article class="article-card"><p class="eyebrow">4. Verificar la circulacion</p><h2>Usa la vista superior para evitar colisiones entre pies y mobiliario.</h2><p>El plano debe mostrar zonas de paso, ejes de camara y cualquier elemento que pueda molestar al equipo o al sujeto.</p></article><article class="article-card"><p class="eyebrow">5. Revisar el volumen</p><h2>La vista isometrica ayuda a validar la impresion general del set.</h2><p>Complementa el plano con una lectura rapida de alturas, masas y ocupacion del espacio.</p></article><article class="article-card"><p class="eyebrow">6. Imprimir y compartir</p><h2>Imprime solo la vista superior para distribuirla al equipo.</h2><p>Cuando el setup este listo, imprime el plano para el brief, la hoja de servicio o la preproduccion.</p><p><a class="button-link primary" href="app.html">Abrir la aplicacion</a></p></article>`
+        heroCardContent: `<p class="eyebrow">Guía</p><h1>Cómo preparar un plano de estudio simple, legible y útil para el equipo.</h1><p>Un buen lighting diagram debe mostrar dónde va el sujeto, dónde va la cámara y de dónde vienen las fuentes. El objetivo es ayudar en la preparación, no dibujar un plano perfecto.</p>`,
+        guideFirstGridContent: `<article class="article-card"><p class="eyebrow">1. Empezar por el set</p><h2>Elige primero el fondo y la zona de toma.</h2><p>Define fondo, color del suelo y posición del sujeto antes de colocar las luces.</p><ul><li>Elegir un fondo coherente con la intención</li><li>Mantener un eje claro entre sujeto y cámara</li></ul></article><article class="article-card"><p class="eyebrow">2. Colocar la luz principal</p><h2>Añade la fuente principal antes de los accesorios.</h2><p>Una octabox, una softbox grande, un paraguas o un Fresnel suelen bastar para construir la base del setup.</p><ul><li>Retrato suave: fuente grande a 45 grados</li><li>Beauty: fuente frontal con fill</li></ul></article><article class="article-card"><p class="eyebrow">3. Añadir control</p><h2>Reflectores, flags y V-flats mejoran la lectura del plano.</h2><p>Añade rebote, difusión y corte de luz para que el montaje sea claro para el equipo.</p><ul><li>Reflector para levantar el fill</li><li>Flag o negative fill para dar más contraste</li></ul></article>`,
+        guideSecondGridContent: `<article class="article-card"><p class="eyebrow">4. Verificar la circulación</p><h2>Usa la vista superior para evitar colisiones entre pies y mobiliario.</h2><p>El plano debe mostrar zonas de paso, ejes de cámara y cualquier elemento que pueda molestar al equipo o al sujeto.</p></article><article class="article-card"><p class="eyebrow">5. Revisar el volumen</p><h2>La vista isométrica ayuda a validar la impresión general del set.</h2><p>Complementa el plano con una lectura rápida de alturas, masas y ocupación del espacio.</p></article><article class="article-card"><p class="eyebrow">6. Imprimir y compartir</p><h2>Imprime solo la vista superior para distribuirla al equipo.</h2><p>Cuando el setup esté listo, imprime el plano para el brief, la hoja de servicio o la preproducción.</p><p><a class="button-link primary" href="app.html">Abrir la aplicación</a></p></article>`
       },
-      footerCopy: "LITE Studio · guia de preparacion de sets foto y video."
+      footerCopy: "LITE Studio · guía de preparación de sets foto y video."
     },
     presets: {
       meta: {
-        title: "Presets de estudio fotografico | LITE Studio",
-        description: "Descubre las categorias de presets de LITE Studio: retrato, beauty, corporate, moda, producto, grupo, boudoir, desnudo artistico y video.",
-        ogTitle: "Presets de estudio fotografico | LITE Studio",
-        ogDescription: "Presets listos para preparar un setup de foto o video mas rapido."
+        title: "Presets de estudio fotográfico | LITE Studio",
+        description: "Descubre las categorías de presets de LITE Studio: retrato, beauty, corporate, moda, producto, grupo, boudoir, desnudo artístico y video.",
+        ogTitle: "Presets de estudio fotográfico | LITE Studio",
+        ogDescription: "Presets listos para preparar un setup de foto o video más rápido."
       },
-      topCopy: "Una biblioteca de presets para acelerar la preparacion de tus setups foto y video.",
+      topCopy: "Una biblioteca de presets para acelerar la preparación de tus setups foto y video.",
       brandTagline: "Presets de estudio",
       navItems: ["home", "app", "guide", "faq"],
       footerItems: ["home", "app", "guide", "faq"],
       sections: {
-        heroCardContent: `<p class="eyebrow">Presets</p><h1>Presets de estudio para partir de una base creible y adaptarla a tu set real.</h1><p>Los presets funcionan como puntos de partida rapidos. Ayudan a expresar la intencion de luz, organizar el decorado y acelerar la preproduccion.</p>`,
-        presetTopGridContent: `<article class="preset-card info-card"><h3>Retrato, beauty y corporate</h3><p>Bases eficaces para headshot, retrato editorial, beauty y retrato profesional.</p><p><strong>Ejemplos:</strong> retrato suave 45°, beauty clamshell, corporate clean.</p></article><article class="preset-card info-card"><h3>Moda, producto y grupo</h3><p>Presets mas estructurados para silueta, catalogo, botella, duo, familia o pequeno equipo.</p><p><strong>Ejemplos:</strong> moda parabolica, packshot tabletop, familia soft daylight.</p></article><article class="preset-card info-card"><h3>Boudoir, desnudo artistico y creativo</h3><p>Escenas mas graficas o sensibles con mobiliario, fondos marcados, proyecciones y sombras.</p><p><strong>Ejemplos:</strong> boudoir parabolic, nude sculptural hard, shadow play.</p></article>`,
-        presetDetailsGridContent: `<article class="article-card"><p class="eyebrow">Categorias</p><h2>Retrato y beauty</h2><p>Fuentes amplias, rebote suave y control preciso para una piel limpia y un rostro bien modelado.</p></article><article class="article-card"><p class="eyebrow">Categorias</p><h2>Boudoir, erotico y desnudo artistico</h2><p>Presets mas atmosfericos con fondos de color, mobiliario, negative fill y mayor separacion.</p></article><article class="article-card"><p class="eyebrow">Categorias</p><h2>Video, entrevista y podcast</h2><p>Una base clara para contenido hablado con camara, silla, paneles LED, tubos y control de plató.</p></article>`,
-        ctaPanelContent: `<p class="eyebrow">Practico</p><h2>Carga un preset, ajusta la escena e imprime tu plano.</h2><p>Los presets aceleran el arranque y luego puedes mover, girar, eliminar o completar cada elemento.</p><div class="cta-actions"><a class="button-link primary" href="app.html">Abrir la aplicacion</a><a class="button-link secondary" href="guide.html">Ver la guia</a></div>`
+        heroCardContent: `<p class="eyebrow">Presets</p><h1>Presets de estudio para partir de una base creíble y adaptarla a tu set real.</h1><p>Los presets funcionan como puntos de partida rápidos. Ayudan a expresar la intención de luz, organizar el decorado y acelerar la preproducción.</p>`,
+        presetTopGridContent: `<article class="preset-card info-card"><h3>Retrato, beauty y corporate</h3><p>Bases eficaces para headshot, retrato editorial, beauty y retrato profesional.</p><p><strong>Ejemplos:</strong> retrato suave 45°, beauty clamshell, corporate clean.</p></article><article class="preset-card info-card"><h3>Moda, producto y grupo</h3><p>Presets más estructurados para silueta, catálogo, botella, dúo, familia o pequeño equipo.</p><p><strong>Ejemplos:</strong> moda parabólica, packshot tabletop, familia soft daylight.</p></article><article class="preset-card info-card"><h3>Boudoir, desnudo artístico y creativo</h3><p>Escenas más gráficas o sensibles con mobiliario, fondos marcados, proyecciones y sombras.</p><p><strong>Ejemplos:</strong> boudoir parabolic, nude sculptural hard, shadow play.</p></article>`,
+        presetDetailsGridContent: `<article class="article-card"><p class="eyebrow">Categorías</p><h2>Retrato y beauty</h2><p>Fuentes amplias, rebote suave y control preciso para una piel limpia y un rostro bien modelado.</p></article><article class="article-card"><p class="eyebrow">Categorías</p><h2>Boudoir, erótico y desnudo artístico</h2><p>Presets más atmosféricos con fondos de color, mobiliario, negative fill y mayor separación.</p></article><article class="article-card"><p class="eyebrow">Categorías</p><h2>Video, entrevista y podcast</h2><p>Una base clara para contenido hablado con cámara, silla, paneles LED, tubos y control de plató.</p></article>`,
+        ctaPanelContent: `<p class="eyebrow">Práctico</p><h2>Carga un preset, ajusta la escena e imprime tu plano.</h2><p>Los presets aceleran el arranque y luego puedes mover, girar, eliminar o completar cada elemento.</p><div class="cta-actions"><a class="button-link primary" href="app.html">Abrir la aplicación</a><a class="button-link secondary" href="guide.html">Ver la guía</a></div>`
       },
-      footerCopy: "LITE Studio · presets para retrato, beauty, boudoir, desnudo artistico, producto y video."
+      footerCopy: "LITE Studio · presets para retrato, beauty, boudoir, desnudo artístico, producto y video."
     },
     faq: {
       meta: {
-        title: "FAQ LITE Studio | Planificador de estudio fotografico",
-        description: "Preguntas frecuentes sobre LITE Studio: impresion, presets, colores de fondo, idiomas disponibles y uso de la aplicacion.",
-        ogTitle: "FAQ LITE Studio | Planificador de estudio fotografico",
-        ogDescription: "Respuestas rapidas sobre impresion, presets, colores de fondo y uso de la aplicacion."
+        title: "FAQ LITE Studio | Planificador de estudio fotográfico",
+        description: "Preguntas frecuentes sobre LITE Studio: impresión, presets, colores de fondo, idiomas disponibles y uso de la aplicación.",
+        ogTitle: "FAQ LITE Studio | Planificador de estudio fotográfico",
+        ogDescription: "Respuestas rápidas sobre impresión, presets, colores de fondo y uso de la aplicación."
       },
-      topCopy: "Las respuestas esenciales para usar LITE Studio mas rapido y preparar mejor un set.",
+      topCopy: "Las respuestas esenciales para usar LITE Studio más rápido y preparar mejor un set.",
       brandTagline: "Preguntas frecuentes",
       navItems: ["home", "app", "guide", "presets"],
       footerItems: ["home", "app", "guide", "presets"],
       sections: {
-        heroCardContent: `<p class="eyebrow">FAQ</p><h1>Preguntas frecuentes sobre la aplicacion de plan de estudio fotografico.</h1><p>Aqui tienes las respuestas mas utiles antes de preparar un plano de plató, cargar un preset o imprimir un esquema de luz.</p>`,
-        faqGridContent: `<article class="faq-item"><h3>¿Para que sirve LITE Studio?</h3><p>La aplicacion permite crear un plano de estudio foto o video con vista superior, mini vista isometrica, biblioteca de elementos, presets e impresion del plano principal.</p></article><article class="faq-item"><h3>¿Se puede imprimir solo la vista superior?</h3><p>Si. La accion de impresion saca solo el plano principal, sin la biblioteca ni la mini vista isometrica.</p></article><article class="faq-item"><h3>¿Se puede cambiar el color del fondo?</h3><p>Si. El menu color permite cambiar por separado el suelo y el fondo con una paleta de colores clasicos de estudio.</p></article><article class="faq-item"><h3>¿Que tipos de elementos hay?</h3><p>Puedes colocar sujetos, camaras, softboxes, octaboxes, strips, proyectores, paneles LED, reflectores, flags, V-flats, soportes, mobiliario y accesorios de plató.</p></article><article class="faq-item"><h3>¿Hay presets listos para usar?</h3><p>Si. La aplicacion incluye presets de retrato, beauty, corporate, moda, producto, grupo, boudoir, erotico, desnudo artistico, video y creativo.</p></article><article class="faq-item"><h3>¿Se puede cambiar el idioma?</h3><p>Si. La interfaz admite frances, ingles, espanol, aleman y arabe.</p></article>`,
-        ctaPanelContent: `<p class="eyebrow">Quieres probarlo</p><h2>Prueba la aplicacion directamente con un setup real.</h2><p>La forma mas simple es cargar un preset, ajustar las luces e imprimir el plano para validar tu flujo de trabajo.</p><div class="cta-actions"><a class="button-link primary" href="app.html">Abrir la aplicacion</a><a class="button-link secondary" href="presets.html">Ver presets</a></div>`
+        heroCardContent: `<p class="eyebrow">FAQ</p><h1>Preguntas frecuentes sobre la aplicación de plan de estudio fotográfico.</h1><p>Aquí tienes las respuestas más útiles antes de preparar un plano de plató, cargar un preset o imprimir un esquema de luz.</p>`,
+        faqGridContent: `<article class="faq-item"><h3>¿Para qué sirve LITE Studio?</h3><p>La aplicación permite crear un plano de estudio foto o video con vista superior, mini vista isométrica, biblioteca de elementos, presets e impresión del plano principal.</p></article><article class="faq-item"><h3>¿Se puede imprimir solo la vista superior?</h3><p>Sí. La acción de impresión saca solo el plano principal, sin la biblioteca ni la mini vista isométrica.</p></article><article class="faq-item"><h3>¿Se puede cambiar el color del fondo?</h3><p>Sí. El menú color permite cambiar por separado el suelo y el fondo con una paleta de colores clásicos de estudio.</p></article><article class="faq-item"><h3>¿Qué tipos de elementos hay?</h3><p>Puedes colocar sujetos, cámaras, softboxes, octaboxes, strips, proyectores, paneles LED, reflectores, flags, V-flats, soportes, mobiliario y accesorios de plató.</p></article><article class="faq-item"><h3>¿Hay presets listos para usar?</h3><p>Sí. La aplicación incluye presets de retrato, beauty, corporate, moda, producto, grupo, boudoir, erótico, desnudo artístico, video y creativo.</p></article><article class="faq-item"><h3>¿Se puede cambiar el idioma?</h3><p>Sí. La interfaz admite francés, inglés, español, alemán y árabe.</p></article>`,
+        ctaPanelContent: `<p class="eyebrow">Quieres probarlo</p><h2>Prueba la aplicación directamente con un setup real.</h2><p>La forma más simple es cargar un preset, ajustar las luces e imprimir el plano para validar tu flujo de trabajo.</p><div class="cta-actions"><a class="button-link primary" href="app.html">Abrir la aplicación</a><a class="button-link secondary" href="presets.html">Ver presets</a></div>`
       },
-      footerCopy: "LITE Studio · FAQ de la aplicacion de plan de estudio fotografico."
+      footerCopy: "LITE Studio · FAQ de la aplicación de plan de estudio fotográfico."
     }
   }
 };
