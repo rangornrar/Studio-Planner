@@ -29,8 +29,8 @@
   <meta name="twitter:image:alt" content="LITE Studio: Studio-Grundriss mit Softbox, Reflektor, Model und Kamera sowie 3D-Vorschau">
   <link rel="preload" href="../fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../css/fonts.css">
-  <link rel="stylesheet" href="../css/site.css">
-  <script src="../js/site-nav.js" defer></script>
+  <link rel="stylesheet" href="../css/site.css?v=3.2">
+  <script src="../js/site-nav.js?v=3.2" defer></script>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -56,7 +56,7 @@
     <div class="site-shell top-strip-inner">
       <div class="top-copy" id="topCopy">Kostenlos und ohne Anmeldung. Wenn LITE Studio dir hilft, kannst du die Weiterentwicklung unterstützen.</div>
       <a class="top-kofi" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">
-        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="LITE Studio auf Ko-fi unterstutzen">
+        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="LITE Studio auf Ko-fi unterstützen">
       </a>
     </div>
   </div>
@@ -70,33 +70,33 @@
         </span>
       </a>
       <a class="site-primary-cta" href="../app.html?lang=de">App</a>
-      <button class="site-menu-toggle" type="button" aria-label="Menu" aria-controls="siteNavTools" aria-expanded="false">
-        <span>Menu</span>
+      <button class="site-menu-toggle" type="button" aria-label="Menü" aria-controls="siteNavTools" aria-expanded="false">
+        <span>Menü</span>
       </button>
-      <button class="site-nav-backdrop" type="button" aria-label="Menu schliessen" hidden></button>
+      <button class="site-nav-backdrop" type="button" aria-label="Menü schließen" hidden></button>
       <div class="site-nav-tools" id="siteNavTools">
         <div class="site-drawer-head">
           <strong>LITE Studio</strong>
-          <button class="site-menu-close" type="button" aria-label="Menu schliessen">Menu schliessen</button>
+          <button class="site-menu-close" type="button" aria-label="Menü schließen">Menü schließen</button>
         </div>
         <nav class="nav-links" id="siteNavLinks" aria-label="Hauptnavigation">
           <a class="active" href="index.html" aria-current="page">Start</a><a href="../app.html?lang=de">App</a><a href="guide.html">Guide</a><a href="presets.html">Presets</a><a href="faq.html">FAQ</a>
         </nav>
-        <nav class="language-switcher" aria-label="Seitensprache auswahlen">
+        <div class="language-switcher" role="group" aria-label="Seitensprache auswählen">
     <div class="language-switcher-list">
-      <a class="language-chip" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Francais" aria-label="Francais">
-      <span class="language-chip-flag" aria-hidden="true">🇫🇷</span>
-    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/en/" hreflang="en" lang="en" title="English" aria-label="English">
-      <span class="language-chip-flag" aria-hidden="true">🇺🇸</span>
-    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Espanol" aria-label="Espanol">
-      <span class="language-chip-flag" aria-hidden="true">🇪🇸</span>
-    </a><a class="language-chip active" href="https://lumierestudio.archi-it.fr/de/" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch" aria-current="page">
-      <span class="language-chip-flag" aria-hidden="true">🇩🇪</span>
-    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/ar/" hreflang="ar" lang="ar" title="العربية" aria-label="العربية">
-      <span class="language-chip-flag" aria-hidden="true">🇸🇦</span>
+      <a class="language-chip" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Français" aria-label="FR – Français">
+      <span class="language-chip-code" aria-hidden="true">FR</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/en/" hreflang="en" lang="en" title="English" aria-label="EN – English">
+      <span class="language-chip-code" aria-hidden="true">EN</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Español" aria-label="ES – Español">
+      <span class="language-chip-code" aria-hidden="true">ES</span>
+    </a><a class="language-chip active" href="https://lumierestudio.archi-it.fr/de/" hreflang="de" lang="de" title="Deutsch" aria-label="DE – Deutsch" aria-current="page">
+      <span class="language-chip-code" aria-hidden="true">DE</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/ar/" hreflang="ar" lang="ar" title="العربية" aria-label="AR – العربية">
+      <span class="language-chip-code" aria-hidden="true">AR</span>
     </a>
     </div>
-  </nav>
+  </div>
       </div>
     </div>
   </header>
@@ -141,8 +141,8 @@
     </section>
     <section class="section">
       <div class="site-shell" data-reveal>
-        <div class="section-head" id="seoPagesHeadContent"><p class="eyebrow">SEO-Seiten</p><h2>Drei fokussierte Seiten fur Suchanfragen mit klarer Absicht.</h2><p>Diese Seiten beantworten konkrete Bedurfnisse und fuhren direkt in die App mit dem passenden Preset.</p></div>
-        <div class="card-grid" id="seoPagesCardsContent"><article class="info-card"><h3>Portrait-Lichtdiagramm</h3><p>Eine einfache Basis fur Studio-Portraits mit 45-Grad-Keylight, Fill-Control und druckbarem Plan.</p><div class="quick-links"><a href="schema-eclairage-portrait.html">Seite lesen</a><a href="../app.html?preset=portrait-soft-45&lang=de">Preset offnen</a></div></article><article class="info-card"><h3>Boudoir-Studioplan</h3><p>Mobiliar, Stimmung, Hintergrund, Wege und Licht fur ein Boudoir-Shooting im Studio.</p><div class="quick-links"><a href="plan-studio-boudoir.html">Seite lesen</a><a href="../app.html?preset=boudoir-parabolic&lang=de">Preset offnen</a></div></article><article class="info-card"><h3>Interview-Lighting-Diagram</h3><p>Ein klares Video-Studio-Setup fur Interviews, gefilmte Podcasts und Corporate-Drehs.</p><div class="quick-links"><a href="lighting-diagram-interview.html">Seite lesen</a><a href="../app.html?preset=interview-led&lang=de">Preset offnen</a></div></article></div>
+        <div class="section-head" id="seoPagesHeadContent"><p class="eyebrow">SEO-Seiten</p><h2>Drei fokussierte Seiten für Suchanfragen mit klarer Absicht.</h2><p>Diese Seiten beantworten konkrete Bedürfnisse und führen direkt in die App mit dem passenden Preset.</p></div>
+        <div class="card-grid" id="seoPagesCardsContent"><article class="info-card"><h3>Portrait-Lichtdiagramm</h3><p>Eine einfache Basis für Studio-Portraits mit 45-Grad-Keylight, Fill-Control und druckbarem Plan.</p><div class="quick-links"><a href="schema-eclairage-portrait.html">Seite lesen</a><a href="../app.html?preset=portrait-soft-45&lang=de">Preset öffnen</a></div></article><article class="info-card"><h3>Boudoir-Studioplan</h3><p>Mobiliar, Stimmung, Hintergrund, Wege und Licht für ein Boudoir-Shooting im Studio.</p><div class="quick-links"><a href="plan-studio-boudoir.html">Seite lesen</a><a href="../app.html?preset=boudoir-parabolic&lang=de">Preset öffnen</a></div></article><article class="info-card"><h3>Interview-Lighting-Diagram</h3><p>Ein klares Video-Studio-Setup für Interviews, gefilmte Podcasts und Corporate-Drehs.</p><div class="quick-links"><a href="lighting-diagram-interview.html">Seite lesen</a><a href="../app.html?preset=interview-led&lang=de">Preset öffnen</a></div></article></div>
       </div>
     </section>
   </main>
@@ -150,18 +150,18 @@
     <div class="site-shell translation-panel">
     <div class="translation-copy">
       <strong>Versionen</strong>
-      <span>Diese Seite ist in den folgenden Sprachen verfugbar.</span>
+      <span>Diese Seite ist in den folgenden Sprachen verfügbar.</span>
     </div>
-    <nav class="translation-links" aria-label="Seitensprache auswahlen">
-      <a class="translation-chip" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Francais">
+    <nav class="translation-links" aria-label="Seitensprache auswählen">
+      <a class="translation-chip" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Français">
       <span class="translation-code">FR</span>
-      <span>Francais</span>
+      <span>Français</span>
     </a><a class="translation-chip" href="https://lumierestudio.archi-it.fr/en/" hreflang="en" lang="en" title="English">
       <span class="translation-code">EN</span>
       <span>English</span>
-    </a><a class="translation-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Espanol">
+    </a><a class="translation-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Español">
       <span class="translation-code">ES</span>
-      <span>Espanol</span>
+      <span>Español</span>
     </a><a class="translation-chip active" href="https://lumierestudio.archi-it.fr/de/" hreflang="de" lang="de" title="Deutsch" aria-current="page">
       <span class="translation-code">DE</span>
       <span>Deutsch</span>

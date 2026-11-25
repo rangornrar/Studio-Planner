@@ -94,7 +94,7 @@ export function clampSettingsToEquipment(settings, bodies = CAMERA_BODIES, lense
 
   const isoValues = ISO_VALUES.filter((value) => value >= body.isoRange.min && value <= body.isoRange.max);
   const iso = nearestValue(requested.iso, isoValues);
-  pushChange(changes, warnings, "iso", requested.iso, iso, `ISO limite a la plage ${body.isoRange.min}-${body.isoRange.max}.`);
+  pushChange(changes, warnings, "iso", requested.iso, iso, `ISO limite à la plage ${body.isoRange.min}-${body.isoRange.max}.`);
 
   const focalValues = getSupportedFocalLengths(lens);
   const focalLength = nearestValue(clamp(requested.focalLength, lens.minFocalLength, lens.maxFocalLength), focalValues);
@@ -117,11 +117,11 @@ export function clampSettingsToEquipment(settings, bodies = CAMERA_BODIES, lense
     "aperture",
     requested.aperture,
     aperture,
-    `${lens.name} ne peut pas ouvrir plus grand que f/${formatNumber(apertureValues[0])} a ${focalLength} mm.`
+    `${lens.name} ne peut pas ouvrir plus grand que f/${formatNumber(apertureValues[0])} à ${focalLength} mm.`
   );
 
   const shutterSeconds = nearestValue(requested.shutterSeconds, SHUTTER_SPEEDS.map((speed) => speed.seconds));
-  pushChange(changes, warnings, "shutterSeconds", requested.shutterSeconds, shutterSeconds, "Vitesse rapprochee de la valeur disponible.");
+  pushChange(changes, warnings, "shutterSeconds", requested.shutterSeconds, shutterSeconds, "Vitesse rapprochée de la valeur disponible.");
 
   return {
     settings: {

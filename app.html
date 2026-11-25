@@ -35,14 +35,14 @@
       "operatingSystem": "Web",
       "url": "https://lumierestudio.archi-it.fr/app.html",
       "image": "https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png",
-      "description": "Application web pour preparer un plan de studio photo sur PC ou tablette, passer du plan a la vue isometrique, afficher les mesures utiles et sortir un visuel propre en PNG ou PDF.",
+      "description": "Application web pour préparer un plan de studio photo sur PC ou tablette, passer du plan à la vue isométrique, afficher les mesures utiles et sortir un visuel propre en PNG ou PDF.",
       "featureList": [
-        "Vue plan et vue isometrique commutables",
-        "Zoom souris sur PC et controles adaptes a la tablette",
-        "Mesures automatiques sujet camera fond et sources",
-        "Recherche dans la bibliotheque d elements",
-        "Presets integres et presets personnalises",
-        "Copie d image, export PNG, PDF et impression"
+        "Vue plan et vue isométrique commutables",
+        "Zoom souris sur PC et contrôles adaptes à la tablette",
+        "Mesures automatiques sujet caméra fond et sources",
+        "Recherche dans la bibliothèque d'éléments",
+        "Presets intégrés et presets personnalisés",
+        "Copie d'image, export PNG, PDF et impression"
       ],
       "inLanguage": ["fr", "en", "es", "de", "ar"],
       "offers": {
@@ -55,15 +55,15 @@
   <link rel="icon"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0c'/%3E%3Crect x='14' y='14' width='36' height='36' rx='8' fill='none' stroke='%2338bdf8' stroke-width='5'/%3E%3Ccircle cx='40' cy='40' r='8' fill='%23fbbf24'/%3E%3C/svg%3E">
   <link rel="preload" href="fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=3.0">
-  <link rel="stylesheet" href="css/simple-studio.css?v=3.0">
-  <link rel="stylesheet" href="css/photo-lab.css?v=3.0">
+  <link rel="stylesheet" href="css/fonts.css?v=3.2">
+  <link rel="stylesheet" href="css/simple-studio.css?v=3.3">
+  <link rel="stylesheet" href="css/photo-lab.css?v=3.3">
 </head>
 
 <body>
   <div class="page">
     <div class="support-strip" id="supportStrip" aria-label="Support Ko-fi">
-      <span class="support-text" id="supportText">Cet outil vous aide ? Soutenez son evolution.</span>
+      <span class="support-text" id="supportText">Cet outil vous aide ? Soutenez son évolution.</span>
       <a class="support-btn" id="supportButton" href="https://ko-fi.com/D1D21VSKW5" target="_blank"
         rel="noreferrer noopener">
         Soutenir sur Ko-fi
@@ -87,14 +87,21 @@
         <div class="menu" data-menu="file">
           <button class="menu-trigger" id="menuFileTrigger" type="button" data-menu-trigger="file">Fichier</button>
         <div class="menu-panel file-panel">
-            <button class="menu-item" id="actionReset" type="button" data-menu-action="reset">Remettre a zero</button>
+            <button class="menu-item" id="actionShareLink" type="button" data-menu-action="share-link">Copier le lien de partage</button>
+            <button class="menu-item" id="actionSaveProject" type="button" data-menu-action="save-project">Enregistrer le projet (.json)</button>
+            <button class="menu-item" id="actionOpenProject" type="button" data-menu-action="open-project">Ouvrir un projet…</button>
+            <hr class="menu-separator">
             <button class="menu-item" id="actionCopyImage" type="button" data-menu-action="copy-image">Copier
               l'image</button>
-            <button class="menu-item" id="actionExportPng" type="button" data-menu-action="export-png">Telecharger
+            <button class="menu-item" id="actionExportPng" type="button" data-menu-action="export-png">Télécharger
               PNG</button>
-            <button class="menu-item" id="actionExportPdf" type="button" data-menu-action="export-pdf">Telecharger
+            <button class="menu-item" id="actionExportPdf" type="button" data-menu-action="export-pdf">Télécharger
               PDF</button>
             <button class="menu-item" id="actionPrint" type="button" data-menu-action="print">Imprimer</button>
+            <hr class="menu-separator">
+            <button class="menu-item" id="actionGearList" type="button" data-menu-action="gear-list">Liste du matériel</button>
+            <hr class="menu-separator">
+            <button class="menu-item menu-item-danger" id="actionReset" type="button" data-menu-action="reset">Vider le plateau</button>
           </div>
         </div>
 
@@ -133,13 +140,13 @@
           <div class="menu-panel language-panel">
             <div class="language-menu-list" id="languageMenuList">
               <button class="language-item active" type="button" data-language-id="fr">
-                <strong>Francais</strong>
+                <strong>Français</strong>
               </button>
               <button class="language-item" type="button" data-language-id="en">
                 <strong>English</strong>
               </button>
               <button class="language-item" type="button" data-language-id="es">
-                <strong>Espanol</strong>
+                <strong>Español</strong>
               </button>
               <button class="language-item" type="button" data-language-id="de">
                 <strong>Deutsch</strong>
@@ -153,7 +160,7 @@
       </nav>
 
       <div class="app-mode-switch" aria-label="Choisir l'espace de travail">
-        <button class="app-mode-button active" type="button" data-app-mode-target="planner" aria-pressed="true">Plan</button>
+        <button class="app-mode-button active" type="button" data-app-mode-target="planner" aria-pressed="true">Studio</button>
         <button class="app-mode-button" type="button" data-app-mode-target="photo-lab" aria-pressed="false">Labo photo</button>
       </div>
 
@@ -164,18 +171,18 @@
     </header>
 
     <div class="workspace">
-      <aside class="library-panel" id="libraryPanel" aria-label="Bibliotheque d'elements">
+      <aside class="library-panel" id="libraryPanel" aria-label="Bibliothèque d'éléments">
         <div class="panel-top panel-top-compact">
           <div class="drawer-head">
-            <p class="panel-eyebrow" id="libraryEyebrow">Bibliotheque</p>
-            <button class="drawer-close" id="libraryClose" type="button" aria-label="Fermer la bibliotheque">Fermer</button>
+            <p class="panel-eyebrow" id="libraryEyebrow">Bibliothèque</p>
+            <button class="drawer-close" id="libraryClose" type="button" aria-label="Fermer la bibliothèque">Fermer</button>
           </div>
         </div>
 
         <label class="search-field" for="librarySearch">
           <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.6 12.6 17 17"/></svg>
           <input id="librarySearch" type="search" autocomplete="off" spellcheck="false"
-            placeholder="Element, taille ou type">
+            placeholder="Élément, taille ou type">
         </label>
 
         <div class="category-tabs" id="categoryTabs"></div>
@@ -185,7 +192,7 @@
         <div class="palette-panel" id="palettePanel"></div>
       </aside>
 
-      <button class="library-backdrop" id="libraryBackdrop" type="button" aria-label="Fermer la bibliotheque" tabindex="-1" hidden></button>
+      <button class="library-backdrop" id="libraryBackdrop" type="button" aria-label="Fermer la bibliothèque" tabindex="-1" hidden></button>
 
       <main class="stage-panel">
         <div class="stage-topbar">
@@ -196,18 +203,22 @@
               aria-pressed="false">Iso</button>
           </div>
           <div class="stage-toolbar">
+            <div class="stage-history-tools" role="group">
+              <button class="stage-zoom-tool" id="undoButton" type="button" aria-label="Annuler" title="Annuler (Ctrl+Z)" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M4.5 12H14a5 5 0 0 1 0 10h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 -3)"/></svg></button>
+              <button class="stage-zoom-tool" id="redoButton" type="button" aria-label="Rétablir" title="Rétablir (Ctrl+Maj+Z)" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5m4.5-5H10a5 5 0 0 0 0 10h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 -3)"/></svg></button>
+            </div>
             <div class="stage-zoom-tools is-active" id="planZoomTools" data-zoom-controls="plan" aria-label="Zoom plan">
-              <button class="stage-zoom-tool" id="planZoomOut" type="button" aria-label="Zoom arriere">&minus;</button>
+              <button class="stage-zoom-tool" id="planZoomOut" type="button" aria-label="Zoom arrière">&minus;</button>
               <button class="stage-zoom-tool stage-zoom-value" id="planZoomReset" type="button">100%</button>
               <button class="stage-zoom-tool" id="planZoomIn" type="button" aria-label="Zoom avant">+</button>
             </div>
-            <div class="stage-zoom-tools" id="isoZoomTools" data-zoom-controls="iso" aria-label="Zoom isometrique">
-              <button class="stage-zoom-tool" id="isoZoomOut" type="button" aria-label="Zoom arriere">&minus;</button>
+            <div class="stage-zoom-tools" id="isoZoomTools" data-zoom-controls="iso" aria-label="Zoom isométrique">
+              <button class="stage-zoom-tool" id="isoZoomOut" type="button" aria-label="Zoom arrière">&minus;</button>
               <button class="stage-zoom-tool stage-zoom-value" id="isoZoomReset" type="button">100%</button>
               <button class="stage-zoom-tool" id="isoZoomIn" type="button" aria-label="Zoom avant">+</button>
             </div>
             <button class="hint-pill stage-tool library-toggle" id="libraryToggle" type="button" aria-expanded="true"
-              aria-controls="libraryPanel">Bibliotheque</button>
+              aria-controls="libraryPanel">Bibliothèque</button>
             <button class="hint-pill stage-tool" id="measureToggle" type="button" aria-pressed="false">Mesure</button>
           </div>
         </div>
@@ -217,13 +228,24 @@
             <canvas id="planCanvas" aria-label="Plan du studio photo"></canvas>
           </section>
           <section class="stage-view stage-view-iso is-secondary" id="isoViewPane" data-stage-view-pane="iso">
-            <canvas id="isoCanvas" aria-label="Vue isometrique du studio photo"></canvas>
+            <canvas id="isoCanvas" aria-label="Vue isométrique du studio photo"></canvas>
           </section>
           <button class="inset-toggle" id="insetToggle" type="button" aria-pressed="false"
-            aria-label="Reduire l apercu" title="Reduire l apercu">
+            aria-label="Réduire l aperçu" title="Réduire l aperçu">
             <span class="inset-toggle-icon" aria-hidden="true"></span>
-            <span class="inset-toggle-label" id="insetToggleLabel">Apercu iso</span>
+            <span class="inset-toggle-label" id="insetToggleLabel">Aperçu iso</span>
           </button>
+          <div class="stage-empty" id="stageEmpty" hidden>
+            <p class="stage-empty-title" data-empty-title>Votre plateau est vide</p>
+            <p class="stage-empty-text" data-empty-text>Ajoutez un sujet, un appareil et une lumière depuis la bibliothèque, ou partez d'un preset déjà installé.</p>
+            <div class="stage-empty-actions">
+              <button class="stage-empty-button is-primary" id="emptyPresetButton" type="button">Choisir un preset</button>
+              <button class="stage-empty-button" id="emptyLibraryButton" type="button">Ouvrir la bibliothèque</button>
+            </div>
+          </div>
+          <section class="print-gear-list" id="printGearList" aria-hidden="true"></section>
+          <input type="file" id="projectFileInput" accept=".json,application/json" hidden>
+          <div class="stage-toast" id="stageToast" role="status" aria-live="polite" hidden></div>
         </div>
       </main>
     </div>
@@ -232,12 +254,12 @@
       <div class="photo-lab-stage">
         <div class="photo-lab-topline">
           <div>
-            <p class="photo-lab-eyebrow">Laboratoire photographique interactif</p>
-            <h2 id="photoLabTitle"><span>Reglages photo,</span> <span>consequences visibles.</span></h2>
+            <p class="photo-lab-eyebrow" data-lab-text="eyebrow">Laboratoire photographique interactif</p>
+            <h2 id="photoLabTitle"><span data-lab-text="titleA">Réglages photo,</span> <span data-lab-text="titleB">conséquences visibles.</span></h2>
           </div>
-          <div class="photo-lab-compare-controls" aria-label="Mode de comparaison">
-            <button class="photo-lab-chip active" type="button" data-photo-compare="single" aria-pressed="true">Vue seule</button>
-            <button class="photo-lab-chip" type="button" data-photo-compare="split" aria-pressed="false">Compare</button>
+          <div class="photo-lab-compare-controls" role="group" aria-label="Mode de comparaison" data-lab-aria="compareAria">
+            <button class="photo-lab-chip active" type="button" data-photo-compare="single" aria-pressed="true" data-lab-text="single">Vue seule</button>
+            <button class="photo-lab-chip" type="button" data-photo-compare="split" aria-pressed="false" data-lab-text="split">Compare</button>
           </div>
         </div>
 
@@ -246,18 +268,18 @@
             <span>LIVE VIEW</span>
             <span id="photoLabHudSettings">ISO 100 · f/2.8 · 50 mm</span>
           </div>
-          <canvas id="photoLabCanvas" aria-label="Simulation photographique interactive"></canvas>
-          <div class="photo-lab-loading" id="photoLabLoading">Chargement de la scene photographique...</div>
+          <canvas id="photoLabCanvas" aria-label="Simulation photographique interactive" data-lab-aria="canvasAria"></canvas>
+          <div class="photo-lab-loading" id="photoLabLoading" data-lab-text="loading">Chargement de la scène photographique...</div>
         </div>
 
-        <div class="photo-lab-compare" id="photoLabCompare" aria-label="Comparaison reference et reglage courant">
+        <div class="photo-lab-compare" id="photoLabCompare" role="group" aria-label="Comparaison référence et réglage courant" data-lab-aria="compareRegionAria">
           <figure>
-            <canvas id="photoLabReferenceCanvas" aria-label="Reglage de reference"></canvas>
-            <figcaption>Reference</figcaption>
+            <canvas id="photoLabReferenceCanvas" aria-label="Référence" data-lab-aria="reference"></canvas>
+            <figcaption data-lab-text="reference">Référence</figcaption>
           </figure>
           <figure>
-            <canvas id="photoLabCurrentCanvas" aria-label="Reglage courant"></canvas>
-            <figcaption>Courant</figcaption>
+            <canvas id="photoLabCurrentCanvas" aria-label="Courant" data-lab-aria="current"></canvas>
+            <figcaption data-lab-text="current">Courant</figcaption>
           </figure>
         </div>
 
@@ -268,16 +290,14 @@
         </div>
       </div>
 
-      <button class="photo-lab-controls-toggle" id="photoLabControlsToggle" type="button" aria-expanded="false" aria-controls="photoLabControls">
-        Reglages photo
-      </button>
-      <aside class="photo-lab-controls" id="photoLabControls" aria-label="Commandes du laboratoire photographique">
-        <div class="photo-lab-camera-deck" aria-label="Materiel photographie actuellement simule">
+      <button class="photo-lab-controls-toggle" id="photoLabControlsToggle" type="button" aria-expanded="false" aria-controls="photoLabControls" data-lab-text="controlsToggle">Réglages photo</button>
+      <aside class="photo-lab-controls" id="photoLabControls" aria-label="Commandes du laboratoire photographique" data-lab-aria="controlsAria">
+        <div class="photo-lab-camera-deck" role="group" aria-label="Matériel photographique simulé" data-lab-aria="deckAria">
           <div class="photo-lab-lens-visual" aria-hidden="true">
             <span class="photo-lab-lens-glass"></span>
           </div>
           <div>
-            <p>Configuration optique</p>
+            <p data-lab-text="opticalSetup">Configuration optique</p>
             <strong id="photoLabLensName">24-70 mm f/2.8</strong>
             <span id="photoLabLensSpec">Plein format · 9 lamelles</span>
           </div>
@@ -285,46 +305,57 @@
 
         <section class="photo-lab-control-group">
           <div class="photo-lab-control-head">
-            <span>Molette ISO</span>
-            <small>Bruit et sensibilite</small>
+            <span data-lab-text="isoTitle">Molette ISO</span>
+            <small data-lab-text="isoHint">Bruit et sensibilité</small>
           </div>
           <div class="photo-lab-dial-grid photo-lab-mechanical-dial photo-lab-mechanical-dial--iso" id="photoLabIsoControls"></div>
         </section>
 
         <section class="photo-lab-control-group">
           <div class="photo-lab-control-head">
-            <span>Bague d'ouverture</span>
-            <small>Lumiere et profondeur de champ</small>
+            <span data-lab-text="apertureTitle">Bague d'ouverture</span>
+            <small data-lab-text="apertureHint">Lumière et profondeur de champ</small>
           </div>
           <div class="photo-lab-dial-grid photo-lab-lens-ring photo-lab-lens-ring--aperture" id="photoLabApertureControls"></div>
         </section>
 
         <section class="photo-lab-control-group">
           <div class="photo-lab-control-head">
-            <span>Bague de focale</span>
-            <small>Angle de champ et cadrage</small>
+            <span data-lab-text="focalTitle">Bague de focale</span>
+            <small data-lab-text="focalHint">Angle de champ et cadrage</small>
           </div>
           <div class="photo-lab-dial-grid focal photo-lab-lens-ring photo-lab-lens-ring--focal" id="photoLabFocalControls"></div>
         </section>
 
         <section class="photo-lab-control-group">
           <div class="photo-lab-control-head">
-            <span>Experience focale</span>
-            <small>Perspective correctement distinguee</small>
+            <span data-lab-text="focalModeTitle">Expérience focale</span>
+            <small data-lab-text="focalModeHint">Perspective correctement distinguée</small>
           </div>
           <div class="photo-lab-segmented">
-            <button class="photo-lab-chip active" type="button" data-focal-mode="same-position" aria-pressed="true">Meme position</button>
-            <button class="photo-lab-chip" type="button" data-focal-mode="subject-size" aria-pressed="false">Sujet constant</button>
+            <button class="photo-lab-chip active" type="button" data-focal-mode="same-position" aria-pressed="true" data-lab-text="samePosition">Même position</button>
+            <button class="photo-lab-chip" type="button" data-focal-mode="subject-size" aria-pressed="false" data-lab-text="subjectSize">Sujet constant</button>
           </div>
         </section>
       </aside>
     </section>
   </div>
 
-  <script src="js/studio-locales.js?v=3.0" defer></script>
+  <script src="js/studio-locales.js?v=3.3" defer></script>
   <script src="js/studio-models.js?v=3.1" defer></script>
-  <script src="js/simple-studio.js?v=3.0" defer></script>
-  <script type="module" src="js/photo-lab-ui.mjs?v=3.0"></script>
+  <script src="js/simple-studio.js?v=3.3" defer></script>
+  <script type="module" src="js/photo-lab-ui.mjs?v=3.3"></script>
+  <dialog class="gear-dialog" id="gearDialog" aria-labelledby="gearDialogTitle">
+    <div class="gear-dialog-head">
+      <h2 id="gearDialogTitle">Liste du matériel</h2>
+      <button class="gear-dialog-close" type="button" data-gear-close aria-label="Fermer">&times;</button>
+    </div>
+    <div class="gear-dialog-body" id="gearDialogBody"></div>
+    <div class="gear-dialog-actions">
+      <button class="stage-empty-button is-primary" id="gearCopyButton" type="button">Copier la liste</button>
+      <button class="stage-empty-button" type="button" data-gear-close id="gearCloseButton">Fermer</button>
+    </div>
+  </dialog>
 </body>
 
 </html>

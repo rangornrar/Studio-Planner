@@ -18,9 +18,9 @@ const PUBLIC_PAGE_LINKS = {
 const PRIMARY_NAV_KEYS = ["home", "app", "guide", "presets", "faq"];
 
 const LANGUAGES = {
-  fr: { dir: "ltr", locale: "fr_FR", folder: "", code: "FR", flag: "🇫🇷", label: "Francais" },
+  fr: { dir: "ltr", locale: "fr_FR", folder: "", code: "FR", flag: "🇫🇷", label: "Français" },
   en: { dir: "ltr", locale: "en_US", folder: "en", code: "EN", flag: "🇺🇸", label: "English" },
-  es: { dir: "ltr", locale: "es_ES", folder: "es", code: "ES", flag: "🇪🇸", label: "Espanol" },
+  es: { dir: "ltr", locale: "es_ES", folder: "es", code: "ES", flag: "🇪🇸", label: "Español" },
   de: { dir: "ltr", locale: "de_DE", folder: "de", code: "DE", flag: "🇩🇪", label: "Deutsch" },
   ar: { dir: "rtl", locale: "ar_SA", folder: "ar", code: "AR", flag: "🇸🇦", label: "العربية" }
 };
@@ -32,7 +32,13 @@ const LANGUAGE_UI_COPY = {
     closeMenuLabel: "Fermer le menu",
     switcherAria: "Choisir la langue de la page",
     versionsTitle: "Versions",
-    versionsText: "Cette page est disponible dans les langues suivantes."
+    versionsText: "Cette page est disponible dans les langues suivantes.",
+    galleryEyebrow: "Galerie",
+    galleryTitle: "Les {count} presets, prêts à ouvrir",
+    galleryIntro: "Chaque preset s'ouvre directement dans l'application : déplacez, ajustez, puis exportez ou enregistrez votre version.",
+    galleryNav: "Catégories de presets",
+    openPreset: "Ouvrir ce preset",
+    itemsCount: "{count} éléments"
   },
   en: {
     selector: "Languages",
@@ -40,23 +46,41 @@ const LANGUAGE_UI_COPY = {
     closeMenuLabel: "Close menu",
     switcherAria: "Choose the page language",
     versionsTitle: "Versions",
-    versionsText: "This page is available in the following languages."
+    versionsText: "This page is available in the following languages.",
+    galleryEyebrow: "Gallery",
+    galleryTitle: "All {count} presets, ready to open",
+    galleryIntro: "Each preset opens straight in the app: move things around, adjust, then export or save your version.",
+    galleryNav: "Preset categories",
+    openPreset: "Open this preset",
+    itemsCount: "{count} items"
   },
   es: {
     selector: "Idiomas",
     menuLabel: "Menu",
-    closeMenuLabel: "Cerrar menu",
-    switcherAria: "Elegir el idioma de la pagina",
+    closeMenuLabel: "Cerrar menú",
+    switcherAria: "Elegir el idioma de la página",
     versionsTitle: "Versiones",
-    versionsText: "Esta pagina esta disponible en los siguientes idiomas."
+    versionsText: "Esta página está disponible en los siguientes idiomas.",
+    galleryEyebrow: "Galería",
+    galleryTitle: "Los {count} presets, listos para abrir",
+    galleryIntro: "Cada preset se abre directamente en la aplicación: muévelo, ajústalo y luego expórtalo o guárdalo.",
+    galleryNav: "Categorías de presets",
+    openPreset: "Abrir este preset",
+    itemsCount: "{count} elementos"
   },
   de: {
     selector: "Sprachen",
-    menuLabel: "Menu",
-    closeMenuLabel: "Menu schliessen",
-    switcherAria: "Seitensprache auswahlen",
+    menuLabel: "Menü",
+    closeMenuLabel: "Menü schließen",
+    switcherAria: "Seitensprache auswählen",
     versionsTitle: "Versionen",
-    versionsText: "Diese Seite ist in den folgenden Sprachen verfugbar."
+    versionsText: "Diese Seite ist in den folgenden Sprachen verfügbar.",
+    galleryEyebrow: "Galerie",
+    galleryTitle: "Alle {count} Presets, sofort zu öffnen",
+    galleryIntro: "Jedes Preset öffnet sich direkt in der App: verschieben, anpassen, dann exportieren oder speichern.",
+    galleryNav: "Preset-Kategorien",
+    openPreset: "Dieses Preset öffnen",
+    itemsCount: "{count} Elemente"
   },
   ar: {
     selector: "اللغات",
@@ -64,7 +88,13 @@ const LANGUAGE_UI_COPY = {
     closeMenuLabel: "إغلاق القائمة",
     switcherAria: "اختر لغة الصفحة",
     versionsTitle: "النسخ",
-    versionsText: "هذه الصفحة متوفرة باللغات التالية."
+    versionsText: "هذه الصفحة متوفرة باللغات التالية.",
+    galleryEyebrow: "المعرض",
+    galleryTitle: "الإعدادات الجاهزة الـ{count}، جاهزة للفتح",
+    galleryIntro: "يُفتح كل إعداد جاهز مباشرة في التطبيق: حرّك العناصر واضبطها، ثم صدّر نسختك أو احفظها.",
+    galleryNav: "فئات الإعدادات الجاهزة",
+    openPreset: "فتح هذا الإعداد",
+    itemsCount: "{count} عناصر"
   }
 };
 
@@ -179,16 +209,16 @@ function renderLanguageSwitcher(fileName, languageId) {
     const stateAttributes = isActive ? ' aria-current="page"' : "";
     const activeClass = isActive ? " active" : "";
 
-    return `<a class="language-chip${activeClass}" href="${absoluteUrl(targetLanguageId, fileName)}" hreflang="${targetLanguageId}" lang="${targetLanguageId}" title="${escapeHtml(language.label)}" aria-label="${escapeHtml(language.label)}"${stateAttributes}>
-      <span class="language-chip-flag" aria-hidden="true">${language.flag}</span>
+    return `<a class="language-chip${activeClass}" href="${absoluteUrl(targetLanguageId, fileName)}" hreflang="${targetLanguageId}" lang="${targetLanguageId}" title="${escapeHtml(language.label)}" aria-label="${escapeHtml(language.code + " – " + language.label)}"${stateAttributes}>
+      <span class="language-chip-code" aria-hidden="true">${language.code}</span>
     </a>`;
   }).join("");
 
-  return `<nav class="language-switcher" aria-label="${escapeHtml(uiCopy.switcherAria)}">
+  return `<div class="language-switcher" role="group" aria-label="${escapeHtml(uiCopy.switcherAria)}">
     <div class="language-switcher-list">
       ${items}
     </div>
-  </nav>`;
+  </div>`;
 }
 
 function renderTranslationPanel(fileName, languageId) {
@@ -324,7 +354,7 @@ function renderHead(copy, page, config, languageId) {
   const imageAlt = meta.ogImageAlt || description;
   const canonical = absoluteUrl(languageId, config.file);
   const structuredData = JSON.stringify(buildStructuredData(config, page, languageId), null, 2);
-  const cssHref = `${relativePrefix(languageId)}css/site.css`;
+  const cssHref = `${relativePrefix(languageId)}css/site.css?v=3.2`;
 
   return `<head>
   <meta charset="UTF-8">
@@ -351,7 +381,7 @@ function renderHead(copy, page, config, languageId) {
   <link rel="preload" href="${relativePrefix(languageId)}fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="${relativePrefix(languageId)}css/fonts.css">
   <link rel="stylesheet" href="${cssHref}">
-  <script src="${relativePrefix(languageId)}js/site-nav.js" defer></script>
+  <script src="${relativePrefix(languageId)}js/site-nav.js?v=3.2" defer></script>
   <script type="application/ld+json">
 ${structuredData}
   </script>
@@ -483,11 +513,39 @@ function renderGuideMain(page, languageId) {
   </main>`;
 }
 
+// Galerie generee par scripts/generate-preset-gallery.mjs (npm run build:presets).
+let PRESET_GALLERY = null;
+
+function fillCopy(template, values) {
+  return Object.keys(values).reduce(function (text, key) {
+    return text.split(`{${key}}`).join(String(values[key]));
+  }, template);
+}
+
+function renderPresetGallery(languageId) {
+  if (!PRESET_GALLERY) return "";
+  const categories = PRESET_GALLERY.languages[languageId] || PRESET_GALLERY.languages.fr;
+  const uiCopy = LANGUAGE_UI_COPY[languageId];
+  const total = categories.reduce(function (sum, category) { return sum + category.presets.length; }, 0);
+  const nav = categories.map(function (category) {
+    return `<a class="preset-gallery-chip" href="#preset-cat-${category.id}">${escapeHtml(category.label)} <span>${category.presets.length}</span></a>`;
+  }).join("");
+  const groups = categories.map(function (category) {
+    const cards = category.presets.map(function (preset) {
+      return `<li><a class="preset-card-link" href="app.html?preset=${encodeURIComponent(preset.id)}"><img src="${PRESET_GALLERY.thumbnails}/${preset.id}.webp" width="${PRESET_GALLERY.width}" height="${PRESET_GALLERY.height}" alt="" loading="lazy" decoding="async"><span class="preset-card-body"><strong>${escapeHtml(preset.name)}</strong><span class="preset-card-summary">${escapeHtml(preset.summary)}</span><span class="preset-card-meta"><span>${escapeHtml(fillCopy(uiCopy.itemsCount, { count: preset.count }))}</span><span class="preset-card-cta">${escapeHtml(uiCopy.openPreset)}</span></span></span></a></li>`;
+    }).join("");
+    return `<section class="preset-gallery-group" id="preset-cat-${category.id}" aria-labelledby="preset-cat-${category.id}-title"><div class="preset-gallery-head"><h3 id="preset-cat-${category.id}-title">${escapeHtml(category.label)}</h3><p>${escapeHtml(category.description)}</p></div><ul class="preset-gallery-grid">${cards}</ul></section>`;
+  }).join("");
+  const html = `<div class="section-head preset-gallery-intro"><p class="eyebrow">${escapeHtml(uiCopy.galleryEyebrow)}</p><h2>${escapeHtml(fillCopy(uiCopy.galleryTitle, { count: total }))}</h2><p>${escapeHtml(uiCopy.galleryIntro)}</p></div><nav class="preset-gallery-nav" aria-label="${escapeHtml(uiCopy.galleryNav)}">${nav}</nav>${groups}`;
+  return `<section class="section preset-gallery" id="gallery"><div class="site-shell">${rewriteInlineHtml(html, languageId)}</div></section>`;
+}
+
 function renderPresetsMain(page, languageId) {
   return `<main>
     <section class="hero">
       <div class="site-shell article-card" id="heroCardContent">${rewriteInlineHtml(page.sections.heroCardContent, languageId)}</div>
     </section>
+    ${renderPresetGallery(languageId)}
     <section class="section">
       <div class="site-shell preset-grid" id="presetTopGridContent">${rewriteInlineHtml(page.sections.presetTopGridContent, languageId)}</div>
     </section>
@@ -627,6 +685,12 @@ function renderSitemap() {
 }
 
 async function main() {
+  try {
+    PRESET_GALLERY = JSON.parse(await fs.readFile(path.join(ROOT, "scripts", "preset-gallery.json"), "utf8"));
+  } catch (error) {
+    PRESET_GALLERY = null;
+    console.warn("Galerie de presets absente : lancez npm run build:presets.");
+  }
   const copy = await loadPublicCopy();
   await writeLocalizedPages(copy);
   await fs.writeFile(path.join(ROOT, "sitemap.xml"), renderSitemap(), "utf8");

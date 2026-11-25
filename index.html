@@ -29,8 +29,8 @@
   <meta name="twitter:image:alt" content="Application LITE Studio : plan de studio avec softbox, réflecteur, sujet et appareil, et aperçu 3D">
   <link rel="preload" href="fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/site.css">
-  <script src="js/site-nav.js" defer></script>
+  <link rel="stylesheet" href="css/site.css?v=3.2">
+  <script src="js/site-nav.js?v=3.2" defer></script>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -82,21 +82,21 @@
         <nav class="nav-links" id="siteNavLinks" aria-label="Navigation principale">
           <a class="active" href="index.html" aria-current="page">Accueil</a><a href="app.html">Application</a><a href="guide.html">Guide</a><a href="presets.html">Presets</a><a href="faq.html">FAQ</a>
         </nav>
-        <nav class="language-switcher" aria-label="Choisir la langue de la page">
+        <div class="language-switcher" role="group" aria-label="Choisir la langue de la page">
     <div class="language-switcher-list">
-      <a class="language-chip active" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Francais" aria-label="Francais" aria-current="page">
-      <span class="language-chip-flag" aria-hidden="true">🇫🇷</span>
-    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/en/" hreflang="en" lang="en" title="English" aria-label="English">
-      <span class="language-chip-flag" aria-hidden="true">🇺🇸</span>
-    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Espanol" aria-label="Espanol">
-      <span class="language-chip-flag" aria-hidden="true">🇪🇸</span>
-    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/de/" hreflang="de" lang="de" title="Deutsch" aria-label="Deutsch">
-      <span class="language-chip-flag" aria-hidden="true">🇩🇪</span>
-    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/ar/" hreflang="ar" lang="ar" title="العربية" aria-label="العربية">
-      <span class="language-chip-flag" aria-hidden="true">🇸🇦</span>
+      <a class="language-chip active" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Français" aria-label="FR – Français" aria-current="page">
+      <span class="language-chip-code" aria-hidden="true">FR</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/en/" hreflang="en" lang="en" title="English" aria-label="EN – English">
+      <span class="language-chip-code" aria-hidden="true">EN</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Español" aria-label="ES – Español">
+      <span class="language-chip-code" aria-hidden="true">ES</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/de/" hreflang="de" lang="de" title="Deutsch" aria-label="DE – Deutsch">
+      <span class="language-chip-code" aria-hidden="true">DE</span>
+    </a><a class="language-chip" href="https://lumierestudio.archi-it.fr/ar/" hreflang="ar" lang="ar" title="العربية" aria-label="AR – العربية">
+      <span class="language-chip-code" aria-hidden="true">AR</span>
     </a>
     </div>
-  </nav>
+  </div>
       </div>
     </div>
   </header>
@@ -119,7 +119,7 @@
         <div class="feature-row" id="featureModelsContent" data-reveal><div class="feature-copy"><p class="eyebrow">Plan et vue 3D</p><h3>Votre matériel, à taille réelle</h3><p>Softbox, parapluies, pieds C-stand, réflecteurs, mobilier : les 80 éléments de la bibliothèque sont modélisés à leurs vraies dimensions. Passez de la vue de dessus à la vue 3D pour juger les volumes et la place autour du sujet.</p><ul class="check-list"><li>80 éléments de matériel et de mobilier</li><li>Vue de dessus et vue 3D toujours synchronisées</li><li>Un sujet placé sur un siège s'y assoit automatiquement</li></ul></div><figure class="feature-media shot-frame"><img src="assets/landing/iso-hero.webp" width="1200" height="790" alt="Vue 3D d'un plateau mode : grande softbox parabolique, stripbox, panneaux noirs, appareil sur trépied et mannequin devant un fond blanc" loading="lazy" decoding="async"></figure></div>
         <div class="feature-row is-reversed" id="featureMeasureContent" data-reveal><div class="feature-copy"><p class="eyebrow">Mesures</p><h3>Les bonnes distances, sans mètre ruban</h3><p>Activez Mesure : LITE Studio affiche la distance entre le sujet et le fond, l'appareil et chaque source, avec une estimation de l'ouverture à ISO 100 pour la lumière principale. Vous pouvez aussi tracer vos propres mesures, point à point.</p><ul class="check-list"><li>Sujet ↔ fond, appareil et sources</li><li>Ouverture estimée à ISO 100</li><li>Mesure manuelle libre</li></ul></div><figure class="feature-media shot-frame"><img src="assets/landing/measure-fr.webp" width="1200" height="791" alt="Mode Mesure : distances entre le sujet, le fond, la softbox, le drapeau, le réflecteur et l'appareil affichées sur le plan" loading="lazy" decoding="async"></figure></div>
         <div class="feature-row" id="featureLabContent" data-reveal><div class="feature-copy"><p class="eyebrow">Labo photo</p><h3>Voyez l'effet de vos réglages</h3><p>Changez l'ISO, l'ouverture et la focale, et observez aussitôt le résultat sur une photo : bruit, exposition, profondeur de champ et cadrage. Le mode Compare place l'image de référence à côté de votre réglage.</p><ul class="check-list"><li>Boîtiers plein format, APS-C et Micro 4/3</li><li>Exposition et profondeur de champ calculées</li><li>Comparaison avant / après</li></ul></div><figure class="feature-media shot-frame"><img src="assets/landing/labo.webp" width="1400" height="723" alt="Labo photo : deux portraits côte à côte, l'un à f/2.8 avec un arrière-plan flou, l'autre à f/16 plus net, avec la molette ISO et la bague d'ouverture" loading="lazy" decoding="async"></figure></div>
-        <div class="feature-row is-reversed feature-row-mobile" id="featureMobileContent" data-reveal><div class="feature-copy"><p class="eyebrow">Sur le plateau</p><h3>Le même plan, dans votre poche</h3><p>Sur tablette et téléphone, l'interface se resserre : la bibliothèque s'ouvre en panneau, le plan se zoome au pincement et tous les boutons restent faciles à toucher. Vos presets personnels restent enregistrés dans le navigateur.</p><ul class="check-list"><li>Zoom au pincement</li><li>Bibliothèque en panneau coulissant</li><li>Presets personnels sauvegardés</li></ul></div><figure class="feature-media feature-media-phones"><img src="assets/landing/mobile-fr.webp" width="900" height="988" alt="LITE Studio sur téléphone : le plan d'un plateau boudoir, puis la bibliothèque ouverte en panneau" loading="lazy" decoding="async"></figure></div>
+        <div class="feature-row is-reversed feature-row-mobile" id="featureMobileContent" data-reveal><div class="feature-copy"><p class="eyebrow">Sur le plateau</p><h3>Le même plan, dans votre poche</h3><p>Sur tablette et téléphone, l'interface se resserre : la bibliothèque s'ouvre en panneau, le plan se zoomé au pincement et tous les boutons restent faciles à toucher. Vos presets personnels restent enregistrés dans le navigateur.</p><ul class="check-list"><li>Zoom au pincement</li><li>Bibliothèque en panneau coulissant</li><li>Presets personnels sauvegardés</li></ul></div><figure class="feature-media feature-media-phones"><img src="assets/landing/mobile-fr.webp" width="900" height="988" alt="LITE Studio sur téléphone : le plan d'un plateau boudoir, puis la bibliothèque ouverte en panneau" loading="lazy" decoding="async"></figure></div>
       </div>
     </section>
     <section class="section">
@@ -141,8 +141,8 @@
     </section>
     <section class="section">
       <div class="site-shell" data-reveal>
-        <div class="section-head" id="seoPagesHeadContent"><p class="eyebrow">Exemples de pages utiles</p><h2>Trois cas concrets qui expliquent un setup et ouvrent directement le preset associe.</h2><p>Chaque page ci-dessous sert a la fois de contenu explicatif et de raccourci vers l'application avec une base deja chargee.</p></div>
-        <div class="card-grid" id="seoPagesCardsContent"><article class="info-card"><h3>Schema d'eclairage portrait</h3><p>Une base portrait studio avec key light a 45 degres, mesures utiles et export propre en PDF.</p><div class="quick-links"><a href="schema-eclairage-portrait.html">Lire la page</a><a href="app.html?preset=portrait-soft-45">Ouvrir le preset</a></div></article><article class="info-card"><h3>Plan de studio boudoir</h3><p>Mobilier, ambiance, fond, distance au fond et circulation pour preparer une seance boudoir studio.</p><div class="quick-links"><a href="plan-studio-boudoir.html">Lire la page</a><a href="app.html?preset=boudoir-parabolic">Ouvrir le preset</a></div></article><article class="info-card"><h3>Lighting diagram interview</h3><p>Un setup video studio clair avec distance camera sujet, panneaux LED et export rapide pour le brief.</p><div class="quick-links"><a href="lighting-diagram-interview.html">Lire la page</a><a href="app.html?preset=interview-led">Ouvrir le preset</a></div></article></div>
+        <div class="section-head" id="seoPagesHeadContent"><p class="eyebrow">Exemples de pages utiles</p><h2>Trois cas concrets qui expliquent un setup et ouvrent directement le preset associé.</h2><p>Chaque page ci-dessous sert à la fois de contenu explicatif et de raccourci vers l'application avec une base déjà chargée.</p></div>
+        <div class="card-grid" id="seoPagesCardsContent"><article class="info-card"><h3>Schéma d'éclairage portrait</h3><p>Une base portrait studio avec key light à 45 degrés, mesures utiles et export propre en PDF.</p><div class="quick-links"><a href="schema-eclairage-portrait.html">Lire la page</a><a href="app.html?preset=portrait-soft-45">Ouvrir le preset</a></div></article><article class="info-card"><h3>Plan de studio boudoir</h3><p>Mobilier, ambiance, fond, distance au fond et circulation pour préparer une séance boudoir studio.</p><div class="quick-links"><a href="plan-studio-boudoir.html">Lire la page</a><a href="app.html?preset=boudoir-parabolic">Ouvrir le preset</a></div></article><article class="info-card"><h3>Lighting diagram interview</h3><p>Un setup vidéo studio clair avec distance caméra sujet, panneaux LED et export rapide pour le brief.</p><div class="quick-links"><a href="lighting-diagram-interview.html">Lire la page</a><a href="app.html?preset=interview-led">Ouvrir le preset</a></div></article></div>
       </div>
     </section>
   </main>
@@ -153,15 +153,15 @@
       <span>Cette page est disponible dans les langues suivantes.</span>
     </div>
     <nav class="translation-links" aria-label="Choisir la langue de la page">
-      <a class="translation-chip active" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Francais" aria-current="page">
+      <a class="translation-chip active" href="https://lumierestudio.archi-it.fr/" hreflang="fr" lang="fr" title="Français" aria-current="page">
       <span class="translation-code">FR</span>
-      <span>Francais</span>
+      <span>Français</span>
     </a><a class="translation-chip" href="https://lumierestudio.archi-it.fr/en/" hreflang="en" lang="en" title="English">
       <span class="translation-code">EN</span>
       <span>English</span>
-    </a><a class="translation-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Espanol">
+    </a><a class="translation-chip" href="https://lumierestudio.archi-it.fr/es/" hreflang="es" lang="es" title="Español">
       <span class="translation-code">ES</span>
-      <span>Espanol</span>
+      <span>Español</span>
     </a><a class="translation-chip" href="https://lumierestudio.archi-it.fr/de/" hreflang="de" lang="de" title="Deutsch">
       <span class="translation-code">DE</span>
       <span>Deutsch</span>

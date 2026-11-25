@@ -1273,3 +1273,12 @@
     height: 300px;
   }
 }
+
+/* Dans le Labo photo, les menus et compteurs du plateau ne s'appliquent pas :
+   on ne garde que la langue et le selecteur Studio / Labo photo. */
+.page[data-app-mode="photo-lab"] .menu[data-menu="file"],
+.page[data-app-mode="photo-lab"] .menu[data-menu="color"],
+.page[data-app-mode="photo-lab"] .menu[data-menu="presets"],
+.page[data-app-mode="photo-lab"] .appbar-status {
+  display: none;
+}
