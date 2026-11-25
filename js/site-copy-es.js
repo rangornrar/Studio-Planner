@@ -23,12 +23,12 @@ window.SitePublicCopy.es = {
         ogImageAlt: "Aplicación LITE Studio: plano de estudio con softbox, reflector, modelo y cámara, y vista previa en 3D"
       },
       topCopy: "Gratis y sin registro. Si LITE Studio te ayuda, puedes apoyar su desarrollo.",
-      brandTagline: "Photo Studio Planner",
+      brandTagline: "Planificador de iluminación",
       navItems: ["app", "guide", "presets", "faq"],
       footerItems: ["app", "guide", "presets", "faq"],
       sections: {
         heroCopyContent: `<p class="eyebrow">Planificador de estudio fotográfico</p><h1>Prepara tu set antes de encender la primera luz.</h1><p class="hero-lead">Coloca modelo, cámara, luces y accesorios en un plano a escala. LITE Studio calcula las distancias, muestra la escena en 3D y exporta un esquema claro para enviar al equipo.</p><div class="hero-actions"><a class="button-link primary" href="app.html">Abrir la aplicación</a><a class="button-link secondary" href="#how">Ver cómo funciona</a></div><ul class="hero-trust"><li>Gratis, sin registro</li><li>Ordenador, tableta y móvil</li><li>5 idiomas</li></ul>`,
-        heroVisualContent: `<figure class="shot-frame"><picture><source media="(max-width: 720px)" srcset="assets/landing/mobile-es.webp" width="900" height="988"><img src="assets/landing/hero-es.webp" width="1600" height="935" alt="LITE Studio: biblioteca de equipo a la izquierda, plano del set con softbox, bandera, reflector, modelo y cámara, distancias visibles y vista previa 3D en miniatura" fetchpriority="high" decoding="async"></picture></figure>`,
+        heroVisualContent: `<figure class="shot-frame hero-scene"><img src="assets/landing/hero-scene.webp" width="1600" height="1000" alt="Plató de retrato en 3D: sujeto frente a la cámara, octa principal a 45°, reflector dorado y bandera negra ante un fondo gris" fetchpriority="high" decoding="async"></figure>`,
         stepsHeadContent: `<p class="eyebrow">Cómo funciona</p><h2>Un plano listo para compartir en tres pasos.</h2>`,
         stepsContent: `<li class="step-card"><span class="step-number" aria-hidden="true">1</span><h3>Parte de un preset</h3><p>Elige entre 46 escenas tipo (retrato, belleza, producto, boudoir, entrevista…) o empieza en un estudio vacío de 8 × 6 m.</p></li><li class="step-card"><span class="step-number" aria-hidden="true">2</span><h3>Coloca y orienta</h3><p>Añade equipo desde la biblioteca, muévelo con el ratón o con el dedo y gíralo con el tirador naranja. Cada elemento tiene sus dimensiones reales.</p></li><li class="step-card"><span class="step-number" aria-hidden="true">3</span><h3>Comprueba y exporta</h3><p>El modo Medida muestra las distancias útiles. Después exporta el plano en PNG o PDF, o copia la imagen para enviarla directamente.</p></li>`,
         featuresHeadContent: `<p class="eyebrow">Qué hace LITE Studio</p><h2>Todo lo necesario para preparar una sesión, y nada más.</h2>`,

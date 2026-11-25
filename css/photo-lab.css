@@ -4,9 +4,9 @@
 :root {
   --bg-deep: #0a0a0c;
   --bg-main: #121216;
-  --bg-sub: #1a1a20;
+  --bg-sub: #1e1c1a;
   --panel-border: rgba(255, 255, 255, 0.08);
-  --panel-border-glow: rgba(140, 220, 255, 0.15);
+  --panel-border-glow: rgba(242, 166, 90, 0.15);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --text-dim: #64748b;
@@ -674,7 +674,7 @@
   border: 9px solid #090909;
   outline: 1px solid rgba(255, 255, 255, 0.12);
   background:
-    radial-gradient(circle at 50% 55%, rgba(40, 43, 47, 0.82), #050505 72%);
+    radial-gradient(circle at 50% 55%, rgba(47, 43, 40, 0.82), #050505 72%);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.09),
     inset 0 0 42px rgba(0, 0, 0, 0.72),

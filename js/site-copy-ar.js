@@ -23,12 +23,12 @@ window.SitePublicCopy.ar = {
         ogImageAlt: "تطبيق LITE Studio: مخطط استوديو مع سوفت بوكس وعاكس وشخص وكاميرا، ومعاينة ثلاثية الأبعاد"
       },
       topCopy: "مجاني ومن دون تسجيل. إن كان LITE Studio مفيدًا لك، يمكنك دعم تطويره.",
-      brandTagline: "Photo Studio Planner",
+      brandTagline: "مخطط الإضاءة",
       navItems: ["app", "guide", "presets", "faq"],
       footerItems: ["app", "guide", "presets", "faq"],
       sections: {
         heroCopyContent: `<p class="eyebrow">مخطط استوديو التصوير</p><h1>جهّز موقع التصوير قبل أن تُشعل أول ضوء.</h1><p class="hero-lead">ضع الشخص والكاميرا والإضاءة والملحقات على مخطط بمقياس رسم. يحسب LITE Studio المسافات، ويعرض المشهد بثلاثة أبعاد، ويصدّر مخططًا واضحًا ترسله إلى فريقك.</p><div class="hero-actions"><a class="button-link primary" href="app.html">افتح التطبيق</a><a class="button-link secondary" href="#how">كيف يعمل</a></div><ul class="hero-trust"><li>مجاني ومن دون تسجيل</li><li>الحاسوب والجهاز اللوحي والهاتف</li><li>5 لغات</li></ul>`,
-        heroVisualContent: `<figure class="shot-frame"><picture><source media="(max-width: 720px)" srcset="assets/landing/mobile-ar.webp" width="900" height="988"><img src="assets/landing/hero-ar.webp" width="1600" height="935" alt="LITE Studio: مكتبة المعدات، ومخطط الاستوديو مع سوفت بوكس وحاجب ضوء وعاكس وشخص وكاميرا، والمسافات ظاهرة، ومعاينة ثلاثية الأبعاد مصغّرة" fetchpriority="high" decoding="async"></picture></figure>`,
+        heroVisualContent: `<figure class="shot-frame hero-scene"><img src="assets/landing/hero-scene.webp" width="1600" height="1000" alt="موقع تصوير بورتريه ثلاثي الأبعاد: الموضوع أمام الكاميرا، أوكتا رئيسية بزاوية 45°، عاكس ذهبي وعَلَم أسود أمام خلفية رمادية" fetchpriority="high" decoding="async"></figure>`,
         stepsHeadContent: `<p class="eyebrow">كيف يعمل</p><h2>مخطط جاهز للمشاركة في ثلاث خطوات.</h2>`,
         stepsContent: `<li class="step-card"><span class="step-number" aria-hidden="true">1</span><h3>ابدأ بإعداد جاهز</h3><p>اختر من بين 46 مشهدًا جاهزًا (بورتريه، تجميل، منتجات، بودوار، مقابلة…) أو ابدأ في استوديو فارغ بمساحة 8 × 6 م.</p></li><li class="step-card"><span class="step-number" aria-hidden="true">2</span><h3>ضع ووجّه</h3><p>أضف المعدات من المكتبة، وحرّكها بالفأرة أو بإصبعك، وأدرها بالمقبض البرتقالي. لكل عنصر مقاساته الحقيقية.</p></li><li class="step-card"><span class="step-number" aria-hidden="true">3</span><h3>تحقّق ثم صدّر</h3><p>يعرض وضع القياس المسافات المهمة. بعد ذلك صدّر المخطط بصيغة PNG أو PDF، أو انسخ الصورة لإرسالها مباشرة.</p></li>`,
         featuresHeadContent: `<p class="eyebrow">ما يقدمه LITE Studio</p><h2>كل ما تحتاجه لتحضير جلسة تصوير، لا أكثر.</h2>`,

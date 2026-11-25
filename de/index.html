@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#07111f">
+  <meta name="theme-color" content="#0e0d0c">
   <title>Kostenloser 3D-Fotostudio-Planer im Browser | LITE Studio</title>
   <meta name="description" content="Plane dein Studio-Lichtsetup im Browser: Equipment in 3D und echter Größe, automatisch berechnete Abstände, 46 Presets, ein Fotolabor für ISO, Blende und Brennweite sowie Export als PNG oder PDF. Kostenlos, ohne Anmeldung.">
   <link rel="canonical" href="https://lumierestudio.archi-it.fr/de/">
@@ -20,17 +20,24 @@
   <meta property="og:title" content="LITE Studio – Plane dein Set vor dem Shooting">
   <meta property="og:description" content="Platziere Model, Kamera und Licht auf einem maßstabsgetreuen Grundriss, prüfe die Abstände, sieh die Szene in 3D und exportiere ein klares Schema für dein Team.">
   <meta property="og:url" content="https://lumierestudio.archi-it.fr/de/">
-  <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
+  <meta property="og:image" content="https://lumierestudio.archi-it.fr/assets/og/lite-studio.jpg">
   <meta property="og:image:alt" content="LITE Studio: Studio-Grundriss mit Softbox, Reflektor, Model und Kamera sowie 3D-Vorschau">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="LITE Studio – Kostenloser 3D-Fotostudio-Planer">
   <meta name="twitter:description" content="Equipment in echter Größe, berechnete Abstände, 46 Presets, Fotolabor und Export als PNG / PDF, direkt im Browser.">
-  <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
+  <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/assets/og/lite-studio.jpg">
   <meta name="twitter:image:alt" content="LITE Studio: Studio-Grundriss mit Softbox, Reflektor, Model und Kamera sowie 3D-Vorschau">
   <link rel="preload" href="../fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../css/fonts.css">
-  <link rel="stylesheet" href="../css/site.css?v=3.2">
+  <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <link rel="stylesheet" href="../css/fonts.css?v=4.0">
+  <link rel="stylesheet" href="../css/site.css?v=4.0">
   <script src="../js/site-nav.js?v=3.2" defer></script>
+  <script src="../js/site-extras.js?v=4.0" defer></script>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -40,7 +47,7 @@
   "applicationSubCategory": "Photo Studio Planner",
   "operatingSystem": "Web",
   "url": "https://lumierestudio.archi-it.fr/de/",
-  "image": "https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png",
+  "image": "https://lumierestudio.archi-it.fr/assets/og/lite-studio.jpg",
   "description": "Platziere Model, Kamera und Licht auf einem maßstabsgetreuen Grundriss, prüfe die Abstände, sieh die Szene in 3D und exportiere ein klares Schema für dein Team.",
   "inLanguage": "de",
   "offers": {
@@ -52,21 +59,19 @@
   </script>
 </head>
 <body>
-  <div class="top-strip">
+  <aside class="top-strip" aria-label="LITE Studio auf Ko-fi unterstützen">
     <div class="site-shell top-strip-inner">
       <div class="top-copy" id="topCopy">Kostenlos und ohne Anmeldung. Wenn LITE Studio dir hilft, kannst du die Weiterentwicklung unterstützen.</div>
-      <a class="top-kofi" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">
-        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="LITE Studio auf Ko-fi unterstützen">
-      </a>
+      <a class="top-kofi" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">LITE Studio auf Ko-fi unterstützen</a>
     </div>
-  </div>
+  </aside>
   <header class="site-nav">
     <div class="site-shell site-nav-inner">
       <a class="brand" href="index.html">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-copy">
           <strong>LITE Studio</strong>
-          <span id="brandTagline">Photo Studio Planner</span>
+          <span id="brandTagline">Lichtplaner</span>
         </span>
       </a>
       <a class="site-primary-cta" href="../app.html?lang=de">App</a>
@@ -103,8 +108,8 @@
   <main>
     <section class="hero hero-landing">
       <div class="site-shell hero-landing-grid">
-        <div class="hero-landing-copy" id="heroCopyContent"><p class="eyebrow">Fotostudio-Planer</p><h1>Plane dein Set, bevor das erste Licht angeht.</h1><p class="hero-lead">Platziere Model, Kamera, Licht und Zubehör auf einem maßstabsgetreuen Grundriss. LITE Studio berechnet die Abstände, zeigt die Szene in 3D und exportiert ein klares Schema für dein Team.</p><div class="hero-actions"><a class="button-link primary" href="../app.html?lang=de">App öffnen</a><a class="button-link secondary" href="#how">So funktioniert es</a></div><ul class="hero-trust"><li>Kostenlos, ohne Anmeldung</li><li>Computer, Tablet und Smartphone</li><li>5 Sprachen</li></ul></div>
-        <div class="hero-landing-shot" id="heroVisualContent"><figure class="shot-frame"><picture><source media="(max-width: 720px)" srcset="../assets/landing/mobile-de.webp" width="900" height="988"><img src="../assets/landing/hero-de.webp" width="1600" height="935" alt="LITE Studio: Equipment-Bibliothek links, Studio-Grundriss mit Softbox, Flag, Reflektor, Model und Kamera, angezeigte Abstände und 3D-Vorschau" fetchpriority="high" decoding="async"></picture></figure></div>
+        <div class="hero-landing-copy" id="heroCopyContent"><p class="eyebrow">Fotostudio-Planer</p><h1>Plane dein Set, bevor das erste Licht angeht.</h1><p class="hero-lead">Platziere Model, Kamera, Licht und Zubehör auf einem maßstabsgetreuen Grundriss. LITE Studio berechnet die Abstände, zeigt die Szene in 3D und exportiert ein klares Schema für dein Team.</p><div class="hero-actions"><a class="button-link primary" href="../app.html?lang=de">App öffnen</a><a class="button-link secondary" href="#how">So funktioniert es</a></div><ul class="hero-trust"><li>Kostenlos, ohne Anmeldung</li><li>Computer, Tablet und Smartphone</li><li>5 Sprachen</li></ul><div class="resume-card" data-resume hidden data-app="../app.html?lang=de" data-lang="de" data-title="„{name}“ fortsetzen" data-meta="Geändert am {date} · {count} Elemente" data-all="Meine Sets ({count})"><img class="resume-thumb" alt="" width="96" height="60" hidden><div class="resume-copy"><strong class="resume-name"></strong><span class="resume-meta"></span></div><div class="resume-actions"><a class="button-link primary resume-open" href="../app.html?lang=de">Fortsetzen</a><a class="resume-all" href="../app.html?lang=de"></a></div></div></div>
+        <div class="hero-landing-shot" id="heroVisualContent"><figure class="shot-frame hero-scene"><img src="../assets/landing/hero-scene.webp" width="1600" height="1000" alt="3D-Porträtset: Motiv vor der Kamera, Haupt-Octa bei 45°, goldener Reflektor und schwarze Flag vor grauem Hintergrund" fetchpriority="high" decoding="async"></figure></div>
       </div>
     </section>
     <section class="section landing-steps" id="how">

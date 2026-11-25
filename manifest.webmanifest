@@ -1,0 +1,23 @@
+{
+  "id": "/app.html",
+  "name": "LITE Studio – plan d'éclairage photo",
+  "short_name": "LITE Studio",
+  "description": "Préparez la lumière de votre plateau photo : plan à l'échelle, vue 3D, liste du matériel et feuille de plateau.",
+  "lang": "fr",
+  "dir": "auto",
+  "start_url": "app.html?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0e0d0c",
+  "theme_color": "#0e0d0c",
+  "categories": ["photo", "productivity", "design"],
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Mes plateaux", "short_name": "Plateaux", "url": "app.html?view=projects", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Presets", "url": "presets.html", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

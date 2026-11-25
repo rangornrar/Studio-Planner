@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#07111f">
+  <meta name="theme-color" content="#0e0d0c">
   <title>Free 3D photo studio planner in your browser | LITE Studio</title>
   <meta name="description" content="Plan your studio lighting setup in the browser: true-to-size 3D gear, automatic distances, 46 presets, a photo lab for ISO, aperture and focal length, and PNG or PDF export. Free, no sign-up.">
   <link rel="canonical" href="https://lumierestudio.archi-it.fr/en/">
@@ -20,17 +20,24 @@
   <meta property="og:title" content="LITE Studio – Plan your photo set before the shoot">
   <meta property="og:description" content="Place subject, camera and lights on a scaled floor plan, check distances, see the scene in 3D and export a clean diagram for your team.">
   <meta property="og:url" content="https://lumierestudio.archi-it.fr/en/">
-  <meta property="og:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
+  <meta property="og:image" content="https://lumierestudio.archi-it.fr/assets/og/lite-studio.jpg">
   <meta property="og:image:alt" content="LITE Studio app: studio floor plan with softbox, reflector, subject and camera, plus a 3D preview">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="LITE Studio – Free 3D photo studio planner">
   <meta name="twitter:description" content="True-to-size gear, automatic distances, 46 presets, a photo lab and PNG / PDF export, right in your browser.">
-  <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png">
+  <meta name="twitter:image" content="https://lumierestudio.archi-it.fr/assets/og/lite-studio.jpg">
   <meta name="twitter:image:alt" content="LITE Studio app: studio floor plan with softbox, reflector, subject and camera, plus a 3D preview">
   <link rel="preload" href="../fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../css/fonts.css">
-  <link rel="stylesheet" href="../css/site.css?v=3.2">
+  <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <link rel="stylesheet" href="../css/fonts.css?v=4.0">
+  <link rel="stylesheet" href="../css/site.css?v=4.0">
   <script src="../js/site-nav.js?v=3.2" defer></script>
+  <script src="../js/site-extras.js?v=4.0" defer></script>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -40,7 +47,7 @@
   "applicationSubCategory": "Photo Studio Planner",
   "operatingSystem": "Web",
   "url": "https://lumierestudio.archi-it.fr/en/",
-  "image": "https://lumierestudio.archi-it.fr/docs/screenshots/studio-portrait.png",
+  "image": "https://lumierestudio.archi-it.fr/assets/og/lite-studio.jpg",
   "description": "Place subject, camera and lights on a scaled floor plan, check distances, see the scene in 3D and export a clean diagram for your team.",
   "inLanguage": "en",
   "offers": {
@@ -52,21 +59,19 @@
   </script>
 </head>
 <body>
-  <div class="top-strip">
+  <aside class="top-strip" aria-label="Support LITE Studio on Ko-fi">
     <div class="site-shell top-strip-inner">
       <div class="top-copy" id="topCopy">Free, no sign-up. If LITE Studio helps you, you can support its development.</div>
-      <a class="top-kofi" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">
-        <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support LITE Studio on Ko-fi">
-      </a>
+      <a class="top-kofi" href="https://ko-fi.com/D1D21VSKW5" target="_blank" rel="noreferrer noopener">Support LITE Studio on Ko-fi</a>
     </div>
-  </div>
+  </aside>
   <header class="site-nav">
     <div class="site-shell site-nav-inner">
       <a class="brand" href="index.html">
         <span class="brand-mark" aria-hidden="true"></span>
         <span class="brand-copy">
           <strong>LITE Studio</strong>
-          <span id="brandTagline">Photo Studio Planner</span>
+          <span id="brandTagline">Lighting planner</span>
         </span>
       </a>
       <a class="site-primary-cta" href="../app.html?lang=en">App</a>
@@ -103,8 +108,8 @@
   <main>
     <section class="hero hero-landing">
       <div class="site-shell hero-landing-grid">
-        <div class="hero-landing-copy" id="heroCopyContent"><p class="eyebrow">Photo studio planner</p><h1>Plan your set before you switch on the first light.</h1><p class="hero-lead">Place the subject, camera, lights and grip on a floor plan drawn to scale. LITE Studio measures the distances, shows the scene in 3D and exports a clear diagram to send to your team.</p><div class="hero-actions"><a class="button-link primary" href="../app.html?lang=en">Open the app</a><a class="button-link secondary" href="#how">See how it works</a></div><ul class="hero-trust"><li>Free, no sign-up</li><li>Desktop, tablet and phone</li><li>5 languages</li></ul></div>
-        <div class="hero-landing-shot" id="heroVisualContent"><figure class="shot-frame"><picture><source media="(max-width: 720px)" srcset="../assets/landing/mobile-en.webp" width="900" height="988"><img src="../assets/landing/hero-en.webp" width="1600" height="935" alt="LITE Studio: gear library on the left, studio floor plan with softbox, flag, reflector, subject and camera, distances shown and a 3D preview in the corner" fetchpriority="high" decoding="async"></picture></figure></div>
+        <div class="hero-landing-copy" id="heroCopyContent"><p class="eyebrow">Photo studio planner</p><h1>Plan your set before you switch on the first light.</h1><p class="hero-lead">Place the subject, camera, lights and grip on a floor plan drawn to scale. LITE Studio measures the distances, shows the scene in 3D and exports a clear diagram to send to your team.</p><div class="hero-actions"><a class="button-link primary" href="../app.html?lang=en">Open the app</a><a class="button-link secondary" href="#how">See how it works</a></div><ul class="hero-trust"><li>Free, no sign-up</li><li>Desktop, tablet and phone</li><li>5 languages</li></ul><div class="resume-card" data-resume hidden data-app="../app.html?lang=en" data-lang="en" data-title="Pick up “{name}”" data-meta="Edited {date} · {count} items" data-all="My sets ({count})"><img class="resume-thumb" alt="" width="96" height="60" hidden><div class="resume-copy"><strong class="resume-name"></strong><span class="resume-meta"></span></div><div class="resume-actions"><a class="button-link primary resume-open" href="../app.html?lang=en">Resume</a><a class="resume-all" href="../app.html?lang=en"></a></div></div></div>
+        <div class="hero-landing-shot" id="heroVisualContent"><figure class="shot-frame hero-scene"><img src="../assets/landing/hero-scene.webp" width="1600" height="1000" alt="3D portrait set: subject facing the camera, key octa at 45°, gold reflector and black flag in front of a grey backdrop" fetchpriority="high" decoding="async"></figure></div>
       </div>
     </section>
     <section class="section landing-steps" id="how">

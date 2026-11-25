@@ -24,6 +24,8 @@ Elle aide a construire rapidement un set, mesurer les distances utiles du platea
 
 ## Fonctionnalites
 
+Direction visuelle « Lumiere de plateau » : un studio dans le noir et une seule lumiere chaude (#f2a65a), communs au site et a l'application ; titres en Bricolage Grotesque, texte en Inter (polices embarquees, OFL).
+
 - Interface responsive utilisable sur mobile et desktop.
 - Vue de dessus avec zoom, molette sur desktop, pinch-to-zoom sur mobile et apercu isometrique zoombable.
 - Elements dessines en 3D a leurs vraies dimensions, identiques dans la bibliotheque, la vue plan et la vue iso.
@@ -32,8 +34,12 @@ Elle aide a construire rapidement un set, mesurer les distances utiles du platea
 - Mesures automatiques entre sujet, camera, fond et sources, plus un mode de mesure manuel.
 - Reglages d'element et informations metier : hauteur, orientation, puissance source et lecture estimee a ISO 100.
 - Presets integres et presets personnalises sauvegardes dans le navigateur ; galerie illustree des 46 presets sur la page Presets.
-- Annuler / retablir (Ctrl+Z, Ctrl+Maj+Z) et sauvegarde automatique du plateau dans le navigateur.
-- Partage : lien qui contient tout le plateau, et fichier projet `.json` a enregistrer puis rouvrir (ou glisser sur le plateau).
+- Annuler / retablir (Ctrl+Z, Ctrl+Maj+Z) et sauvegarde automatique dans le navigateur.
+- Mes plateaux : plusieurs plateaux enregistres dans le navigateur (vignette, nom, date), a rouvrir, renommer ou supprimer ; carte « Reprendre » sur la page d'accueil.
+- Partage : bouton Partager (menu de partage du telephone, sinon copie du lien), lien qui contient tout le plateau, et fichier projet `.json` a enregistrer puis rouvrir (ou glisser sur le plateau).
+- Feuille de plateau A4 claire : vue de dessus, vue 3D, liste du materiel et notes pour l'equipe, a imprimer ou enregistrer en PDF.
+- Application installable (manifeste `manifest.webmanifest`, icones `assets/icons/`).
+- Une page publique par preset (`presets/<id>.html` et ses traductions) avec vue 3D, vue de dessus, materiel et apercu de partage 1200 x 630.
 - Liste du materiel generee depuis le plateau, copiable et incluse dans les exports.
 - Export PNG, export PDF et impression directe du plan.
 - Interface multilingue, Labo photo compris : francais, anglais, espagnol, allemand et arabe.
@@ -63,7 +69,9 @@ Le Labo photo utilise des modules JavaScript, que les navigateurs refusent de ch
 - `js/photo-lab-*.mjs` et `css/photo-lab.css` : Labo photo (donnees optiques, calculs, scene, interface).
 - `js/site-nav.js` : menu de navigation mobile des pages publiques.
 - `scripts/generate-static-locales.mjs` : generation des pages publiques traduites (`npm run build:locales`).
-- `scripts/generate-preset-gallery.mjs` : vignettes `assets/presets/*.webp` et libelles `scripts/preset-gallery.json` de la galerie de presets (`npm run build:presets`, a relancer apres une modification des presets, avant `build:locales`).
+- `scripts/generate-preset-gallery.mjs` : vignettes `assets/presets/*.webp`, vues de dessus `assets/presets/plan/`, apercus de partage `assets/og/presets/` et libelles + materiel `scripts/preset-gallery.json` (`npm run build:presets`, a relancer apres une modification des presets, avant `build:locales`).
+- `scripts/generate-landing-shots.mjs` : scene d'accueil, apercu de partage du site et captures de l'interface de la page d'accueil (`npm run build:shots`, a relancer apres un changement visuel de l'application).
+- `js/site-extras.js` : carte « Reprendre » de l'accueil et bouton Partager des pages de preset.
 - `js/photo-lab-i18n.mjs` : textes du Labo photo dans les cinq langues.
 - `scripts/serve-static.mjs` : petit serveur local (`npm run serve`).
 - `tests/` : tests unitaires (`npm test`) et controle visuel automatique (`npm run test:visual`).
@@ -85,6 +93,8 @@ Des parametres simples peuvent etre utilises pour ouvrir directement une langue 
 - `?preset=portrait-soft-45`
 - `?preset=boudoir-parabolic`
 - `?preset=interview-led`
+- `?project=<id>` : rouvre un plateau de « Mes plateaux » (utilise par la carte « Reprendre »)
+- `?view=projects` : ouvre directement « Mes plateaux »
 
 Exemple :
 
