@@ -1,6 +1,6 @@
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D21VSKW5)
 
-Languages: [Français](README.md) · [FR](README.fr.md) · [English](README.en.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [العربية](README.ar.md)
+Languages: [Français](README.md) · [English](README.en.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [العربية](README.ar.md)
 
 # LITE Studio
 
@@ -26,6 +26,8 @@ It helps you build a set quickly, measure useful stage distances, zoom the plan,
 
 - Responsive interface designed for both mobile and desktop use.
 - Top view with zoom controls, mouse wheel on desktop, pinch-to-zoom on mobile, and a zoomable isometric preview.
+- Items drawn in 3D at their real dimensions, identical in the library, the plan view and the iso view.
+- Photo lab: simulates the effect of ISO, aperture and focal length on a photo (noise, exposure, depth of field, framing).
 - Element library with search by type, size, or family.
 - Automatic measurements between subject, camera, backdrop, and light sources, plus a manual measurement mode.
 - Element settings and practical data such as height, orientation, light power, and estimated ISO 100 f-stop.
@@ -36,6 +38,8 @@ It helps you build a set quickly, measure useful stage distances, zoom the plan,
 ## Quick Start
 
 No installation is required.
+
+The Photo lab uses JavaScript modules, which browsers refuse to load from a file opened by double-click. To use it locally, run `npm run serve` (Node.js 18 or later) and open http://127.0.0.1:4177/app.html.
 
 1. Open [app.html](app.html) in a modern browser to launch the app, or [index.html](index.html) for the public landing page.
 2. Add items from the library.
@@ -52,6 +56,13 @@ No installation is required.
 - `css/simple-studio.css`: design, responsive layout, and print styles.
 - `css/site.css`: landing page and editorial page styles.
 - `js/simple-studio.js`: studio logic, canvas rendering, languages, presets, measurements, and interactions.
+- `js/studio-locales.js`: application localization constants.
+- `js/studio-models.js`: 3D models of the items (real dimensions) and their rendering as thumbnail, plan and iso.
+- `js/photo-lab-*.mjs` and `css/photo-lab.css`: Photo lab (optical data, calculations, scene, interface).
+- `js/site-nav.js`: mobile navigation menu of the public pages.
+- `scripts/generate-static-locales.mjs`: generates the translated public pages (`npm run build:locales`).
+- `scripts/serve-static.mjs`: small local server (`npm run serve`).
+- `tests/`: unit tests (`npm test`) and automated visual check (`npm run test:visual`).
 - `js/site-i18n.js` and `js/site-copy-*.js`: public site localization and content.
 - `guide.html`, `presets.html`, `faq.html`: supporting editorial pages.
 - `schema-eclairage-portrait.html`, `plan-studio-boudoir.html`, `lighting-diagram-interview.html`: SEO-focused pages linked to the app.

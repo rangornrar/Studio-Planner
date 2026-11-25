@@ -1,6 +1,6 @@
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D21VSKW5)
 
-Idiomas: [Français](README.md) · [FR](README.fr.md) · [English](README.en.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [العربية](README.ar.md)
+Idiomas: [Français](README.md) · [English](README.en.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [العربية](README.ar.md)
 
 # LITE Studio
 
@@ -26,6 +26,8 @@ Te ayuda a construir un esquema rapidamente, medir las distancias utiles del pla
 
 - Interfaz responsive pensada para movil y desktop.
 - Vista superior con zoom, rueda del raton en desktop, pinch-to-zoom en movil y vista isometrica ampliable.
+- Elementos dibujados en 3D a sus dimensiones reales, idénticos en la biblioteca, la vista de plano y la vista iso.
+- Laboratorio fotográfico: simula el efecto del ISO, la apertura y la focal sobre una foto (ruido, exposición, profundidad de campo, encuadre).
 - Biblioteca de elementos con busqueda por tipo, tamano o familia.
 - Medidas automaticas entre sujeto, camara, fondo y fuentes de luz, ademas de un modo de medicion manual.
 - Ajustes de elemento e informacion util como altura, orientacion, potencia de luz y f-stop estimado a ISO 100.
@@ -36,6 +38,8 @@ Te ayuda a construir un esquema rapidamente, medir las distancias utiles del pla
 ## Inicio rapido
 
 No se requiere instalacion.
+
+El Laboratorio fotográfico usa módulos JavaScript, que los navegadores no cargan desde un archivo abierto con doble clic. Para usarlo en local, ejecute `npm run serve` (Node.js 18 o superior) y abra http://127.0.0.1:4177/app.html.
 
 1. Abre [app.html](app.html) en un navegador moderno para iniciar la aplicacion, o [index.html](index.html) para la landing publica.
 2. Agrega elementos desde la biblioteca.
@@ -52,6 +56,13 @@ No se requiere instalacion.
 - `css/simple-studio.css`: diseno, responsive, maquetacion y estilos de impresion.
 - `css/site.css`: estilos de la landing y de las paginas editoriales.
 - `js/simple-studio.js`: logica del estudio, renderizado canvas, idiomas, presets, medidas e interacciones.
+- `js/studio-locales.js`: constantes de localización de la aplicación.
+- `js/studio-models.js`: modelos 3D de los elementos (dimensiones reales) y su renderizado en miniatura, plano e iso.
+- `js/photo-lab-*.mjs` y `css/photo-lab.css`: Laboratorio fotográfico (datos ópticos, cálculos, escena, interfaz).
+- `js/site-nav.js`: menú de navegación móvil de las páginas públicas.
+- `scripts/generate-static-locales.mjs`: genera las páginas públicas traducidas (`npm run build:locales`).
+- `scripts/serve-static.mjs`: pequeño servidor local (`npm run serve`).
+- `tests/`: pruebas unitarias (`npm test`) y control visual automático (`npm run test:visual`).
 - `js/site-i18n.js` y `js/site-copy-*.js`: contenido y localizacion de las paginas publicas.
 - `guide.html`, `presets.html`, `faq.html`: paginas de apoyo y explicacion.
 - `schema-eclairage-portrait.html`, `plan-studio-boudoir.html`, `lighting-diagram-interview.html`: paginas SEO conectadas con la aplicacion.
