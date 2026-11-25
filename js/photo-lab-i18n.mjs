@@ -4,6 +4,7 @@
 export const LAB_COPY = {
   fr: {
     eyebrow: "Laboratoire photographique interactif",
+    intro: "Une photo type, indépendante de votre plateau : changez ISO, ouverture et focale pour voir leur effet.",
     titleA: "Réglages photo,",
     titleB: "conséquences visibles.",
     compareAria: "Mode de comparaison",
@@ -53,6 +54,7 @@ export const LAB_COPY = {
   },
   en: {
     eyebrow: "Interactive photo lab",
+    intro: "A sample photo, separate from your set: change ISO, aperture and focal length to see what they do.",
     titleA: "Camera settings,",
     titleB: "visible results.",
     compareAria: "Comparison mode",
@@ -102,6 +104,7 @@ export const LAB_COPY = {
   },
   es: {
     eyebrow: "Laboratorio fotográfico interactivo",
+    intro: "Una foto de ejemplo, independiente de tu plató: cambia ISO, apertura y focal para ver su efecto.",
     titleA: "Ajustes de cámara,",
     titleB: "resultados visibles.",
     compareAria: "Modo de comparación",
@@ -151,6 +154,7 @@ export const LAB_COPY = {
   },
   de: {
     eyebrow: "Interaktives Fotolabor",
+    intro: "Ein Beispielfoto, unabhängig von Ihrem Set: Ändern Sie ISO, Blende und Brennweite und sehen Sie die Wirkung.",
     titleA: "Kameraeinstellungen,",
     titleB: "sichtbare Wirkung.",
     compareAria: "Vergleichsmodus",
@@ -200,6 +204,7 @@ export const LAB_COPY = {
   },
   ar: {
     eyebrow: "مختبر تصوير تفاعلي",
+    intro: "صورة نموذجية مستقلة عن موقع التصوير: غيّر ISO وفتحة العدسة والبعد البؤري لترى تأثيرها.",
     titleA: "إعدادات الكاميرا،",
     titleB: "ونتائجها أمامك.",
     compareAria: "وضع المقارنة",

@@ -15,10 +15,14 @@ const LANGUAGES = ["fr", "en", "es", "de", "ar"];
 const HERO_PRESET = "portrait-soft-45";
 
 async function openApp(page, base, query) {
+  // Pas de guide de premiere visite ni d'astuce dans les captures.
+  await page.addInitScript(function () {
+    localStorage.setItem("lite-studio-onboarded", "1");
+    localStorage.setItem("lite-studio-rotate-hint", "1");
+  });
   await page.goto(`${base}/app.html?${query}`);
   await page.waitForFunction(function () { return Boolean(window.LiteStudio); });
   await page.evaluate(function () {
-    localStorage.clear();
     return document.fonts && document.fonts.ready;
   });
   await page.waitForTimeout(300);

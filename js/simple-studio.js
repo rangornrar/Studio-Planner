@@ -1972,6 +1972,9 @@
     setSheet: document.getElementById("setSheet"),
     sheetPrintButton: document.getElementById("sheetPrintButton"),
     installAction: document.getElementById("actionInstall"),
+    onboardingDialog: document.getElementById("onboardingDialog"),
+    onboardingPreset: document.getElementById("onboardingPreset"),
+    libraryHint: document.getElementById("libraryHint"),
     gearDialogBody: document.getElementById("gearDialogBody"),
     gearCopyButton: document.getElementById("gearCopyButton"),
     printGearList: document.getElementById("printGearList"),
@@ -2357,7 +2360,9 @@
     if (metaTwitterDescription) metaTwitterDescription.setAttribute("content", localizedMetaDescription);
 
     refs.appModeButtons.forEach(function (button) {
-      button.textContent = getUiCopy(button.getAttribute("data-app-mode-target") === "photo-lab" ? "modeLab" : "modeStudio");
+      const isLab = button.getAttribute("data-app-mode-target") === "photo-lab";
+      button.textContent = getUiCopy(isLab ? "modeLab" : "modeStudio");
+      button.title = getUiCopy(isLab ? "modeLabHint" : "modeStudioHint");
     });
     if (refs.undoButton) {
       refs.undoButton.setAttribute("aria-label", getUiCopy("undo"));
@@ -2367,7 +2372,7 @@
       refs.redoButton.setAttribute("aria-label", getUiCopy("redo"));
       refs.redoButton.title = getUiCopy("redoTitle");
     }
-    [["actionShareLink", "copyLink"], ["actionShare", "shareMenu"], ["actionProjects", "myProjects"], ["actionNewProject", "newProject"], ["actionSheet", "sheet"], ["actionInstall", "install"], ["projectsDialogTitle", "myProjects"], ["projectsNewButton", "newProject"], ["projectsCloseButton", "dialogClose"], ["sheetDialogTitle", "sheetTitle"], ["sheetPrintButton", "sheetPrint"], ["sheetCloseButton", "dialogClose"], ["shareButtonLabel", "share"], ["actionSaveProject", "saveProject"], ["actionOpenProject", "openProject"], ["actionGearList", "gearList"], ["gearCloseButton", "gearClose"]].forEach(function (pair) {
+    [["actionShareLink", "copyLink"], ["actionShare", "shareMenu"], ["actionProjects", "myProjects"], ["actionNewProject", "newProject"], ["actionSheet", "sheet"], ["actionInstall", "install"], ["projectsDialogTitle", "myProjects"], ["projectsNewButton", "newProject"], ["projectsCloseButton", "dialogClose"], ["sheetDialogTitle", "sheetTitle"], ["sheetPrintButton", "sheetPrint"], ["sheetCloseButton", "dialogClose"], ["shareButtonLabel", "share"], ["libraryHint", "libraryHint"], ["actionOnboarding", "onbMenu"], ["onboardingTitle", "onbTitle"], ["onboardingIntro", "onbIntro"], ["onb1Title", "onb1Title"], ["onb1Text", "onb1Text"], ["onb2Title", "onb2Title"], ["onb2Text", "onb2Text"], ["onb3Title", "onb3Title"], ["onb3Text", "onb3Text"], ["onboardingPreset", "onbPreset"], ["onboardingStart", "onbStart"], ["actionSaveProject", "saveProject"], ["actionOpenProject", "openProject"], ["actionGearList", "gearList"], ["gearCloseButton", "gearClose"]].forEach(function (pair) {
       const element = document.getElementById(pair[0]);
       if (element) element.textContent = getUiCopy(pair[1]);
     });
@@ -2888,6 +2893,8 @@
     bindInstallPrompt();
     void loadSceneFromLink();
     if (openProjectsOnLaunch) openProjectsDialog();
+    else if (!hasFlag(STORAGE_KEY_ONBOARDED) && !readProjects().length && !/scene=/.test(window.location.hash || "")) openOnboarding();
+    hintsReady = true;
 
 
     // Les etiquettes du canvas utilisent la police de l'interface : on redessine
@@ -2981,7 +2988,18 @@
         void openProjectFile(file);
       });
     }
-    [refs.projectsDialog, refs.sheetDialog].forEach(function (dialog) {
+    if (refs.onboardingDialog) {
+      refs.onboardingDialog.addEventListener("close", markOnboarded);
+    }
+    if (refs.onboardingPreset) {
+      refs.onboardingPreset.addEventListener("click", function (event) {
+        event.stopPropagation();
+        refs.onboardingDialog.close();
+        toggleMenu("presets");
+      });
+    }
+
+    [refs.onboardingDialog, refs.projectsDialog, refs.sheetDialog].forEach(function (dialog) {
       if (!dialog) return;
       dialog.addEventListener("click", function (event) {
         if (event.target === dialog || event.target.closest("[data-dialog-close]")) dialog.close();
@@ -3080,6 +3098,7 @@
         if (action === "new-project") createNewProject();
         if (action === "sheet") openSetSheet();
         if (action === "install") void promptInstall();
+        if (action === "onboarding") openOnboarding();
         if (action === "save-project") saveProjectFile();
         if (action === "open-project" && refs.projectFileInput) refs.projectFileInput.click();
         if (action === "gear-list") openGearList();
@@ -4089,6 +4108,7 @@
     drawPlanView();
     drawIsoView();
     syncEmptyState();
+    maybeShowRotateHint();
     scheduleHistoryCommit();
   }
 
@@ -4450,6 +4470,50 @@
     renderAll();
     flushHistory();
     showToast(getUiCopy("toastProjectOpened", { name: file.name }), true);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Premiere visite : guide en trois etapes et astuce sur la poignee de rotation
+  // ---------------------------------------------------------------------------
+
+  const STORAGE_KEY_ONBOARDED = "lite-studio-onboarded";
+  const STORAGE_KEY_ROTATE_HINT = "lite-studio-rotate-hint";
+  let hintsReady = false;
+
+  function hasFlag(key) {
+    try {
+      return window.localStorage.getItem(key) === "1";
+    } catch (error) {
+      return true;
+    }
+  }
+
+  function setFlag(key) {
+    try {
+      window.localStorage.setItem(key, "1");
+    } catch (error) {
+      // Sans stockage, l'aide reapparaitra a la prochaine visite.
+    }
+  }
+
+  function markOnboarded() {
+    setFlag(STORAGE_KEY_ONBOARDED);
+    maybeShowRotateHint();
+  }
+
+  function openOnboarding() {
+    if (!refs.onboardingDialog || refs.onboardingDialog.open) return;
+    showDialog(refs.onboardingDialog);
+  }
+
+  // Une seule fois : la premiere fois qu'un element est selectionne hors de toute fenetre.
+  function maybeShowRotateHint() {
+    if (!hintsReady || !state.selectedId || state.interaction || hasFlag(STORAGE_KEY_ROTATE_HINT)) return;
+    if (document.querySelector("dialog[open]")) return;
+    setFlag(STORAGE_KEY_ROTATE_HINT);
+    window.setTimeout(function () {
+      showToast(getUiCopy("rotateHint"), false);
+    }, 400);
   }
 
   // ---------------------------------------------------------------------------

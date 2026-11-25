@@ -57,9 +57,9 @@
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preload" href="fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css?v=4.0">
-  <link rel="stylesheet" href="css/simple-studio.css?v=4.0">
-  <link rel="stylesheet" href="css/photo-lab.css?v=4.0">
+  <link rel="stylesheet" href="css/fonts.css?v=4.1">
+  <link rel="stylesheet" href="css/simple-studio.css?v=4.1">
+  <link rel="stylesheet" href="css/photo-lab.css?v=4.1">
 </head>
 
 <body>
@@ -108,6 +108,7 @@
             <hr class="menu-separator">
             <button class="menu-item" id="actionGearList" type="button" data-menu-action="gear-list">Liste du matériel</button>
             <hr class="menu-separator">
+            <button class="menu-item" id="actionOnboarding" type="button" data-menu-action="onboarding">Guide de démarrage</button>
             <button class="menu-item menu-item-danger" id="actionReset" type="button" data-menu-action="reset">Vider le plateau</button>
             <button class="menu-item" id="actionInstall" type="button" data-menu-action="install" hidden>Installer l'application</button>
           </div>
@@ -193,6 +194,8 @@
             placeholder="Élément, taille ou type">
         </label>
 
+        <p class="library-hint" id="libraryHint">Touchez un élément pour l'ajouter au plateau, puis faites-le glisser sur le plan.</p>
+
         <div class="category-tabs" id="categoryTabs"></div>
 
         <div class="selection-panel empty is-hidden" id="selectionPanel"></div>
@@ -269,6 +272,7 @@
           <div>
             <p class="photo-lab-eyebrow" data-lab-text="eyebrow">Laboratoire photographique interactif</p>
             <h2 id="photoLabTitle"><span data-lab-text="titleA">Réglages photo,</span> <span data-lab-text="titleB">conséquences visibles.</span></h2>
+            <p class="photo-lab-intro" data-lab-text="intro">Une photo type, indépendante de votre plateau : changez ISO, ouverture et focale pour voir leur effet.</p>
           </div>
           <div class="photo-lab-compare-controls" role="group" aria-label="Mode de comparaison" data-lab-aria="compareAria">
             <button class="photo-lab-chip active" type="button" data-photo-compare="single" aria-pressed="true" data-lab-text="single">Vue seule</button>
@@ -354,9 +358,9 @@
     </section>
   </div>
 
-  <script src="js/studio-locales.js?v=4.0" defer></script>
+  <script src="js/studio-locales.js?v=4.1" defer></script>
   <script src="js/studio-models.js?v=3.1" defer></script>
-  <script src="js/simple-studio.js?v=4.0" defer></script>
+  <script src="js/simple-studio.js?v=4.1" defer></script>
   <script type="module" src="js/photo-lab-ui.mjs?v=3.3"></script>
   <dialog class="gear-dialog" id="gearDialog" aria-labelledby="gearDialogTitle">
     <div class="gear-dialog-head">
@@ -367,6 +371,24 @@
     <div class="gear-dialog-actions">
       <button class="stage-empty-button is-primary" id="gearCopyButton" type="button">Copier la liste</button>
       <button class="stage-empty-button" type="button" data-gear-close id="gearCloseButton">Fermer</button>
+    </div>
+  </dialog>
+  <dialog class="gear-dialog onboarding-dialog" id="onboardingDialog" aria-labelledby="onboardingTitle">
+    <div class="gear-dialog-head">
+      <h2 id="onboardingTitle">Bienvenue dans LITE Studio</h2>
+      <button class="gear-dialog-close" type="button" data-dialog-close aria-label="Fermer">&times;</button>
+    </div>
+    <div class="onboarding-body">
+      <p class="onboarding-intro" id="onboardingIntro">Préparez votre éclairage en trois étapes.</p>
+      <ol class="onboarding-steps">
+        <li><span class="onboarding-number" aria-hidden="true">1</span><div><h3 id="onb1Title">Partez d'un preset</h3><p id="onb1Text"></p></div></li>
+        <li><span class="onboarding-number" aria-hidden="true">2</span><div><h3 id="onb2Title">Placez le matériel</h3><p id="onb2Text"></p></div></li>
+        <li><span class="onboarding-number" aria-hidden="true">3</span><div><h3 id="onb3Title">Vérifiez et partagez</h3><p id="onb3Text"></p></div></li>
+      </ol>
+    </div>
+    <div class="gear-dialog-actions">
+      <button class="stage-empty-button is-primary" id="onboardingPreset" type="button">Choisir un preset</button>
+      <button class="stage-empty-button" type="button" data-dialog-close id="onboardingStart">Commencer</button>
     </div>
   </dialog>
   <dialog class="gear-dialog projects-dialog" id="projectsDialog" aria-labelledby="projectsDialogTitle">
