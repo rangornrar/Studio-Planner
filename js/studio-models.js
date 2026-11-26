@@ -608,7 +608,7 @@
   };
 
   BUILDERS.tube = function (b, spec) {
-    const len = spec.id === "tube-240" ? 2.4 : spec.id === "tube-120" ? 1.2 : 0.6;
+    const len = spec.id === "tube-240" ? 2.4 : spec.id === "tube-120" ? 1.2 : spec.id === "tube-30" ? 0.3 : 0.6;
     const top = spec.height;
     const bottom = Math.max(0.1, top - len);
     const standTop = bottom + len * 0.5;
@@ -620,9 +620,10 @@
   };
 
   BUILDERS["led-panel"] = function (b, spec) {
-    const tall = spec.id === "led-panel-1x2";
-    const w = 0.33;
-    const h = tall ? 0.63 : 0.33;
+    const sizes = { "led-panel-1x2": [0.33, 0.63], "led-panel-mini": [0.15, 0.1], "led-panel-mat60x120": [0.6, 1.2], "led-panel-kino4x120": [0.6, 1.2] };
+    const dims = sizes[spec.id] || [0.33, 0.33];
+    const w = dims[0];
+    const h = dims[1];
     const cz = spec.height - h / 2 - 0.04;
     lightStand(b, cz - h / 2 - 0.05, 0.4);
     // Etrier
@@ -632,6 +633,12 @@
     b.block(-0.03, -w / 2, cz - h / 2, 0.03, w / 2, cz + h / 2, MAT.darkGray);
     b.face(rectRing([0.032, 0, cz], [0, 1, 0], [0, 0, 1], w / 2 - 0.02, h / 2 - 0.02), MAT.diffuser);
     b.block(-0.06, -0.06, cz - 0.06, -0.03, 0.06, cz + 0.06, MAT.blackMetal);  // boitier arriere
+    if (spec.id === "led-panel-kino4x120") {
+      // Banc de tubes : séparations entre les quatre tubes verticaux.
+      [-0.5, 0, 0.5].forEach(function (k) {
+        b.block(0.032, k * w / 2 - 0.012, cz - h / 2 + 0.02, 0.04, k * w / 2 + 0.012, cz + h / 2 - 0.02, MAT.blackMetal);
+      });
+    }
   };
 
   BUILDERS.umbrella = function (b, spec) {
@@ -704,42 +711,75 @@
     b.block(-0.02, -0.05, cz - 0.05, 0.02, 0.05, cz + 0.05, MAT.grip);       // support telephone
   };
 
+  const GEL_COLORS = { "flash-gel-orange": "#ff9a3c", "flash-gel-blue": "#5a96ff", "flash-gel-red": "#f03c46", "flash-gel-teal": "#28c8c8" };
+
   BUILDERS["spot-head"] = function (b, spec) {
     const id = spec.id;
     const top = spec.height;
     const fresnel = id.indexOf("fresnel-") === 0;
     const hmi = id.indexOf("hmi-") === 0;
+    const tungsten = id.indexOf("tungsten-") === 0;
     const cob = id.indexOf("cob-") === 0;
-    const big = id === "fresnel-650" || id === "flash-head-pro" || id === "cob-led-600" || hmi;
-    const r = (fresnel ? (big ? 0.15 : 0.11) : hmi ? 0.17 : big ? 0.085 : 0.07);
-    const len = fresnel ? (big ? 0.36 : 0.26) : hmi ? 0.42 : cob ? (big ? 0.34 : 0.28) : (big ? 0.3 : 0.24);
+    const background = id === "flash-background";
+    const big = id === "fresnel-650" || id === "flash-head-pro" || id === "cob-led-600" || id === "cob-led-1200" || hmi;
+    const r = (fresnel ? (big ? 0.15 : 0.11) : hmi ? 0.17 : tungsten ? 0.1 : id === "cob-led-1200" ? 0.1 : id === "cob-led-100" ? 0.055 : big ? 0.085 : 0.07);
+    const len = fresnel ? (big ? 0.36 : 0.26) : hmi ? 0.42 : tungsten ? 0.2 : cob ? (big ? 0.34 : 0.28) : (big ? 0.3 : 0.24);
     const cz = top - r - 0.06;
-    lightStand(b, cz - r - 0.06, big ? 0.48 : 0.4, { wheels: hmi });
+    lightStand(b, cz - r - 0.06, background ? 0.3 : big ? 0.48 : 0.4, { wheels: hmi });
     // Lyre
     b.rod([0, -r - 0.03, cz], [0, -r - 0.03, cz - r - 0.06], 0.012, MAT.blackMetal);
     b.rod([0, r + 0.03, cz], [0, r + 0.03, cz - r - 0.06], 0.012, MAT.blackMetal);
     b.rod([0, -r - 0.03, cz - r - 0.06], [0, r + 0.03, cz - r - 0.06], 0.012, MAT.blackMetal);
     const back = [-len * 0.5, 0, cz];
     const front = [len * 0.5, 0, cz];
-    if (fresnel || hmi) {
-      b.block(back[0], -r, cz - r, front[0], r, cz + r, MAT.blackMetal);
-      b.disc(add(front, [0.004, 0, 0]), [1, 0, 0], r * 0.8, material("#f6e7c6", { emissive: 0.7 }), 18);
-      // Volets coupe-flux
+    function barnDoors(at, radius) {
       [[0, 1], [0, -1], [1, 0], [-1, 0]].forEach(function (d) {
-        const hinge = add(front, [0, d[0] * r, d[1] * r]);
-        const tip = add(hinge, [r * 0.8, d[0] * r * 0.45, d[1] * r * 0.45]);
+        const hinge = add(at, [0, d[0] * radius, d[1] * radius]);
+        const tip = add(hinge, [radius * 0.8, d[0] * radius * 0.45, d[1] * radius * 0.45]);
         const across = d[0] ? [0, 0, 1] : [0, 1, 0];
-        b.face([add(hinge, mul(across, -r)), add(hinge, mul(across, r)), add(tip, mul(across, r * 1.2)), add(tip, mul(across, -r * 1.2))], MAT.blackBoard);
+        b.face([add(hinge, mul(across, -radius)), add(hinge, mul(across, radius)), add(tip, mul(across, radius * 1.2)), add(tip, mul(across, -radius * 1.2))], MAT.blackBoard);
       });
+    }
+    if (fresnel || hmi || tungsten) {
+      b.block(back[0], -r, cz - r, front[0], r, cz + r, MAT.blackMetal);
+      b.disc(add(front, [0.004, 0, 0]), [1, 0, 0], r * 0.8, material(tungsten ? "#ffd59a" : "#f6e7c6", { emissive: 0.7 }), 18);
+      barnDoors(front, r);
       if (hmi) b.block(-0.3, 0.35, 0, 0.1, 0.6, 0.22, MAT.darkGray); // ballast au sol
       return;
     }
-    // Flash ou COB : corps + reflecteur standard
+    // Flash ou COB : corps + modeleur
     b.cylinder(back, front, r, cob ? MAT.blackMetal : MAT.plasticWhite, 16);
-    b.frustum(front, r * 0.9, add(front, [0.12, 0, 0]), r * 1.7, MAT.chrome, 16, false);
-    b.disc(add(front, [0.005, 0, 0]), [1, 0, 0], r * 0.75, MAT.bulb, 16);
     b.rod(add(back, [0.04, 0, r]), add(back, [0.18, 0, r + 0.04]), 0.008, MAT.grip); // poignee
     if (cob) b.block(-0.1, -0.08, 0.05, 0.12, 0.08, 0.16, MAT.darkGray);          // alimentation
+    if (id === "flash-snoot") {
+      b.frustum(front, r * 0.95, add(front, [0.24, 0, 0]), r * 0.45, MAT.blackMetal, 16, false);
+      b.disc(add(front, [0.242, 0, 0]), [1, 0, 0], r * 0.4, MAT.bulb, 12);
+      return;
+    }
+    const mouthRadius = background ? r * 2.4 : r * 1.7;
+    const mouth = add(front, [background ? 0.09 : 0.12, 0, 0]);
+    b.frustum(front, r * 0.9, mouth, mouthRadius, MAT.chrome, 16, false);
+    if (id.indexOf("flash-grid-") === 0) {
+      b.disc(add(mouth, [0.003, 0, 0]), [1, 0, 0], mouthRadius * 0.98, MAT.blackMetal, 16);
+      b.disc(add(mouth, [0.006, 0, 0]), [1, 0, 0], mouthRadius * 0.35, MAT.bulb, 12);
+      return;
+    }
+    if (GEL_COLORS[id]) {
+      b.disc(add(mouth, [0.003, 0, 0]), [1, 0, 0], mouthRadius * 0.97, material(GEL_COLORS[id], { emissive: 0.85, doubleSided: true }), 16);
+      return;
+    }
+    b.disc(add(front, [0.005, 0, 0]), [1, 0, 0], r * 0.75, MAT.bulb, 16);
+    if (id === "flash-barndoors") barnDoors(mouth, mouthRadius);
+  };
+
+  BUILDERS.speedlight = function (b, spec) {
+    // Flash cobra sur rotule, au sommet d'un pied léger.
+    const z = spec.height - 0.12;
+    lightStand(b, z - 0.06, 0.36);
+    b.block(-0.02, -0.02, z - 0.06, 0.02, 0.02, z, MAT.blackMetal);              // rotule
+    b.block(-0.035, -0.03, z, 0.035, 0.03, z + 0.1, MAT.darkGray);                // corps
+    b.block(-0.02, -0.04, z + 0.1, 0.06, 0.04, z + 0.15, MAT.darkGray);           // tête
+    b.face(rectRing([0.061, 0, z + 0.125], [0, 1, 0], [0, 0, 1], 0.035, 0.02), MAT.bulb);
   };
 
   BUILDERS["spot-projector"] = function (b, spec) {

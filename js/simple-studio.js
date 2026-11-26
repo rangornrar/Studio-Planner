@@ -884,6 +884,234 @@
       height: 0.5,
       shape: "rect"
     },
+    "flash-reflector-std": {
+      family: "reflector",
+      typeLabel: "Réflecteur standard",
+      shortLabel: "18 cm",
+      sizeLabel: "Ø 18 cm",
+      heightLabel: "H 2.10 m",
+      description: "Tête flash avec réflecteur standard : lumière dure et directe",
+      width: 0.3,
+      depth: 0.3,
+      height: 2.1,
+      shape: "circle"
+    },
+    "flash-snoot": {
+      family: "reflector",
+      typeLabel: "Snoot",
+      shortLabel: "Conique",
+      sizeLabel: "Ø 6 cm",
+      heightLabel: "H 2.10 m",
+      description: "Tête flash avec snoot : petit faisceau rond, pour un accent ou un détail",
+      width: 0.26,
+      depth: 0.26,
+      height: 2.1,
+      shape: "circle"
+    },
+    "flash-grid-20": {
+      family: "reflector",
+      typeLabel: "Grille nid d'abeille",
+      shortLabel: "20°",
+      sizeLabel: "Ø 18 cm",
+      heightLabel: "H 2.10 m",
+      description: "Réflecteur avec grille 20° : faisceau serré, sans débord",
+      width: 0.3,
+      depth: 0.3,
+      height: 2.1,
+      shape: "circle"
+    },
+    "flash-grid-40": {
+      family: "reflector",
+      typeLabel: "Grille nid d'abeille",
+      shortLabel: "40°",
+      sizeLabel: "Ø 18 cm",
+      heightLabel: "H 2.10 m",
+      description: "Réflecteur avec grille 40° : faisceau dirigé, bords doux",
+      width: 0.3,
+      depth: 0.3,
+      height: 2.1,
+      shape: "circle"
+    },
+    "flash-barndoors": {
+      family: "reflector",
+      typeLabel: "Volets coupe-flux",
+      shortLabel: "4 volets",
+      sizeLabel: "Ø 18 cm",
+      heightLabel: "H 2.10 m",
+      description: "Réflecteur avec volets : découpe nette du faisceau",
+      width: 0.34,
+      depth: 0.34,
+      height: 2.1,
+      shape: "circle"
+    },
+    "flash-gel-orange": {
+      family: "reflector",
+      typeLabel: "Gélatine",
+      shortLabel: "CTO orange",
+      sizeLabel: "Ø 18 cm",
+      heightLabel: "H 2.10 m",
+      description: "Flash avec gélatine orange : lumière chaude (tungstène, coucher de soleil)",
+      width: 0.3,
+      depth: 0.3,
+      height: 2.1,
+      shape: "circle"
+    },
+    "flash-gel-blue": {
+      family: "reflector",
+      typeLabel: "Gélatine",
+      shortLabel: "CTB bleu",
+      sizeLabel: "Ø 18 cm",
+      heightLabel: "H 2.10 m",
+      description: "Flash avec gélatine bleue : lumière froide (nuit, clair de lune)",
+      width: 0.3,
+      depth: 0.3,
+      height: 2.1,
+      shape: "circle"
+    },
+    "flash-gel-red": {
+      family: "reflector",
+      typeLabel: "Gélatine",
+      shortLabel: "Rouge",
+      sizeLabel: "Ø 18 cm",
+      heightLabel: "H 2.10 m",
+      description: "Flash avec gélatine rouge : effet couleur sur le fond ou en contre",
+      width: 0.3,
+      depth: 0.3,
+      height: 2.1,
+      shape: "circle"
+    },
+    "flash-gel-teal": {
+      family: "reflector",
+      typeLabel: "Gélatine",
+      shortLabel: "Cyan",
+      sizeLabel: "Ø 18 cm",
+      heightLabel: "H 2.10 m",
+      description: "Flash avec gélatine cyan : complément de l'orange (teal & orange)",
+      width: 0.3,
+      depth: 0.3,
+      height: 2.1,
+      shape: "circle"
+    },
+    "flash-background": {
+      family: "reflector",
+      typeLabel: "Réflecteur de fond",
+      shortLabel: "Bol large",
+      sizeLabel: "Ø 30 cm",
+      heightLabel: "H 60 cm",
+      description: "Tête basse avec réflecteur large, pour éclairer le fond",
+      width: 0.4,
+      depth: 0.4,
+      height: 0.6,
+      shape: "circle"
+    },
+    "speedlight": {
+      family: "reflector",
+      typeLabel: "Flash cobra",
+      shortLabel: "Sur pied",
+      sizeLabel: "8 x 7 cm",
+      heightLabel: "H 1.90 m",
+      description: "Flash cobra sur pied avec rotule, nu ou derrière un modeleur",
+      width: 0.2,
+      depth: 0.2,
+      height: 1.9,
+      shape: "circle"
+    },
+    "ringflash": {
+      family: "reflector",
+      typeLabel: "Flash annulaire",
+      shortLabel: "20 cm",
+      sizeLabel: "Ø 20 cm",
+      heightLabel: "H 1.60 m",
+      description: "Flash circulaire autour de l'objectif : lumière frontale presque sans ombre",
+      width: 0.3,
+      depth: 0.3,
+      height: 1.6,
+      shape: "circle"
+    },
+    "cob-led-100": {
+      family: "reflector",
+      typeLabel: "COB LED",
+      shortLabel: "100 W",
+      sizeLabel: "22 x 22 cm",
+      heightLabel: "H 2.00 m",
+      description: "Petite LED continue à monture Bowens, légère",
+      width: 0.26,
+      depth: 0.26,
+      height: 2.0,
+      shape: "circle"
+    },
+    "cob-led-1200": {
+      family: "reflector",
+      typeLabel: "COB LED",
+      shortLabel: "1200 W",
+      sizeLabel: "40 x 40 cm",
+      heightLabel: "H 2.30 m",
+      description: "LED continue très puissante, remplace un HMI",
+      width: 0.42,
+      depth: 0.42,
+      height: 2.3,
+      shape: "circle"
+    },
+    "tungsten-800": {
+      family: "reflector",
+      typeLabel: "Mandarine",
+      shortLabel: "800 W",
+      sizeLabel: "25 x 20 cm",
+      heightLabel: "H 2.10 m",
+      description: "Projecteur tungstène à face ouverte avec volets : lumière chaude et dure",
+      width: 0.3,
+      depth: 0.3,
+      height: 2.1,
+      shape: "rect"
+    },
+    "led-panel-mini": {
+      family: "softbox",
+      typeLabel: "Panneau LED",
+      shortLabel: "Mini",
+      sizeLabel: "15 x 10 cm",
+      heightLabel: "H 1.70 m",
+      description: "Petit panneau LED sur batterie, pour un accent ou une lumière d'appoint",
+      width: 0.24,
+      depth: 0.24,
+      height: 1.7,
+      shape: "rect"
+    },
+    "led-panel-mat60x120": {
+      family: "softbox",
+      typeLabel: "Tapis LED souple",
+      shortLabel: "60 x 120",
+      sizeLabel: "60 x 120 cm",
+      heightLabel: "H 2.00 m",
+      description: "Tapis LED souple avec diffuseur : grande source douce continue",
+      width: 0.35,
+      depth: 0.7,
+      height: 2.0,
+      shape: "rect"
+    },
+    "led-panel-kino4x120": {
+      family: "softbox",
+      typeLabel: "Banc de tubes",
+      shortLabel: "4 x 120",
+      sizeLabel: "120 x 60 cm",
+      heightLabel: "H 2.00 m",
+      description: "Quatre tubes en caisson (type Kino Flo) : lumière douce et régulière",
+      width: 0.35,
+      depth: 0.7,
+      height: 2.0,
+      shape: "rect"
+    },
+    "tube-30": {
+      family: "striplight",
+      typeLabel: "Tube LED",
+      shortLabel: "30 cm",
+      sizeLabel: "30 cm",
+      heightLabel: "H 1.40 m",
+      description: "Tube LED très court, pour un liseré ou un accent",
+      width: 0.2,
+      depth: 0.3,
+      height: 1.4,
+      shape: "rect"
+    },
     "table-120": {
       family: "table",
       typeLabel: "Table",
@@ -1220,13 +1448,23 @@
         },
         {
           title: "Sources dirigées",
-          description: "Modeleurs plus précis, flashs et projecteurs.",
-          variants: ["strip-30x120", "strip-40x140", "beauty-dish-55", "beauty-dish-70", "flash-head-compact", "flash-head-pro", "cob-led-300", "cob-led-600", "hmi-1200", "fresnel-200", "fresnel-650", "projector-19", "projector-36"]
+          description: "Flashs, cobras, beauty dish, strips et projecteurs.",
+          variants: ["strip-30x120", "strip-40x140", "beauty-dish-55", "beauty-dish-70", "flash-head-compact", "flash-head-pro", "speedlight", "ringflash", "projector-19", "projector-36"]
         },
         {
-          title: "LED et accessoires",
-          description: "Panneaux, tubes et ring light.",
-          variants: ["led-panel-1x1", "led-panel-1x2", "tube-60", "tube-120", "tube-240", "ringlight-45"]
+          title: "Accessoires de flash",
+          description: "Réflecteur, snoot, grilles, volets, gélatines et réflecteur de fond.",
+          variants: ["flash-reflector-std", "flash-snoot", "flash-grid-20", "flash-grid-40", "flash-barndoors", "flash-gel-orange", "flash-gel-blue", "flash-gel-red", "flash-gel-teal", "flash-background"]
+        },
+        {
+          title: "Lumière continue",
+          description: "LED COB, Fresnel, mandarine et HMI.",
+          variants: ["cob-led-100", "cob-led-300", "cob-led-600", "cob-led-1200", "fresnel-200", "fresnel-650", "tungsten-800", "hmi-1200"]
+        },
+        {
+          title: "Panneaux et tubes LED",
+          description: "Panneaux, tapis souples, tubes et ring light.",
+          variants: ["led-panel-mini", "led-panel-1x1", "led-panel-1x2", "led-panel-mat60x120", "led-panel-kino4x120", "tube-30", "tube-60", "tube-120", "tube-240", "ringlight-45"]
         }
       ]
     },
@@ -3579,7 +3817,9 @@
     if (variantId.indexOf("umbrella-") === 0) return "umbrella";
     if (variantId.indexOf("lantern-") === 0) return "lantern";
     if (variantId.indexOf("beauty-dish-") === 0) return "beauty-dish";
-    if (variantId.indexOf("ringlight-") === 0) return "ringlight";
+    if (variantId.indexOf("ringlight-") === 0 || variantId === "ringflash") return "ringlight";
+    if (variantId === "speedlight") return "speedlight";
+    if (variantId.indexOf("flash-") === 0 || variantId.indexOf("tungsten-") === 0) return "spot-head";
     if (variantId.indexOf("flash-head-") === 0 || variantId.indexOf("cob-led-") === 0 || variantId.indexOf("hmi-") === 0 || variantId.indexOf("fresnel-") === 0) return "spot-head";
     if (variantId.indexOf("projector-") === 0) return "spot-projector";
     if (variantId === "reflector-panel") return "flat-panel";
@@ -3638,6 +3878,7 @@
       "ringlight",
       "beauty-dish",
       "spot-head",
+      "speedlight",
       "spot-projector",
       "window",
       "desk-lamp"
@@ -3652,6 +3893,7 @@
     if (kind === "striplight") return 74;
     if (kind === "beauty-dish") return 78;
     if (kind === "spot-head") return 80;
+    if (kind === "speedlight") return 70;
     if (kind === "spot-projector") return 84;
     if (kind === "window") return 75;
     if (kind === "desk-lamp") return 40;
@@ -5839,6 +6081,14 @@
     ctx.restore();
   }
 
+  // Gélatines : couleur du faisceau sur le plan.
+  const GEL_BEAM_COLORS = {
+    "flash-gel-orange": "rgba(255, 150, 60, 0.26)",
+    "flash-gel-blue": "rgba(90, 150, 255, 0.26)",
+    "flash-gel-red": "rgba(240, 60, 70, 0.26)",
+    "flash-gel-teal": "rgba(40, 200, 200, 0.26)"
+  };
+
   function getPlanBeamConfig(item) {
     const kind = getVariantVisualKind(item.variantId, item.family);
     if (kind === "camera") return { lengthMeters: 2.7, widthMeters: 0.55, color: "rgba(116, 180, 255, 0.14)" };
@@ -5847,7 +6097,12 @@
     if (kind === "tube") return { lengthMeters: 2.2, widthMeters: 0.3, color: "rgba(179, 228, 255, 0.14)" };
     if (kind === "led-panel" || kind === "ringlight") return { lengthMeters: 2.2, widthMeters: 0.6, color: "rgba(255, 236, 198, 0.15)" };
     if (kind === "umbrella" || kind === "lantern") return { lengthMeters: 2.4, widthMeters: 0.92, color: "rgba(255, 237, 206, 0.15)" };
-    if (kind === "beauty-dish" || kind === "spot-head") return { lengthMeters: 2.8, widthMeters: 0.38, color: "rgba(255, 225, 157, 0.18)" };
+    if (kind === "spot-head" && GEL_BEAM_COLORS[item.variantId]) return { lengthMeters: 2.8, widthMeters: 0.38, color: GEL_BEAM_COLORS[item.variantId] };
+    if (item.variantId === "flash-snoot") return { lengthMeters: 3.0, widthMeters: 0.14, color: "rgba(255, 225, 157, 0.22)" };
+    if (item.variantId === "flash-grid-20") return { lengthMeters: 3.0, widthMeters: 0.2, color: "rgba(255, 225, 157, 0.2)" };
+    if (item.variantId === "flash-grid-40") return { lengthMeters: 2.9, widthMeters: 0.3, color: "rgba(255, 225, 157, 0.19)" };
+    if (item.variantId === "flash-background") return { lengthMeters: 1.8, widthMeters: 1.2, color: "rgba(255, 225, 157, 0.14)" };
+    if (kind === "beauty-dish" || kind === "spot-head" || kind === "speedlight") return { lengthMeters: 2.8, widthMeters: 0.38, color: "rgba(255, 225, 157, 0.18)" };
     if (kind === "spot-projector") return { lengthMeters: 3.1, widthMeters: 0.22, color: "rgba(255, 219, 140, 0.22)" };
     if (kind === "window") return { lengthMeters: 3.0, widthMeters: 1.1, color: "rgba(214, 234, 255, 0.18)" };
     if (kind === "desk-lamp") return { lengthMeters: 1.6, widthMeters: 0.4, color: "rgba(255, 214, 140, 0.16)" };
