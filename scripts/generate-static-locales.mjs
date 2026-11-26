@@ -621,6 +621,11 @@ function renderIndexMain(page, languageId) {
         <div class="feature-row is-reversed feature-row-mobile" id="featureMobileContent" data-reveal>${html("featureMobileContent")}</div>
       </div>
     </section>
+    <section class="section landing-android" id="android">
+      <div class="site-shell">
+        <div class="feature-row feature-row-android" id="androidAppContent" data-reveal>${html("androidAppContent")}</div>
+      </div>
+    </section>
     <section class="section">
       <div class="site-shell" data-reveal>
         <div class="section-head" id="presetsHeadContent">${html("presetsHeadContent")}</div>

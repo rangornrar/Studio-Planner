@@ -5,13 +5,14 @@
   "description": "Plan de studio photo : application web statique (aucune compilation).",
   "scripts": {
     "serve": "node scripts/serve-static.mjs",
-    "lint": "node --check js/simple-studio.js && node --check js/studio-models.js && node --check js/studio-locales.js && node --check js/photo-lab-data.mjs && node --check js/photo-lab-engine.mjs && node --check js/photo-lab-scenes.mjs && node --check js/photo-lab-ui.mjs && node --check js/photo-lab-i18n.mjs && node --check js/site-nav.js && node --check scripts/serve-static.mjs && node --check scripts/generate-static-locales.mjs && node --check scripts/generate-preset-gallery.mjs && node --check scripts/generate-landing-shots.mjs && node --check scripts/shot-helpers.mjs && node --check js/site-extras.js && node --check scripts/generate-android-catalog.mjs",
+    "lint": "node --check js/simple-studio.js && node --check js/studio-models.js && node --check js/studio-locales.js && node --check js/photo-lab-data.mjs && node --check js/photo-lab-engine.mjs && node --check js/photo-lab-scenes.mjs && node --check js/photo-lab-ui.mjs && node --check js/photo-lab-i18n.mjs && node --check js/site-nav.js && node --check scripts/serve-static.mjs && node --check scripts/generate-static-locales.mjs && node --check scripts/generate-preset-gallery.mjs && node --check scripts/generate-landing-shots.mjs && node --check scripts/shot-helpers.mjs && node --check js/site-extras.js && node --check scripts/generate-android-catalog.mjs && node --check scripts/build-site.mjs",
     "test": "node --test tests/*.test.cjs tests/*.test.mjs",
     "test:visual": "node tests/visual/layout-check.mjs",
     "build:locales": "node scripts/generate-static-locales.mjs",
     "build:presets": "node scripts/generate-preset-gallery.mjs",
     "build:shots": "node scripts/generate-landing-shots.mjs",
-    "build:catalog": "node scripts/generate-android-catalog.mjs"
+    "build:catalog": "node scripts/generate-android-catalog.mjs",
+    "build:site": "node scripts/build-site.mjs"
   },
   "devDependencies": {
     "playwright": "^1.50.0"

@@ -81,6 +81,30 @@ Le Labo photo utilise des modules JavaScript, que les navigateurs refusent de ch
 - `schema-eclairage-portrait.html`, `plan-studio-boudoir.html`, `lighting-diagram-interview.html` : pages ciblees SEO reliees a l'application.
 - `docs/screenshots/` : captures d'ecran utilisees dans le README et les apercus.
 
+## Mise en ligne
+
+Le dépôt contient le code et les outils ; seul le dossier `a-mettre-en-ligne/` part sur l'hébergement.
+
+```bash
+npm run build:locales   # régénère les pages traduites (si les textes ont changé)
+npm run build:site      # remplit a-mettre-en-ligne/ et vérifie que chaque fichier appelé existe
+```
+
+Copier ensuite tout le contenu de `a-mettre-en-ligne/` à la racine de lumierestudio.archi-it.fr, en remplaçant l'ancien contenu.
+Le dossier est régénéré à chaque fois et n'est pas versionné.
+
+## Synchronisation avec l'appli Android
+
+Le site est la source du catalogue (matériel, presets, objets du quotidien `obj-*`) de l'appli Android
+[LITE-Studio-Android](https://github.com/rangornrar/LITE-Studio-Android). Après un changement du catalogue :
+
+```bash
+npm run build:catalog -- ../LITE-Studio-Android/shared/src/commonMain/composeResources/files/catalog
+```
+
+La version de `package.json` et le commit sont inscrits dans le catalogue ; l'appli les affiche dans « À propos ».
+Les liens `#scene=z.…` et les fichiers `.json` ont le même format des deux côtés.
+
 ## Parametres d'URL utiles
 
 Des parametres simples peuvent etre utilises pour ouvrir directement une langue ou un preset :

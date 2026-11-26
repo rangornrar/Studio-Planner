@@ -2152,3 +2152,49 @@ html[dir="rtl"] .preset-card-cta::after {
 .quick-links a:focus-visible {
   color: var(--accent);
 }
+
+
+/* Application Android : annonce « Bientôt sur Google Play » et appel aux testeurs. */
+.landing-android .feature-row-android {
+  padding: clamp(24px, 4vw, 48px);
+  border: 1px solid var(--line, rgba(255, 255, 255, 0.12));
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(255, 176, 102, 0.1), rgba(255, 255, 255, 0.02));
+}
+.landing-android h2 {
+  margin: 0.2em 0 0.4em;
+}
+.android-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+.store-soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(61, 220, 132, 0.45);
+  color: #7ee2a8;
+  font-weight: 600;
+}
+.android-note {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+.landing-android .feature-row-android {
+  grid-template-columns: 1fr;
+}
+.landing-android .check-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 6px 24px;
+}
+.landing-android .feature-copy > p:not(.eyebrow):not(.android-note) {
+  max-width: 70ch;
+}
