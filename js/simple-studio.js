@@ -776,6 +776,114 @@
       height: 0.05,
       shape: "rect"
     },
+    "obj-box-black": {
+      family: "table",
+      typeLabel: "Boîte noire",
+      shortLabel: "60 cm",
+      sizeLabel: "60 x 60 cm",
+      heightLabel: "H 60 cm",
+      description: "Grosse boîte noire (cube, assise, support)",
+      width: 0.6,
+      depth: 0.6,
+      height: 0.6,
+      shape: "rect"
+    },
+    "obj-box-white": {
+      family: "table",
+      typeLabel: "Boîte blanche",
+      shortLabel: "60 cm",
+      sizeLabel: "60 x 60 cm",
+      heightLabel: "H 60 cm",
+      description: "Grosse boîte blanche (cube, assise, réflecteur bas)",
+      width: 0.6,
+      depth: 0.6,
+      height: 0.6,
+      shape: "rect"
+    },
+    "obj-box-black-long": {
+      family: "table",
+      typeLabel: "Boîte noire",
+      shortLabel: "100 cm",
+      sizeLabel: "100 x 50 cm",
+      heightLabel: "H 45 cm",
+      description: "Longue boîte noire",
+      width: 0.5,
+      depth: 1.0,
+      height: 0.45,
+      shape: "rect"
+    },
+    "obj-table-product": {
+      family: "table",
+      typeLabel: "Table produit",
+      shortLabel: "120 x 70",
+      sizeLabel: "120 x 70 cm",
+      heightLabel: "H 90 cm",
+      description: "Table de prise de vue produit avec fond courbe",
+      width: 0.7,
+      depth: 1.2,
+      height: 0.9,
+      shape: "rect"
+    },
+    "obj-window": {
+      family: "softbox",
+      typeLabel: "Fenêtre",
+      shortLabel: "120 cm",
+      sizeLabel: "120 x 130 cm",
+      heightLabel: "H 220 cm",
+      description: "Fenêtre : grande source douce naturelle",
+      width: 0.15,
+      depth: 1.2,
+      height: 2.2,
+      shape: "rect"
+    },
+    "obj-sheet": {
+      family: "vflat",
+      typeLabel: "Drap blanc",
+      shortLabel: "150 cm",
+      sizeLabel: "150 x 180 cm",
+      heightLabel: "H 200 cm",
+      description: "Drap blanc tendu : diffusion ou rebond",
+      width: 0.3,
+      depth: 1.5,
+      height: 2.0,
+      shape: "rect"
+    },
+    "obj-board-white": {
+      family: "vflat",
+      typeLabel: "Plaque blanche",
+      shortLabel: "100 x 100",
+      sizeLabel: "100 x 100 cm",
+      heightLabel: "H 100 cm",
+      description: "Plaque de polystyrène blanche : rebond",
+      width: 0.2,
+      depth: 1.0,
+      height: 1.0,
+      shape: "rect"
+    },
+    "obj-card-black": {
+      family: "flag",
+      typeLabel: "Carton noir",
+      shortLabel: "70 x 50",
+      sizeLabel: "70 x 50 cm",
+      heightLabel: "H 110 cm",
+      description: "Carton noir : coupe-flux ou débouchage négatif",
+      width: 0.2,
+      depth: 0.7,
+      height: 1.1,
+      shape: "rect"
+    },
+    "obj-lamp": {
+      family: "reflector",
+      typeLabel: "Lampe de bureau",
+      shortLabel: "30 cm",
+      sizeLabel: "30 x 30 cm",
+      heightLabel: "H 50 cm",
+      description: "Lampe de bureau : petite source continue",
+      width: 0.3,
+      depth: 0.3,
+      height: 0.5,
+      shape: "rect"
+    },
     "table-120": {
       family: "table",
       typeLabel: "Table",
@@ -1171,6 +1279,11 @@
           title: "Plateau",
           description: "Aides de travail et accessoires volumineux.",
           variants: ["cart-rolling", "ladder-small", "mirror-standing"]
+        },
+        {
+          title: "Objets du quotidien",
+          description: "Boîtes, table produit, fenêtre, drap, plaque, carton et lampe : ce que vous avez sous la main.",
+          variants: ["obj-box-black", "obj-box-white", "obj-box-black-long", "obj-table-product", "obj-window", "obj-sheet", "obj-board-white", "obj-card-black", "obj-lamp"]
         }
       ]
     }
@@ -3451,6 +3564,12 @@
   }
 
   function getVariantVisualKind(variantId, family) {
+    if (variantId === "obj-box-black" || variantId === "obj-box-white" || variantId === "obj-box-black-long") return "object-box";
+    if (variantId === "obj-table-product") return "product-table";
+    if (variantId === "obj-window") return "window";
+    if (variantId === "obj-sheet") return "flat-panel";
+    if (variantId === "obj-board-white" || variantId === "obj-card-black") return "leaning-board";
+    if (variantId === "obj-lamp") return "desk-lamp";
     if (variantId.indexOf("softbox-octa") === 0) return "softbox-octa";
     if (variantId.indexOf("softbox-parabolic") === 0) return "softbox-parabolic";
     if (variantId.indexOf("softbox-rect") === 0) return "softbox-rect";
@@ -3519,7 +3638,9 @@
       "ringlight",
       "beauty-dish",
       "spot-head",
-      "spot-projector"
+      "spot-projector",
+      "window",
+      "desk-lamp"
     ].indexOf(kind) !== -1;
   }
 
@@ -3532,6 +3653,8 @@
     if (kind === "beauty-dish") return 78;
     if (kind === "spot-head") return 80;
     if (kind === "spot-projector") return 84;
+    if (kind === "window") return 75;
+    if (kind === "desk-lamp") return 40;
     return 70;
   }
 
@@ -5726,6 +5849,8 @@
     if (kind === "umbrella" || kind === "lantern") return { lengthMeters: 2.4, widthMeters: 0.92, color: "rgba(255, 237, 206, 0.15)" };
     if (kind === "beauty-dish" || kind === "spot-head") return { lengthMeters: 2.8, widthMeters: 0.38, color: "rgba(255, 225, 157, 0.18)" };
     if (kind === "spot-projector") return { lengthMeters: 3.1, widthMeters: 0.22, color: "rgba(255, 219, 140, 0.22)" };
+    if (kind === "window") return { lengthMeters: 3.0, widthMeters: 1.1, color: "rgba(214, 234, 255, 0.18)" };
+    if (kind === "desk-lamp") return { lengthMeters: 1.6, widthMeters: 0.4, color: "rgba(255, 214, 140, 0.16)" };
     return null;
   }
 

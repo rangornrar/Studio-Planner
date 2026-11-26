@@ -180,7 +180,8 @@
         furniture: [
           { title: "Seating", description: "Seats and posing support." },
           { title: "Supports", description: "Tables, cubes, makeup station and boxes." },
-          { title: "Set", description: "Work helpers and large accessories." }
+          { title: "Set", description: "Work helpers and large accessories." },
+          { title: "Everyday objects", description: "Boxes, product table, window, sheet, board, card and lamp: what you have to hand." }
         ]
       },
       presetCategories: {
@@ -297,7 +298,8 @@
         furniture: [
           { title: "Asientos", description: "Sillas y apoyo para posar." },
           { title: "Soportes", description: "Mesas, cubos, tocador y cajas." },
-          { title: "Set", description: "Ayudas de trabajo y accesorios grandes." }
+          { title: "Set", description: "Ayudas de trabajo y accesorios grandes." },
+          { title: "Objetos cotidianos", description: "Cajas, mesa de bodegón, ventana, sábana, plancha, cartón y lámpara: lo que tienes a mano." }
         ]
       },
       presetCategories: {
@@ -414,7 +416,8 @@
         furniture: [
           { title: "Sitzmöbel", description: "Sitze und Pose-Hilfen." },
           { title: "Unterstützung", description: "Tische, Würfel, Makeup-Station und Kisten." },
-          { title: "Set", description: "Arbeitshilfen und große Accessoires." }
+          { title: "Set", description: "Arbeitshilfen und große Accessoires." },
+          { title: "Alltagsgegenstände", description: "Boxen, Produkttisch, Fenster, Laken, Platte, Karton und Lampe: was du zur Hand hast." }
         ]
       },
       presetCategories: {
@@ -531,7 +534,8 @@
         furniture: [
           { title: "مقاعد", description: "مقاعد ودعم للوضعيات." },
           { title: "دعامات", description: "طاولات ومكعبات وطاولة مكياج وصناديق." },
-          { title: "البلاتوه", description: "وسائل عمل وإكسسوارات كبيرة." }
+          { title: "البلاتوه", description: "وسائل عمل وإكسسوارات كبيرة." },
+          { title: "أغراض يومية", description: "صناديق، طاولة منتجات، نافذة، ملاءة، لوح، كرتون ومصباح: ما لديك في متناول اليد." }
         ]
       },
       presetCategories: {
@@ -589,6 +593,14 @@
       "Banc": "Bench",
       "Canapé": "Sofa",
       "Cube posing": "Posing cube",
+      "Boîte noire": "Black box",
+      "Boîte blanche": "White box",
+      "Table produit": "Product table",
+      "Fenêtre": "Window",
+      "Drap blanc": "White sheet",
+      "Plaque blanche": "White board",
+      "Carton noir": "Black card",
+      "Lampe de bureau": "Desk lamp",
       "Apple Box": "Apple box",
       "Table": "Table",
       "Table ronde": "Round table",
@@ -643,6 +655,14 @@
       "Banc": "Banco",
       "Canapé": "Sofá",
       "Cube posing": "Cubo de posing",
+      "Boîte noire": "Caja negra",
+      "Boîte blanche": "Caja blanca",
+      "Table produit": "Mesa de bodegón",
+      "Fenêtre": "Ventana",
+      "Drap blanc": "Sábana blanca",
+      "Plaque blanche": "Plancha blanca",
+      "Carton noir": "Cartón negro",
+      "Lampe de bureau": "Lámpara de escritorio",
       "Apple Box": "Apple box",
       "Table": "Mesa",
       "Table ronde": "Mesa redonda",
@@ -697,6 +717,14 @@
       "Banc": "Bank",
       "Canapé": "Sofa",
       "Cube posing": "Posing-Würfel",
+      "Boîte noire": "Schwarze Box",
+      "Boîte blanche": "Weiße Box",
+      "Table produit": "Produkttisch",
+      "Fenêtre": "Fenster",
+      "Drap blanc": "Weißes Laken",
+      "Plaque blanche": "Weiße Platte",
+      "Carton noir": "Schwarzer Karton",
+      "Lampe de bureau": "Schreibtischlampe",
       "Apple Box": "Apple Box",
       "Table": "Tisch",
       "Table ronde": "Runder Tisch",
@@ -751,6 +779,14 @@
       "Banc": "مقعد",
       "Canapé": "أريكة",
       "Cube posing": "مكعب بوزينغ",
+      "Boîte noire": "صندوق أسود",
+      "Boîte blanche": "صندوق أبيض",
+      "Table produit": "طاولة منتجات",
+      "Fenêtre": "نافذة",
+      "Drap blanc": "ملاءة بيضاء",
+      "Plaque blanche": "لوح أبيض",
+      "Carton noir": "كرتون أسود",
+      "Lampe de bureau": "مصباح مكتب",
       "Apple Box": "أبل بوكس",
       "Table": "طاولة",
       "Table ronde": "طاولة دائرية",

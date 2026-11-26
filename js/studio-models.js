@@ -119,6 +119,10 @@
     fabricBeige: material("#c8b9a3", { edges: true }),
     fabricGray: material("#7d838b", { edges: true }),
     sandbag: material("#a3292c"),
+    boxBlack: material("#1c1b1a", { edges: true }),
+    boxWhite: material("#f4f1ea", { edges: true }),
+    windowLight: material("#dcecfa", { emissive: 0.85, doubleSided: true }),
+    lampShade: material("#f2d27a", { emissive: 0.7, doubleSided: true }),
     sandbagStrap: material("#1d1f22"),
     bulb: material("#fff3d6", { emissive: 0.9 }),
     cable: material("#15171a"),
@@ -1048,6 +1052,52 @@
         b.block(-0.07, s * (d / 2 + 0.001) - 0.001, h * 0.55, 0.07, s * (d / 2 + 0.001) + 0.001, h * 0.55 + Math.min(0.035, h * 0.25), MAT.woodDark);
       });
     }
+  };
+
+
+  // ---------------------------------------------------------------------------
+  // Objets du quotidien (partagés avec l'appli Android : mêmes identifiants obj-*)
+  // ---------------------------------------------------------------------------
+  BUILDERS["object-box"] = function (b, spec) {
+    const mat = spec.id === "obj-box-white" ? MAT.boxWhite : MAT.boxBlack;
+    const w = spec.width || 0.6;
+    const d = spec.depth || 0.6;
+    b.block(-w / 2, -d / 2, 0, w / 2, d / 2, spec.height || 0.6, mat);
+  };
+
+  BUILDERS["product-table"] = function (b, spec) {
+    // Table de prise de vue : plateau, pieds, et fond blanc qui remonte à l'arrière (côté -x).
+    const w = spec.width || 0.7;
+    const d = spec.depth || 1.2;
+    const z = spec.height || 0.9;
+    b.block(-w / 2, -d / 2, z - 0.03, w / 2, d / 2, z, MAT.woodLight);
+    [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(function (c) {
+      b.block(c[0] * (w / 2 - 0.05) - 0.02, c[1] * (d / 2 - 0.05) - 0.02, 0, c[0] * (w / 2 - 0.05) + 0.02, c[1] * (d / 2 - 0.05) + 0.02, z - 0.03, MAT.steel);
+    });
+    b.block(-w / 2 + 0.02, -d / 2 + 0.03, z, w / 2 - 0.02, d / 2 - 0.03, z + 0.004, MAT.whiteBoard);
+    b.block(-w / 2, -d / 2 + 0.03, z, -w / 2 + 0.01, d / 2 - 0.03, z + 0.6, MAT.whiteBoard);
+  };
+
+  BUILDERS.window = function (b, spec) {
+    // Fenêtre : un pan lumineux encadré, orienté vers +x (vers l'intérieur de la pièce).
+    framedPanel(b, { width: spec.depth || 1.2, height: 1.3, baseZ: 0.9, mat: MAT.windowLight, frameMat: MAT.plasticWhite, thickness: 0.01, frameRadius: 0.03 });
+  };
+
+  BUILDERS["leaning-board"] = function (b, spec) {
+    // Plaque blanche ou carton noir posé au sol, légèrement incliné.
+    const mat = spec.id === "obj-card-black" ? MAT.blackBoard : MAT.whiteBoard;
+    const w = spec.depth || 1.0;
+    const h = spec.id === "obj-card-black" ? 0.5 : 1.0;
+    const start = b.faces.length;
+    framedPanel(b, { width: w, height: h, baseZ: spec.id === "obj-card-black" ? 0.6 : 0, mat: mat, frame: false, thickness: 0.02 });
+    b.rotateSince(start, [0, 0, 0], [0, 1, 0], -0.12);
+  };
+
+  BUILDERS["desk-lamp"] = function (b) {
+    b.cylinder([0, 0, 0], [0, 0, 0.02], 0.08, MAT.blackMetal, 16);
+    b.rod([0, 0, 0.02], [0.05, 0, 0.35], 0.008, MAT.blackMetal);
+    b.rod([0.05, 0, 0.35], [0.14, 0, 0.42], 0.008, MAT.blackMetal);
+    b.cylinder([0.12, 0, 0.42], [0.2, 0, 0.38], 0.07, MAT.lampShade, 16);
   };
 
   function tableTop(b, w, d, z, mat, legMat, round) {

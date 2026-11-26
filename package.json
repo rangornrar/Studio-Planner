@@ -1,5 +1,6 @@
 {
   "name": "lite-studio",
+  "version": "2026.11.26",
   "private": true,
   "description": "Plan de studio photo : application web statique (aucune compilation).",
   "scripts": {

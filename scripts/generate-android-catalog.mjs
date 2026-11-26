@@ -4,6 +4,7 @@
 // Playwright doit etre installe (npm install).
 import fs from "node:fs/promises";
 import path from "node:path";
+import { execSync } from "node:child_process";
 import { chromium } from "playwright";
 import { startServer } from "./shot-helpers.mjs";
 
@@ -46,8 +47,18 @@ async function main() {
   }
   await fs.writeFile(path.join(OUT_DIR, "sprites.json"), JSON.stringify(spriteSizes, null, 1) + "\n", "utf8");
 
+  // Origine du catalogue : version du site et commit, affichés dans « À propos » de l'appli.
+  const pkg = JSON.parse(await fs.readFile(path.join(ROOT, "package.json"), "utf8"));
+  let commit = "";
+  try {
+    commit = execSync("git rev-parse --short HEAD", { cwd: ROOT }).toString().trim();
+  } catch (error) {
+    commit = "";
+  }
+  const source = { site: "lumierestudio.archi-it.fr", version: pkg.version || "", commit: commit };
   for (const language of LANGUAGES) {
     const catalog = await page.evaluate(function (lang) { return window.LiteStudio.catalogExport(lang); }, language);
+    catalog.source = source;
     await fs.writeFile(path.join(OUT_DIR, `catalog-${language}.json`), JSON.stringify(catalog, null, 1) + "\n", "utf8");
   }
   await browser.close();
