@@ -1,12 +1,39 @@
 (function () {
   const StudioModels = window.LiteStudioModels;
   const { LANGUAGE_OPTIONS, LOCALES, LOCALE_CODES, TYPE_LABEL_TRANSLATIONS, SHORT_LABEL_KEYS, SHORT_LABEL_TRANSLATIONS, PRESET_TOKEN_TRANSLATIONS, UI_COPY, COLOR_NOUN_TRANSLATIONS, COLOR_MODIFIER_TRANSLATIONS } = window.LiteStudioLocales;
+  // Taille du studio : 8 x 6 m par défaut ; un plateau peut avoir la sienne (champ « studio » du plateau,
+  // « s » dans le lien), partagée avec l'appli Android.
   const STUDIO = {
     width: 8,
     depth: 6,
     backdropDepth: 0.75,
     backdropHeight: 2.8
   };
+  const DEFAULT_STUDIO = { width: 8, depth: 6, backdropDepth: 0.75 };
+
+  function isDefaultStudio() {
+    return STUDIO.width === DEFAULT_STUDIO.width && STUDIO.depth === DEFAULT_STUDIO.depth && STUDIO.backdropDepth === DEFAULT_STUDIO.backdropDepth;
+  }
+
+  // Applique une taille de studio valide (1,5 à 30 m), sinon revient au studio par défaut.
+  function applyStudio(dims) {
+    const width = dims && Number(dims.width);
+    const depth = dims && Number(dims.depth);
+    if (!(width >= 1.5 && width <= 30 && depth >= 1.5 && depth <= 30)) {
+      STUDIO.width = DEFAULT_STUDIO.width;
+      STUDIO.depth = DEFAULT_STUDIO.depth;
+      STUDIO.backdropDepth = DEFAULT_STUDIO.backdropDepth;
+      return;
+    }
+    const backdrop = Number(dims.backdropDepth);
+    STUDIO.width = Math.round(width * 100) / 100;
+    STUDIO.depth = Math.round(depth * 100) / 100;
+    STUDIO.backdropDepth = backdrop >= 0 && backdrop <= depth / 2 ? backdrop : Math.min(0.75, depth / 4);
+  }
+
+  function studioSnapshot() {
+    return isDefaultStudio() ? undefined : { width: STUDIO.width, depth: STUDIO.depth, backdropDepth: STUDIO.backdropDepth };
+  }
 
   const PLAN_CORNER_RADIUS = 8;
   let planLabelQueue = [];
@@ -3043,6 +3070,8 @@
       flushProjectSave();
     });
 
+    if (refs.studioBadge) refs.studioBadge.addEventListener("click", openStudioDialog);
+
     if (refs.gearDialog) {
       refs.gearDialog.addEventListener("click", function (event) {
         // Clic sur le voile (hors contenu) ou sur un bouton Fermer.
@@ -3701,7 +3730,8 @@
           label: item.label,
           power: typeof item.power === "number" ? item.power : null
         };
-      })
+      }),
+      studio: studioSnapshot()
     });
   }
 
@@ -3810,6 +3840,7 @@
     const preset = findPreset(presetId);
     if (!preset) return;
 
+    applyStudio(null);
     state.floorId = preset.floorId || FLOOR_COLORS[0].id;
     state.backdropId = preset.backdropId || BACKDROP_COLORS[3].id;
     state.items = [];
@@ -4089,6 +4120,7 @@
     const backdrop = getBackdropColor();
     const itemWord = state.items.length === 1 ? t("status.itemSingular") : t("status.itemPlural");
     refs.studioBadge.textContent = getUiCopy("studio", { width: STUDIO.width, depth: STUDIO.depth });
+    refs.studioBadge.title = getUiCopy("studioSizeTitle");
     refs.countBadge.textContent = `${state.items.length} ${itemWord} · ${getLocalizedColorLabel(floor)} / ${getLocalizedColorLabel(backdrop)}`;
   }
 
@@ -4173,6 +4205,7 @@
     }
     if (!data || !Array.isArray(data.items)) return false;
     const selectedId = state.selectedId;
+    applyStudio(data.studio);
     state.floorId = FLOOR_COLORS.some(function (c) { return c.id === data.floorId; }) ? data.floorId : FLOOR_COLORS[0].id;
     state.backdropId = BACKDROP_COLORS.some(function (c) { return c.id === data.backdropId; }) ? data.backdropId : BACKDROP_COLORS[3].id;
     state.items = [];
@@ -4313,7 +4346,7 @@
   // Forme compacte pour le lien : [variante, x, y, rotation, nom, puissance].
   function compactScene() {
     const data = JSON.parse(snapshotScene());
-    return {
+    const compact = {
       v: 1,
       f: data.floorId,
       b: data.backdropId,
@@ -4323,6 +4356,8 @@
         return row;
       })
     };
+    if (data.studio) compact.s = [data.studio.width, data.studio.depth, data.studio.backdropDepth];
+    return compact;
   }
 
   function expandScene(compact) {
@@ -4341,7 +4376,10 @@
           label: typeof row[4] === "string" ? row[4] : undefined,
           power: typeof row[5] === "number" ? row[5] : null
         };
-      })
+      }),
+      studio: Array.isArray(compact.s) && compact.s.length >= 2
+        ? { width: Number(compact.s[0]), depth: Number(compact.s[1]), backdropDepth: compact.s.length >= 3 ? Number(compact.s[2]) : 0.75 }
+        : undefined
     });
   }
 
@@ -4457,6 +4495,8 @@
     try {
       const data = JSON.parse(await file.text());
       const scene = data && data.format === PROJECT_FORMAT ? data.scene : data;
+      // Fichiers enregistrés avant que le plateau porte sa taille : on reprend celle du fichier.
+      if (scene && !scene.studio && data && data.studio) scene.studio = data.studio;
       if (scene && Array.isArray(scene.items)) snapshot = JSON.stringify(scene);
     } catch (error) {
       snapshot = null;
@@ -4768,6 +4808,69 @@
     flushProjectSave();
     renderProjectsList();
     showDialog(refs.projectsDialog);
+  }
+
+  // Réglage de la taille du studio (partagée avec l'appli Android par le lien et le fichier).
+  function openStudioDialog() {
+    let dialog = document.getElementById("studioDialog");
+    if (!dialog) {
+      dialog = document.createElement("dialog");
+      dialog.className = "gear-dialog";
+      dialog.id = "studioDialog";
+      dialog.setAttribute("aria-labelledby", "studioDialogTitle");
+      document.body.appendChild(dialog);
+      dialog.addEventListener("click", function (event) {
+        if (event.target === dialog || event.target.closest("[data-studio-close]")) dialog.close();
+        const preset = event.target.closest("[data-studio-size]");
+        if (preset) {
+          const parts = preset.getAttribute("data-studio-size").split("x");
+          dialog.querySelector("#studioWidthInput").value = parts[0];
+          dialog.querySelector("#studioDepthInput").value = parts[1];
+        }
+      });
+      dialog.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const width = parseFloat(String(dialog.querySelector("#studioWidthInput").value).replace(",", "."));
+        const depth = parseFloat(String(dialog.querySelector("#studioDepthInput").value).replace(",", "."));
+        if (!(width >= 1.5 && width <= 30 && depth >= 1.5 && depth <= 30)) {
+          dialog.querySelector("#studioWidthInput").focus();
+          return;
+        }
+        applyStudio({ width: width, depth: depth, backdropDepth: Math.min(0.75, depth / 4) });
+        state.items.forEach(function (item) {
+          item.x = clamp(item.x, 0, STUDIO.width);
+          item.y = clamp(item.y, 0, STUDIO.depth);
+        });
+        dialog.close();
+        renderAll();
+        scheduleHistoryCommit();
+      });
+    }
+    const sizes = [[3, 4], [5, 4], [8, 6]];
+    dialog.innerHTML = `
+      <form method="dialog">
+        <div class="gear-dialog-head">
+          <h2 id="studioDialogTitle">${escapeHtml(getUiCopy("studioSizeTitle"))}</h2>
+          <button class="gear-dialog-close" type="button" data-studio-close aria-label="${escapeHtml(getUiCopy("studioSizeCancel"))}">&times;</button>
+        </div>
+        <div class="gear-dialog-body">
+          <p>${escapeHtml(getUiCopy("studioSizeHint"))}</p>
+          <div class="studio-size-presets">
+            ${sizes.map(function (size) {
+              return `<button class="stage-empty-button" type="button" data-studio-size="${size[0]}x${size[1]}">${isolateNumbers(`${size[0]} × ${size[1]} m`)}</button>`;
+            }).join("")}
+          </div>
+          <div class="studio-size-fields">
+            <label>${escapeHtml(getUiCopy("studioSizeWidth"))}<input id="studioWidthInput" type="number" inputmode="decimal" min="1.5" max="30" step="0.1" value="${STUDIO.width}"></label>
+            <label>${escapeHtml(getUiCopy("studioSizeDepth"))}<input id="studioDepthInput" type="number" inputmode="decimal" min="1.5" max="30" step="0.1" value="${STUDIO.depth}"></label>
+          </div>
+        </div>
+        <div class="gear-dialog-actions">
+          <button class="stage-empty-button is-primary" type="submit">${escapeHtml(getUiCopy("studioSizeApply"))}</button>
+          <button class="stage-empty-button" type="button" data-studio-close>${escapeHtml(getUiCopy("studioSizeCancel"))}</button>
+        </div>
+      </form>`;
+    showDialog(dialog);
   }
 
   function showDialog(dialog) {
@@ -6901,6 +7004,100 @@
       } finally {
         state.language = previous;
       }
+    },
+    // Catalogue complet dans une langue, pour l'application Android (scripts/generate-android-catalog.mjs).
+    catalogExport: function (language) {
+      const previous = state.language;
+      state.language = LANGUAGE_OPTIONS.some(function (option) { return option.id === language; }) ? language : previous;
+      try {
+        const colors = function (list) {
+          return list.map(function (entry) { return { id: entry.id, label: getLocalizedColorLabel(entry), color: entry.color }; });
+        };
+        const variants = {};
+        Object.keys(ITEM_VARIANTS).forEach(function (variantId) {
+          const variant = ITEM_VARIANTS[variantId];
+          const copy = getLocalizedVariantCopy(variantId, variant);
+          variants[variantId] = {
+            family: variant.family,
+            shape: variant.shape,
+            width: variant.width,
+            depth: variant.depth,
+            height: variant.height,
+            typeKey: variant.typeLabel,
+            type: copy.type,
+            short: copy.short,
+            title: getLocalizedVariantTitle(variantId, variant),
+            size: copy.size,
+            heightLabel: copy.height,
+            description: variant.description
+          };
+        });
+        return {
+          format: "lite-studio-catalog",
+          version: 1,
+          language: state.language,
+          studio: STUDIO,
+          floors: colors(FLOOR_COLORS),
+          backdrops: colors(BACKDROP_COLORS),
+          variants: variants,
+          palette: PALETTE_CATEGORIES.map(function (category) {
+            return {
+              id: category.id,
+              label: getLocalizedPaletteCategoryLabel(category),
+              groups: category.groups.map(function (group, index) {
+                const copy = getLocalizedPaletteGroupCopy(category.id, index, group);
+                return { title: copy.title, description: copy.description, variants: group.variants.slice() };
+              })
+            };
+          }),
+          presets: STUDIO_PRESET_CATEGORIES.map(function (category) {
+            const copy = getLocalizedPresetCategory(category);
+            return {
+              id: category.id,
+              label: copy.label,
+              description: copy.description,
+              presets: category.presets.map(function (preset) {
+                return {
+                  id: preset.id,
+                  name: getLocalizedPresetName(preset),
+                  summary: getLocalizedPresetSummary(preset),
+                  floorId: preset.floorId,
+                  backdropId: preset.backdropId,
+                  items: preset.items.map(function (item) {
+                    return { variantId: item.variantId, x: item.x, y: item.y, rotation: item.rotation, power: typeof item.power === "number" ? item.power : null };
+                  })
+                };
+              })
+            };
+          })
+        };
+      } finally {
+        state.language = previous;
+      }
+    },
+    // Vue de dessus d'un element seul, sans sol ni fond, pour l'application Android.
+    // Rend une image carree centree sur l'element (rotation 0) et sa taille en metres.
+    spriteExport: function (variantId, pixelsPerMeter) {
+      const variant = ITEM_VARIANTS[variantId];
+      if (!variant) return null;
+      const ppm = pixelsPerMeter || 160;
+      const model = getVariantModel(variantId, variant);
+      const meters = Math.max(model.width, model.depth, 0.3) * 1.25 + 0.4;
+      const size = Math.round(meters * ppm);
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d");
+      const view = StudioModels.planView(function (p) {
+        return [size / 2 + p[0] * ppm, size / 2 + p[1] * ppm];
+      }, Math.max(0.6, ppm / 200));
+      StudioModels.render(ctx, [{ model: model, x: 0, y: 0, rotation: 0 }], view);
+      return { meters: meters, png: canvas.toDataURL("image/png") };
+    },
+    thumbnailExport: function (variantId) {
+      const variant = ITEM_VARIANTS[variantId];
+      if (!variant) return null;
+      return StudioModels.thumbnail(getVariantVisualKind(variantId, variant.family), variantId, variant, 300, 184, 1);
     },
     gearList: function (language) {
       const previous = state.language;
