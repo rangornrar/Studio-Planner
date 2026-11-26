@@ -3784,8 +3784,8 @@
                   <button class="variant-btn" type="button" data-variant-id="${variantId}">
                     ${getVariantPreviewMarkup(variantId, variant)}
                     <span class="variant-copy">
-                      <strong>${escapeHtml(copy.short)}</strong>
-                      <span class="variant-meta">${escapeHtml(isolateNumbers(copy.size))}</span>
+                      <strong>${escapeHtml(copy.type || copy.short)}</strong>
+                      <span class="variant-meta">${escapeHtml(isolateNumbers([copy.short !== copy.type ? copy.short : "", copy.size].filter(Boolean).join(" · ")))}</span>
                       <span class="variant-meta">${escapeHtml(isolateNumbers(copy.height))}</span>
                     </span>
                   </button>
